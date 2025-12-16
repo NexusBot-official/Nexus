@@ -271,6 +271,11 @@ class AdvancedAntiNuke {
   }
 
   async monitorAction(guild, actionType, userId, details = {}) {
+    // Skip anti-nuke checks if backup restore is in progress
+    const backupManager = require("./backupManager");
+    if (backupManager.isRestoring(guild.id)) {
+      return; // Don't monitor during backup restore
+    }
     // Check if guild still exists
     if (!guild || !guild.available) {
       return; // Guild not available, skip monitoring
