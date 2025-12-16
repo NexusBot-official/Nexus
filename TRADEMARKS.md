@@ -199,7 +199,7 @@ This policy may be updated. Check the "Last Updated" date above.
 If you're unsure whether your use is permitted:
 
 - **GitHub Issues**: [Open an issue](https://github.com/Azzraya/Nexus/issues)
-- **Support Server**: [Join our Discord](https://discord.gg/warmA4BsPP)
+- **Support Server**: [Join our Discord](https://discord.gg/BE9jPs7Byd)
 - **Email**: Check our GitHub profile
 
 ---

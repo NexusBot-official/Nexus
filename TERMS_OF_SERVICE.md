@@ -256,7 +256,7 @@ The Bot includes AI-powered features that may make automated decisions:
 
 For questions about these Terms:
 
-- **Discord Support Server:** https://discord.gg/warmA4BsPP (Preferred method)
+- **Discord Support Server:** https://discord.gg/BE9jPs7Byd (Preferred method)
 - **Legal/Privacy Email:** nexusbot0@proton.me (For formal legal inquiries)
 - **General Contact:** Open a ticket in our support server
 - **GitHub Issues:** https://github.com/Azzraya/Nexus/issues (For code-related questions)
