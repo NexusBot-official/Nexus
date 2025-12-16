@@ -3153,6 +3153,15 @@ class DashboardServer {
     // Get all incidents
     this.app.get("/api/admin/incidents", async (req, res) => {
       try {
+        // SECURITY FIX: Add admin authentication
+        const v = this.verifyAdmin(req);
+        if (!v.ok) {
+          return res
+            .status(v.status || 401)
+            .json({ error: v.message || "Unauthorized" });
+        }
+        this.clearAdminFailures(this.getRealIP(req));
+
         const incidentsPath = path.join(
           __dirname,
           "..",
@@ -8634,6 +8643,15 @@ class DashboardServer {
     // PUT /api/admin/banner - Update banner configuration
     this.app.put("/api/admin/banner", async (req, res) => {
       try {
+        // SECURITY FIX: Add admin authentication
+        const v = this.verifyAdmin(req);
+        if (!v.ok) {
+          return res
+            .status(v.status || 401)
+            .json({ error: v.message || "Unauthorized" });
+        }
+        this.clearAdminFailures(this.getRealIP(req));
+
         const fs = require("fs").promises;
         const path = require("path");
         const bannerPath = path.join(__dirname, "../docs/banner.json");
