@@ -1092,7 +1092,7 @@ class DashboardServer {
         "secret",
         "password",
       ];
-      
+
       sensitiveHeaders.forEach((header) => {
         if (sanitizedHeaders[header]) {
           sanitizedHeaders[header] = "[REDACTED]";
@@ -3058,7 +3058,7 @@ class DashboardServer {
     this.app.post("/api/admin/auth", async (req, res) => {
       try {
         const ip = this.getRealIP(req);
-        
+
         // Check if IP is blocked
         const failedInfo = this.adminFailedAttempts.get(ip);
         if (
@@ -6181,6 +6181,15 @@ class DashboardServer {
     // GET /api/admin/ip-logs - View IP logs (admin only)
     this.app.get("/api/admin/ip-logs", async (req, res) => {
       try {
+        // SECURITY FIX: Add admin authentication
+        const v = this.verifyAdmin(req);
+        if (!v.ok) {
+          return res
+            .status(v.status || 401)
+            .json({ error: v.message || "Unauthorized" });
+        }
+        this.clearAdminFailures(this.getRealIP(req));
+
         const limit = Math.min(parseInt(req.query.limit) || 100, 1000);
         const logs = await db.getIPLogs(limit);
         res.json(logs);
@@ -6193,6 +6202,15 @@ class DashboardServer {
     // GET /api/admin/ip-stats - Get IP statistics
     this.app.get("/api/admin/ip-stats", async (req, res) => {
       try {
+        // SECURITY FIX: Add admin authentication
+        const v = this.verifyAdmin(req);
+        if (!v.ok) {
+          return res
+            .status(v.status || 401)
+            .json({ error: v.message || "Unauthorized" });
+        }
+        this.clearAdminFailures(this.getRealIP(req));
+
         const last24h = Date.now() - 24 * 60 * 60 * 1000;
         const last7d = Date.now() - 7 * 24 * 60 * 60 * 1000;
 
@@ -6230,6 +6248,15 @@ class DashboardServer {
     // GET /api/admin/command-analytics - Command usage analytics
     this.app.get("/api/admin/command-analytics", async (req, res) => {
       try {
+        // SECURITY FIX: Add admin authentication
+        const v = this.verifyAdmin(req);
+        if (!v.ok) {
+          return res
+            .status(v.status || 401)
+            .json({ error: v.message || "Unauthorized" });
+        }
+        this.clearAdminFailures(this.getRealIP(req));
+
         // Get time range (default 7 days)
         const timeRange = req.query.range || "7d";
         let since = Date.now();
@@ -6390,6 +6417,15 @@ class DashboardServer {
     // GET /api/admin/usage-patterns - Get usage patterns for maintenance planning (OWNER ONLY)
     this.app.get("/api/admin/usage-patterns", async (req, res) => {
       try {
+        // SECURITY FIX: Add admin authentication
+        const v = this.verifyAdmin(req);
+        if (!v.ok) {
+          return res
+            .status(v.status || 401)
+            .json({ error: v.message || "Unauthorized" });
+        }
+        this.clearAdminFailures(this.getRealIP(req));
+
         const UsageAnalyzer = require("../utils/usageAnalyzer");
         const days = parseInt(req.query.days) || 7;
 
@@ -6419,6 +6455,15 @@ class DashboardServer {
     // GET /api/admin/server-health - Get health scores for all servers
     this.app.get("/api/admin/server-health", async (req, res) => {
       try {
+        // SECURITY FIX: Add admin authentication
+        const v = this.verifyAdmin(req);
+        if (!v.ok) {
+          return res
+            .status(v.status || 401)
+            .json({ error: v.message || "Unauthorized" });
+        }
+        this.clearAdminFailures(this.getRealIP(req));
+
         const serverHealth = require("../utils/serverHealth");
         const healthData = await serverHealth.getAllServersHealth(this.client);
         res.json({ servers: healthData });
@@ -6431,6 +6476,15 @@ class DashboardServer {
     // GET /api/admin/server-health/:guildId - Get health for specific server
     this.app.get("/api/admin/server-health/:guildId", async (req, res) => {
       try {
+        // SECURITY FIX: Add admin authentication
+        const v = this.verifyAdmin(req);
+        if (!v.ok) {
+          return res
+            .status(v.status || 401)
+            .json({ error: v.message || "Unauthorized" });
+        }
+        this.clearAdminFailures(this.getRealIP(req));
+
         const serverHealth = require("../utils/serverHealth");
         const health = await serverHealth.calculateHealth(req.params.guildId);
         res.json(health);
@@ -6443,6 +6497,15 @@ class DashboardServer {
     // GET /api/admin/logs/search - Advanced log search with filters
     this.app.get("/api/admin/logs/search", async (req, res) => {
       try {
+        // SECURITY FIX: Add admin authentication
+        const v = this.verifyAdmin(req);
+        if (!v.ok) {
+          return res
+            .status(v.status || 401)
+            .json({ error: v.message || "Unauthorized" });
+        }
+        this.clearAdminFailures(this.getRealIP(req));
+
         const { user, action, type, range, page = 1 } = req.query;
         const limit = 50;
         const offset = (page - 1) * limit;
@@ -6589,6 +6652,15 @@ class DashboardServer {
     // GET /api/admin/invite-sources - List all invite sources
     this.app.get("/api/admin/invite-sources", async (req, res) => {
       try {
+        // SECURITY FIX: Add admin authentication
+        const v = this.verifyAdmin(req);
+        if (!v.ok) {
+          return res
+            .status(v.status || 401)
+            .json({ error: v.message || "Unauthorized" });
+        }
+        this.clearAdminFailures(this.getRealIP(req));
+
         const sources = await db.getAllInviteSources();
         res.json({ sources });
       } catch (error) {
@@ -6604,6 +6676,15 @@ class DashboardServer {
     // POST /api/admin/invite-sources - Create new invite source
     this.app.post("/api/admin/invite-sources", async (req, res) => {
       try {
+        // SECURITY FIX: Add admin authentication
+        const v = this.verifyAdmin(req);
+        if (!v.ok) {
+          return res
+            .status(v.status || 401)
+            .json({ error: v.message || "Unauthorized" });
+        }
+        this.clearAdminFailures(this.getRealIP(req));
+
         const { source, description } = req.body;
 
         if (!source) {
@@ -6629,6 +6710,15 @@ class DashboardServer {
     // DELETE /api/admin/invite-sources/:source - Delete invite source
     this.app.delete("/api/admin/invite-sources/:source", async (req, res) => {
       try {
+        // SECURITY FIX: Add admin authentication
+        const v = this.verifyAdmin(req);
+        if (!v.ok) {
+          return res
+            .status(v.status || 401)
+            .json({ error: v.message || "Unauthorized" });
+        }
+        this.clearAdminFailures(this.getRealIP(req));
+
         const { source } = req.params;
         await db.deleteInviteSource(source);
         res.json({ success: true });
@@ -6645,6 +6735,15 @@ class DashboardServer {
     // GET /api/admin/invite-stats - Get invite source statistics
     this.app.get("/api/admin/invite-stats", async (req, res) => {
       try {
+        // SECURITY FIX: Add admin authentication
+        const v = this.verifyAdmin(req);
+        if (!v.ok) {
+          return res
+            .status(v.status || 401)
+            .json({ error: v.message || "Unauthorized" });
+        }
+        this.clearAdminFailures(this.getRealIP(req));
+
         const stats = await db.getInviteSourceStats();
         res.json({ stats });
       } catch (error) {
@@ -8511,6 +8610,15 @@ class DashboardServer {
     // GET /api/admin/banner - Get current banner configuration
     this.app.get("/api/admin/banner", async (req, res) => {
       try {
+        // SECURITY FIX: Add admin authentication
+        const v = this.verifyAdmin(req);
+        if (!v.ok) {
+          return res
+            .status(v.status || 401)
+            .json({ error: v.message || "Unauthorized" });
+        }
+        this.clearAdminFailures(this.getRealIP(req));
+
         const fs = require("fs").promises;
         const path = require("path");
         const bannerPath = path.join(__dirname, "../docs/banner.json");
