@@ -275,37 +275,58 @@ function sanitizeResponse(response, messageObj) {
   // Safe variable replacements (no code execution)
   if (messageObj && typeof messageObj === "object") {
     // Replace {user} with user mention
-    processed = processed.replace(/{user}/g, `<@${messageObj.author?.id || ""}>`);
-    
+    processed = processed.replace(
+      /{user}/g,
+      `<@${messageObj.author?.id || ""}>`
+    );
+
     // Replace {user.tag} with user tag
-    processed = processed.replace(/{user\.tag}/g, messageObj.author?.tag || "Unknown");
-    
+    processed = processed.replace(
+      /{user\.tag}/g,
+      messageObj.author?.tag || "Unknown"
+    );
+
     // Replace {user.id} with user ID
     processed = processed.replace(/{user\.id}/g, messageObj.author?.id || "");
-    
+
     // Replace {user.name} with username
-    processed = processed.replace(/{user\.name}/g, messageObj.author?.username || "Unknown");
-    
+    processed = processed.replace(
+      /{user\.name}/g,
+      messageObj.author?.username || "Unknown"
+    );
+
     // Replace {guild} with guild name
-    processed = processed.replace(/{guild}/g, messageObj.guild?.name || "Unknown Server");
-    
+    processed = processed.replace(
+      /{guild}/g,
+      messageObj.guild?.name || "Unknown Server"
+    );
+
     // Replace {guild.id} with guild ID
     processed = processed.replace(/{guild\.id}/g, messageObj.guild?.id || "");
-    
+
     // Replace {member} with member display name
     processed = processed.replace(
       /{member}/g,
       messageObj.member?.displayName || messageObj.author?.username || "Unknown"
     );
-    
+
     // Replace {channel} with channel mention
-    processed = processed.replace(/{channel}/g, `<#${messageObj.channel?.id || ""}>`);
-    
+    processed = processed.replace(
+      /{channel}/g,
+      `<#${messageObj.channel?.id || ""}>`
+    );
+
     // Replace {channel.name} with channel name
-    processed = processed.replace(/{channel\.name}/g, messageObj.channel?.name || "Unknown");
-    
+    processed = processed.replace(
+      /{channel\.name}/g,
+      messageObj.channel?.name || "Unknown"
+    );
+
     // Replace {membercount} with member count
-    processed = processed.replace(/{membercount}/g, String(messageObj.guild?.memberCount || 0));
+    processed = processed.replace(
+      /{membercount}/g,
+      String(messageObj.guild?.memberCount || 0)
+    );
   }
 
   // Remove any remaining ${...} patterns (security: prevent any code execution attempts)

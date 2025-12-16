@@ -2433,9 +2433,10 @@ async function loadSecurityLogs() {
             (log) => `
           <div class="log-row">
             <div>${sanitizeForHtml(new Date(log.timestamp).toLocaleString())}</div>
-            <div><span class="threat-badge threat-${
-              sanitizeForHtml(log.threat_type || "unknown", 50)
-            }">${sanitizeForHtml(log.event_type || "", 100)}</span></div>
+            <div><span class="threat-badge threat-${sanitizeForHtml(
+              log.threat_type || "unknown",
+              50
+            )}">${sanitizeForHtml(log.event_type || "", 100)}</span></div>
             <div><code>${sanitizeForHtml(log.user_id || "N/A", 50)}</code></div>
             <div><span class="score-badge score-${
               log.threat_score >= 70
@@ -2579,12 +2580,14 @@ function displayMessageLogs(logs) {
         .map((log) => {
           const meta = log.metadata || {};
           const typeIcon = typeIcons[log.log_type] || "💬";
-          const typeLabel = sanitizeForHtml(typeLabels[log.log_type] || log.log_type);
+          const typeLabel = sanitizeForHtml(
+            typeLabels[log.log_type] || log.log_type
+          );
 
           let contentPreview = "";
           if (log.log_type === "message_update") {
             contentPreview = meta.oldContent
-              ? `<strong>Old:</strong> ${sanitizeForHtml(meta.oldContent.substring(0, 50))}...<br><strong>New:</strong> ${sanitizeForHtml((meta.newContent?.substring(0, 50) || ""))}...`
+              ? `<strong>Old:</strong> ${sanitizeForHtml(meta.oldContent.substring(0, 50))}...<br><strong>New:</strong> ${sanitizeForHtml(meta.newContent?.substring(0, 50) || "")}...`
               : sanitizeForHtml(meta.newContent?.substring(0, 100) || "");
           } else if (log.log_type === "message_purge") {
             contentPreview = `Purged ${sanitizeForHtml(String(meta.amount || 0))} message(s)`;

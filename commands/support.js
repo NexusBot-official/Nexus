@@ -80,7 +80,9 @@ module.exports = {
 
     const inviteButton = new ButtonBuilder()
       .setLabel("Invite Bot")
-      .setURL(`https://nexusbot-official.github.io/Nexus/invite.html?source=discord-bot`)
+      .setURL(
+        `https://nexusbot-official.github.io/Nexus/invite.html?source=discord-bot`
+      )
       .setStyle(ButtonStyle.Link);
 
     const dashboardButton = new ButtonBuilder()

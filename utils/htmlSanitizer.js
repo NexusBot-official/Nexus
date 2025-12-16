@@ -58,7 +58,10 @@ function sanitizeForHtml(str, options = {}) {
 
   // Remove control characters except newlines if allowed
   if (allowLineBreaks) {
-    sanitized = sanitized.replace(/[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F-\x9F]/g, "");
+    sanitized = sanitized.replace(
+      /[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F-\x9F]/g,
+      ""
+    );
   } else {
     sanitized = sanitized.replace(/[\x00-\x1F\x7F-\x9F]/g, "");
   }
@@ -106,10 +109,8 @@ function sanitizeObjectForHtml(obj, maxDepth = 3) {
     const sanitized = {};
     for (const key in obj) {
       if (Object.prototype.hasOwnProperty.call(obj, key)) {
-        sanitized[sanitizeForHtml(key, { maxLength: 100 })] = sanitizeObjectForHtml(
-          obj[key],
-          maxDepth - 1
-        );
+        sanitized[sanitizeForHtml(key, { maxLength: 100 })] =
+          sanitizeObjectForHtml(obj[key], maxDepth - 1);
       }
     }
     return sanitized;
@@ -124,4 +125,3 @@ module.exports = {
   sanitizeForHtml,
   sanitizeObjectForHtml,
 };
-

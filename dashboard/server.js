@@ -319,7 +319,10 @@ class DashboardServer {
       ) {
         res.header("Access-Control-Allow-Origin", origin);
       } else {
-        res.header("Access-Control-Allow-Origin", "https://nexusbot-official.github.io");
+        res.header(
+          "Access-Control-Allow-Origin",
+          "https://nexusbot-official.github.io"
+        );
       }
 
       res.header(

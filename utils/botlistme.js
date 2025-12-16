@@ -43,7 +43,7 @@ class BotListMe {
       // Set up automatic stats posting interval
       // botlist.me.js doesn't have startPosting(), so we use setInterval
       const postInterval = 30 * 60 * 1000; // Post every 30 minutes (same as VoidBots)
-      
+
       // Don't post immediately - wait 3 minutes to respect rate limit
       // This prevents double-posting on startup
       const minPostInterval = 3 * 60 * 1000;
