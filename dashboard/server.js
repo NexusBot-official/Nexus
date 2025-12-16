@@ -1686,6 +1686,17 @@ class DashboardServer {
       this.checkAuth,
       async (req, res) => {
         try {
+          // SECURITY FIX: Verify user has permission to access this guild
+          const userGuilds = req.user?.guilds || [];
+          const hasAccess = userGuilds.some(
+            (g) => g.id === req.params.id && (g.permissions & 0x8) === 0x8 // ADMINISTRATOR permission
+          );
+
+          if (!hasAccess) {
+            logger.warn("Dashboard", `Unauthorized antiraid access attempt to guild ${req.params.id} by user ${req.user?.id}`);
+            return res.status(403).json({ error: "Access denied. You don't have permission to access this server." });
+          }
+
           const logs = await new Promise((resolve, reject) => {
             db.db.all(
               "SELECT COUNT(*) as total FROM anti_raid_logs WHERE guild_id = ?",
@@ -2761,6 +2772,17 @@ class DashboardServer {
       this.checkAuth,
       async (req, res) => {
         try {
+          // SECURITY FIX: Verify user has permission to access this guild
+          const userGuilds = req.user?.guilds || [];
+          const hasAccess = userGuilds.some(
+            (g) => g.id === req.params.id && (g.permissions & 0x8) === 0x8 // ADMINISTRATOR permission
+          );
+
+          if (!hasAccess) {
+            logger.warn("Dashboard", `Unauthorized message-logs access attempt to guild ${req.params.id} by user ${req.user?.id}`);
+            return res.status(403).json({ error: "Access denied. You don't have permission to access this server." });
+          }
+
           const guildId = req.params.id;
           const { type, limit = 100, offset = 0 } = req.query;
 
@@ -2912,6 +2934,17 @@ class DashboardServer {
             return res.status(404).json({ error: "Server not found" });
           }
 
+          // SECURITY FIX: Verify user has permission to access this guild
+          const userGuilds = req.user?.guilds || [];
+          const hasAccess = userGuilds.some(
+            (g) => g.id === req.params.id && (g.permissions & 0x8) === 0x8 // ADMINISTRATOR permission
+          );
+
+          if (!hasAccess) {
+            logger.warn("Dashboard", `Unauthorized automod delete attempt to guild ${req.params.id} by user ${req.user?.id}`);
+            return res.status(403).json({ error: "Access denied. You don't have permission to modify this server." });
+          }
+
           await DiscordAutoMod.deleteRule(guild, req.params.ruleId);
           res.json({ success: true });
         } catch (error) {
@@ -2929,6 +2962,17 @@ class DashboardServer {
           const guild = this.client.guilds.cache.get(req.params.id);
           if (!guild) {
             return res.status(404).json({ error: "Server not found" });
+          }
+
+          // SECURITY FIX: Verify user has permission to access this guild
+          const userGuilds = req.user?.guilds || [];
+          const hasAccess = userGuilds.some(
+            (g) => g.id === req.params.id && (g.permissions & 0x8) === 0x8 // ADMINISTRATOR permission
+          );
+
+          if (!hasAccess) {
+            logger.warn("Dashboard", `Unauthorized automod toggle attempt to guild ${req.params.id} by user ${req.user?.id}`);
+            return res.status(403).json({ error: "Access denied. You don't have permission to modify this server." });
           }
 
           const { enabled } = req.body;
@@ -3028,6 +3072,17 @@ class DashboardServer {
       this.checkAuth,
       async (req, res) => {
         try {
+          // SECURITY FIX: Verify user has permission to access this guild
+          const userGuilds = req.user?.guilds || [];
+          const hasAccess = userGuilds.some(
+            (g) => g.id === req.params.id && (g.permissions & 0x8) === 0x8 // ADMINISTRATOR permission
+          );
+
+          if (!hasAccess) {
+            logger.warn("Dashboard", `Unauthorized joingate access attempt to guild ${req.params.id} by user ${req.user?.id}`);
+            return res.status(403).json({ error: "Access denied. You don't have permission to access this server." });
+          }
+
           const config = await JoinGate.getConfig(req.params.id);
           res.json(config || { enabled: false });
         } catch (error) {
@@ -3042,6 +3097,17 @@ class DashboardServer {
       this.checkAuth,
       async (req, res) => {
         try {
+          // SECURITY FIX: Verify user has permission to access this guild
+          const userGuilds = req.user?.guilds || [];
+          const hasAccess = userGuilds.some(
+            (g) => g.id === req.params.id && (g.permissions & 0x8) === 0x8 // ADMINISTRATOR permission
+          );
+
+          if (!hasAccess) {
+            logger.warn("Dashboard", `Unauthorized joingate update attempt to guild ${req.params.id} by user ${req.user?.id}`);
+            return res.status(403).json({ error: "Access denied. You don't have permission to modify this server." });
+          }
+
           await JoinGate.setConfig(req.params.id, req.body);
           const updated = await JoinGate.getConfig(req.params.id);
           res.json(updated);
