@@ -17,7 +17,8 @@ backups/*.db
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-package-lock.json
+# package-lock.json - Keep this in git for consistency
+# package-lock.json
 desktop.ini
 Thumbs.db
 readmes/

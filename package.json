@@ -1,0 +1,43 @@
+{
+  "name": "nexus-bot",
+  "version": "2.0.0",
+  "description": "Nexus Bot - Advanced Discord Security Bot",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
+    "shard": "node shard.js",
+    "cluster": "node cluster.js",
+    "test": "jest",
+    "register": "node utils/registerCommands.js"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "security",
+    "moderation",
+    "nexus"
+  ],
+  "author": "NexusBot-official",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "passport": "^0.7.0",
+    "passport-discord": "^0.1.4",
+    "sqlite3": "^5.1.6",
+    "node-cron": "^3.0.3",
+    "compression": "^1.7.4",
+    "topgg-autoposter": "^2.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}
+
