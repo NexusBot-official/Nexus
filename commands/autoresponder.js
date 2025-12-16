@@ -36,7 +36,7 @@ module.exports = {
           option
             .setName("response")
             .setDescription(
-              "Response message (supports variables: {user}, {user.tag}, {user.id}, {user.name}, {guild}, {guild.id}, {member}, {channel}, {channel.name}, {membercount})"
+              "Response message (vars: {user}, {user.tag}, {guild}, {member}, {channel}, {membercount})"
             )
             .setRequired(true)
         )
