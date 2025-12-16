@@ -2878,6 +2878,17 @@ class DashboardServer {
             return res.status(404).json({ error: "Server not found" });
           }
 
+          // SECURITY FIX: Verify user has permission to access this guild
+          const userGuilds = req.user?.guilds || [];
+          const hasAccess = userGuilds.some(
+            (g) => g.id === req.params.id && (g.permissions & 0x8) === 0x8 // ADMINISTRATOR permission
+          );
+
+          if (!hasAccess) {
+            logger.warn("Dashboard", `Unauthorized automod update attempt to guild ${req.params.id} by user ${req.user?.id}`);
+            return res.status(403).json({ error: "Access denied. You don't have permission to modify this server." });
+          }
+
           const rule = await DiscordAutoMod.editRule(
             guild,
             req.params.ruleId,
