@@ -65,7 +65,7 @@ module.exports = {
         .setStyle(ButtonStyle.Link),
       new ButtonBuilder()
         .setLabel("GitHub")
-        .setURL("https://github.com/Azzraya/Nexus")
+        .setURL("https://github.com/NexusBot-official/Nexus")
         .setStyle(ButtonStyle.Link)
     );
 
