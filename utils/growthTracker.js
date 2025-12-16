@@ -386,6 +386,80 @@ class GrowthTracker {
       );
     });
   }
+
+  // Get detailed growth statistics
+  async getGrowthStats(days = 30) {
+    const daysAgo = Date.now() - days * 24 * 60 * 60 * 1000;
+
+    return new Promise((resolve, reject) => {
+      db.db.all(
+        `SELECT 
+          COUNT(CASE WHEN metric_type = 'server_add' THEN 1 END) as servers_added,
+          COUNT(CASE WHEN metric_type = 'server_remove' THEN 1 END) as servers_removed,
+          COUNT(CASE WHEN metric_type = 'command_used' THEN 1 END) as commands_run
+         FROM growth_metrics 
+         WHERE timestamp >= ?`,
+        [daysAgo],
+        (err, rows) => {
+          if (err) {
+            reject(err);
+          } else {
+            const stats = rows[0] || {
+              servers_added: 0,
+              servers_removed: 0,
+              commands_run: 0,
+            };
+            stats.net_growth = stats.servers_added - stats.servers_removed;
+            stats.growth_rate_per_day =
+              days > 0 ? (stats.net_growth / days).toFixed(2) : 0;
+            resolve(stats);
+          }
+        }
+      );
+    });
+  }
+
+  // Get growth timeline (daily breakdown)
+  async getGrowthTimeline(days = 30) {
+    const daysAgo = Date.now() - days * 24 * 60 * 60 * 1000;
+
+    return new Promise((resolve, reject) => {
+      db.db.all(
+        `SELECT 
+          DATE(timestamp/1000, 'unixepoch') as date,
+          COUNT(CASE WHEN metric_type = 'server_add' THEN 1 END) as joins,
+          COUNT(CASE WHEN metric_type = 'server_remove' THEN 1 END) as leaves
+         FROM growth_metrics 
+         WHERE timestamp >= ?
+         GROUP BY date
+         ORDER BY date ASC`,
+        [daysAgo],
+        (err, rows) => {
+          if (err) {
+            reject(err);
+          } else {
+            const timeline = (rows || []).map((row) => ({
+              date: row.date,
+              joins: row.joins || 0,
+              leaves: row.leaves || 0,
+              net: (row.joins || 0) - (row.leaves || 0),
+            }));
+            resolve(timeline);
+          }
+        }
+      );
+    });
+  }
+
+  // Get current growth rate (servers per day)
+  async getCurrentGrowthRate(days = 7) {
+    const stats = await this.getGrowthStats(days);
+    return {
+      serversPerDay: parseFloat(stats.growth_rate_per_day) || 0,
+      netGrowth: stats.net_growth || 0,
+      period: `${days} days`,
+    };
+  }
 }
 
 module.exports = new GrowthTracker();
