@@ -426,7 +426,17 @@ class BackupManager {
     let restored = 0;
 
     try {
-      for (const roleData of backupRoles) {
+      // Sort roles by position (highest first, as Discord positions work)
+      const sortedRoles = [...backupRoles].sort((a, b) => {
+        const posA = a.position || 0;
+        const posB = b.position || 0;
+        return posB - posA; // Higher position first
+      });
+
+      const createdRoles = []; // Store created roles with their target positions
+
+      // First pass: Create all missing roles
+      for (const roleData of sortedRoles) {
         // Check if role already exists by name
         const existing = guild.roles.cache.find(
           (r) => r.name === roleData.name
@@ -450,7 +460,11 @@ class BackupManager {
             reason: "Restored from backup",
           };
 
-          await guild.roles.create(roleOptions);
+          const newRole = await guild.roles.create(roleOptions);
+          createdRoles.push({
+            role: newRole,
+            targetPosition: roleData.position || 0,
+          });
           restored++;
         } catch (err) {
           logger.error(
@@ -458,6 +472,40 @@ class BackupManager {
             `Failed to restore role ${roleData.name}`,
             err
           );
+        }
+      }
+
+      // Second pass: Set positions (process in batches to avoid rate limits)
+      if (createdRoles.length > 0) {
+        const positionBatches = [];
+        for (let i = 0; i < createdRoles.length; i += 3) {
+          positionBatches.push(createdRoles.slice(i, i + 3));
+        }
+
+        for (const batch of positionBatches) {
+          await Promise.all(
+            batch.map(async ({ role, targetPosition }) => {
+              try {
+                // Set position (Discord positions are 0-based, higher = more important)
+                // We need to account for @everyone role (position 0) and bot role
+                await role.setPosition(targetPosition, {
+                  reason: "Restored from backup - setting position",
+                });
+              } catch (posErr) {
+                // Position setting can fail if target position is invalid
+                // (e.g., trying to set above bot's highest role)
+                logger.debug(
+                  "BackupManager",
+                  `Could not set position ${targetPosition} for role ${role.name}:`,
+                  posErr.message
+                );
+              }
+            })
+          );
+          // Small delay between batches
+          if (positionBatches.indexOf(batch) < positionBatches.length - 1) {
+            await new Promise((resolve) => setTimeout(resolve, 200));
+          }
         }
       }
     } catch (error) {
