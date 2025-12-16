@@ -552,7 +552,7 @@ module.exports = {
             {
               name: "💬 Need Help?",
               value:
-                "Join our support server: https://discord.gg/warmA4BsPP\nOr check docs: https://azzraya.github.io/Nexus/docs.html",
+                "Join our support server: https://discord.gg/warmA4BsPP\nOr check docs: https://nexusbot-official.github.io/Nexus/docs.html",
               inline: false,
             }
           )

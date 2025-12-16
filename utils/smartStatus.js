@@ -28,7 +28,7 @@ class SmartStatus {
       },
       {
         type: "PLAYING",
-        name: `azzraya.github.io/Nexus | v${version}`,
+        name: `nexusbot-official.github.io/Nexus | v${version}`,
       },
       {
         type: "WATCHING",
@@ -49,7 +49,7 @@ class SmartStatus {
       {
         type: "STREAMING",
         name: `${serverCount} servers | Join us!`,
-        url: "https://azzraya.github.io/Nexus",
+        url: "https://nexusbot-official.github.io/Nexus",
       },
     ];
   }

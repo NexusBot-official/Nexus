@@ -141,7 +141,7 @@ module.exports = {
         new ButtonBuilder()
           .setLabel("🌐 Website")
           .setStyle(ButtonStyle.Link)
-          .setURL("https://azzraya.github.io/Nexus/")
+          .setURL("https://nexusbot-official.github.io/Nexus/")
       );
 
       // Check if this is a button interaction (update) or command (reply)

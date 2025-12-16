@@ -30,7 +30,7 @@ The following are trademarks and service marks of the Nexus Bot project:
 
 ### Protected URLs and Services
 
-- `azzraya.github.io/Nexus`
+- `nexusbot-official.github.io/Nexus`
 - Official Discord server invite links
 - Official support server
 - Official bot invite URLs

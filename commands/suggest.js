@@ -140,7 +140,7 @@ module.exports = {
         new ButtonBuilder()
           .setLabel("View All Suggestions")
           .setStyle(ButtonStyle.Link)
-          .setURL("https://azzraya.github.io/Nexus/vote-features.html")
+          .setURL("https://nexusbot-official.github.io/Nexus/vote-features.html")
       );
 
       await modalInteraction.reply({

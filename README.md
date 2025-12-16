@@ -11,7 +11,7 @@
 
 **Everything Wick does, Nexus does better. 100% FREE.**
 
-[🚀 Invite to Discord](https://azzraya.github.io/Nexus/invite.html?source=github) • [⚔️ Compare vs Wick](https://azzraya.github.io/Nexus/comparison.html) • [📚 Documentation](https://azzraya.github.io/Nexus/docs.html)
+[🚀 Invite to Discord](https://nexusbot-official.github.io/Nexus/invite.html?source=github) • [⚔️ Compare vs Wick](https://nexusbot-official.github.io/Nexus/comparison.html) • [📚 Documentation](https://nexusbot-official.github.io/Nexus/docs.html)
 
 </div>
 
@@ -38,7 +38,7 @@ Nexus is an **open-source Discord security bot** that matches everything Wick of
 | **🔧 Workflows**           | ❌ None             | ✅ Custom automation                |
 | **💾 Backups**             | Manual              | ✅ Hourly auto-snapshots            |
 
-**→ [See Full Comparison](https://azzraya.github.io/Nexus/comparison.html)**
+**→ [See Full Comparison](https://nexusbot-official.github.io/Nexus/comparison.html)**
 
 ---
 
@@ -85,7 +85,7 @@ Nexus is an **open-source Discord security bot** that matches everything Wick of
 
 ```bash
 # 1. Invite Nexus to your Discord server
-https://azzraya.github.io/Nexus/invite.html?source=githubreadme
+https://nexusbot-official.github.io/Nexus/invite.html?source=githubreadme
 # 2. Run setup command in Discord
 /setup preset
 
@@ -117,7 +117,7 @@ https://azzraya.github.io/Nexus/invite.html?source=githubreadme
 
 `/level` `/leaderboard` `/giveaway` `/reactionrole` `/customcommand` `/autorole` `/vote` `/voterewards` `/refer` `/share`
 
-**→ [Full Command List](https://azzraya.github.io/Nexus/commands.html)**
+**→ [Full Command List](https://nexusbot-official.github.io/Nexus/commands.html)**
 
 ## 📈 Stats
 
@@ -151,10 +151,10 @@ Nexus is **open source** and **community-driven**.
 
 ## 🔗 Links
 
-- 🌐 **Website:** https://azzraya.github.io/Nexus/
-- 📚 **Full Documentation:** https://azzraya.github.io/Nexus/docs.html
-- ⚔️ **Nexus vs Wick Comparison:** https://azzraya.github.io/Nexus/comparison.html
-- 📊 **API Documentation:** https://azzraya.github.io/Nexus/api.html
+- 🌐 **Website:** https://nexusbot-official.github.io/Nexus/
+- 📚 **Full Documentation:** https://nexusbot-official.github.io/Nexus/docs.html
+- ⚔️ **Nexus vs Wick Comparison:** https://nexusbot-official.github.io/Nexus/comparison.html
+- 📊 **API Documentation:** https://nexusbot-official.github.io/Nexus/api.html
 - 💬 **Support Server:** https://discord.gg/warmA4BsPP
 - 🗳️ **Vote on Top.gg:** https://top.gg/bot/1444739230679957646
 
@@ -195,7 +195,7 @@ This project is licensed under the **MIT License** with additional branding rest
 
 ## 🚀 Ready to Exceed Wick?
 
-### [**Invite Nexus Free**](https://azzraya.github.io/Nexus/invite.html?source=github)
+### [**Invite Nexus Free**](https://nexusbot-official.github.io/Nexus/invite.html?source=github)
 
 **No credit card. No premium tiers. No catch.**
 
