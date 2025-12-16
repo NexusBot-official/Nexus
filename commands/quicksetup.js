@@ -32,7 +32,7 @@ module.exports = {
       )
       .setColor(0x667eea)
       .setFooter({
-        text: "Need help? discord.gg/warmA4BsPP | You can change settings later",
+        text: "Need help? discord.gg/BE9jPs7Byd | You can change settings later",
       });
 
     const buttons = new ActionRowBuilder().addComponents(
@@ -278,7 +278,7 @@ module.exports = {
               )
               .setColor(0x00ff88)
               .setFooter({
-                text: "Need help? discord.gg/warmA4BsPP | Thank you for choosing Nexus!",
+                text: "Need help? discord.gg/BE9jPs7Byd | Thank you for choosing Nexus!",
               }),
           ],
           components: [],

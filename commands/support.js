@@ -40,7 +40,7 @@ module.exports = {
           name: "🔗 Quick Links",
           value: [
             "• [Official Website](https://nexusbot-official.github.io/Nexus/)",
-            "• [Support Server](https://discord.gg/warmA4BsPP)",
+            "• [Support Server](https://discord.gg/BE9jPs7Byd)",
             "• [GitHub Repository](https://github.com/NexusBot-official/Nexus)",
             "• [Privacy Policy](https://github.com/NexusBot-official/Nexus/blob/main/PRIVACY_POLICY.md)",
             "• [Terms of Service](https://github.com/NexusBot-official/Nexus/blob/main/TERMS_OF_SERVICE.md)",
@@ -70,7 +70,7 @@ module.exports = {
 
     const supportButton = new ButtonBuilder()
       .setLabel("Support Server")
-      .setURL("https://discord.gg/warmA4BsPP")
+      .setURL("https://discord.gg/BE9jPs7Byd")
       .setStyle(ButtonStyle.Link);
 
     const githubButton = new ButtonBuilder()

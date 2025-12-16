@@ -61,7 +61,7 @@ module.exports = {
         .setStyle(ButtonStyle.Link),
       new ButtonBuilder()
         .setLabel("Support Server")
-        .setURL("https://discord.gg/warmA4BsPP")
+        .setURL("https://discord.gg/BE9jPs7Byd")
         .setStyle(ButtonStyle.Link),
       new ButtonBuilder()
         .setLabel("GitHub")

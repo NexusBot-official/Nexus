@@ -166,8 +166,8 @@ module.exports = {
     // Set bot status
     client.user.setActivity(
       shardInfo.isSharded
-        ? `${client.guilds.cache.size} servers | discord.gg/warmA4BsPP | /help`
-        : "discord.gg/warmA4BsPP | /help",
+        ? `${client.guilds.cache.size} servers | discord.gg/BE9jPs7Byd | /help`
+        : "discord.gg/BE9jPs7Byd | /help",
       {
         type: ActivityType.Watching,
       }
