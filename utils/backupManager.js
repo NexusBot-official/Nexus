@@ -565,6 +565,17 @@ class BackupManager {
         );
         if (existing) {
           categoryMap.set(categoryData.id, existing.id);
+          // Restore permissions for existing category if they exist
+          if (
+            categoryData.permissions &&
+            Array.isArray(categoryData.permissions) &&
+            categoryData.permissions.length > 0
+          ) {
+            await this.restoreChannelPermissions(
+              existing,
+              categoryData.permissions
+            );
+          }
           continue;
         }
 
@@ -576,6 +587,19 @@ class BackupManager {
             reason: "Restored from backup",
           });
           categoryMap.set(categoryData.id, category.id);
+
+          // Restore permissions for category
+          if (
+            categoryData.permissions &&
+            Array.isArray(categoryData.permissions) &&
+            categoryData.permissions.length > 0
+          ) {
+            await this.restoreChannelPermissions(
+              category,
+              categoryData.permissions
+            );
+          }
+
           restored++;
         } catch (err) {
           logger.error(
