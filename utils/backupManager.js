@@ -124,6 +124,13 @@ class BackupManager {
           topic: channel.topic || null,
           nsfw: channel.nsfw || false,
           rateLimitPerUser: channel.rateLimitPerUser || 0,
+          permissions:
+            channel.permissionOverwrites?.cache?.map((overwrite) => ({
+              id: overwrite.id,
+              type: overwrite.type,
+              allow: overwrite.allow.toArray(),
+              deny: overwrite.deny.toArray(),
+            })) || [],
         });
       }
 
@@ -461,6 +468,80 @@ class BackupManager {
   }
 
   /**
+   * Restore channel permissions from backup data
+   */
+  async restoreChannelPermissions(channel, permissions) {
+    if (
+      !permissions ||
+      !Array.isArray(permissions) ||
+      permissions.length === 0
+    ) {
+      return;
+    }
+
+    try {
+      const { PermissionFlagsBits } = require("discord.js");
+
+      // Process permissions in batches to avoid rate limits
+      const permBatches = [];
+      for (let i = 0; i < permissions.length; i += 5) {
+        permBatches.push(permissions.slice(i, i + 5));
+      }
+
+      for (const permBatch of permBatches) {
+        await Promise.all(
+          permBatch.map(async (perm) => {
+            try {
+              // Convert permission arrays to PermissionFlagsBits
+              let allowBits = 0n;
+              if (Array.isArray(perm.allow)) {
+                for (const permName of perm.allow) {
+                  const permValue = PermissionFlagsBits[permName];
+                  if (permValue !== undefined) {
+                    allowBits |= BigInt(permValue);
+                  }
+                }
+              }
+
+              let denyBits = 0n;
+              if (Array.isArray(perm.deny)) {
+                for (const permName of perm.deny) {
+                  const permValue = PermissionFlagsBits[permName];
+                  if (permValue !== undefined) {
+                    denyBits |= BigInt(permValue);
+                  }
+                }
+              }
+
+              await channel.permissionOverwrites.edit(perm.id, {
+                allow: allowBits,
+                deny: denyBits,
+              });
+            } catch (permErr) {
+              // Skip invalid permissions (e.g., deleted roles/users)
+              logger.debug(
+                "BackupManager",
+                `Failed to restore permission for ${perm.id} in channel ${channel.name}:`,
+                permErr.message
+              );
+            }
+          })
+        );
+        // Small delay between batches
+        if (permBatches.indexOf(permBatch) < permBatches.length - 1) {
+          await new Promise((resolve) => setTimeout(resolve, 100));
+        }
+      }
+    } catch (err) {
+      logger.warn(
+        "BackupManager",
+        `Failed to restore permissions for channel ${channel.name}:`,
+        err.message
+      );
+    }
+  }
+
+  /**
    * Restore channels (only creates missing channels, doesn't delete existing)
    */
   async restoreChannels(guild, backupChannels) {
@@ -541,7 +622,20 @@ class BackupManager {
             }
           }
 
-          await guild.channels.create(channelOptions);
+          const newChannel = await guild.channels.create(channelOptions);
+
+          // Restore channel permissions if they exist
+          if (
+            channelData.permissions &&
+            Array.isArray(channelData.permissions) &&
+            channelData.permissions.length > 0
+          ) {
+            await this.restoreChannelPermissions(
+              newChannel,
+              channelData.permissions
+            );
+          }
+
           restored++;
         } catch (err) {
           logger.error(
