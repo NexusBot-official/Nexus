@@ -41,9 +41,9 @@ module.exports = {
           value: [
             "• [Official Website](https://nexusbot-official.github.io/Nexus/)",
             "• [Support Server](https://discord.gg/warmA4BsPP)",
-            "• [GitHub Repository](https://github.com/Azzraya/Nexus)",
-            "• [Privacy Policy](https://github.com/Azzraya/Nexus/blob/main/PRIVACY_POLICY.md)",
-            "• [Terms of Service](https://github.com/Azzraya/Nexus/blob/main/TERMS_OF_SERVICE.md)",
+            "• [GitHub Repository](https://github.com/NexusBot-official/Nexus)",
+            "• [Privacy Policy](https://github.com/NexusBot-official/Nexus/blob/main/PRIVACY_POLICY.md)",
+            "• [Terms of Service](https://github.com/NexusBot-official/Nexus/blob/main/TERMS_OF_SERVICE.md)",
           ].join("\n"),
           inline: false,
         },
@@ -75,7 +75,7 @@ module.exports = {
 
     const githubButton = new ButtonBuilder()
       .setLabel("GitHub")
-      .setURL("https://github.com/Azzraya/Nexus")
+      .setURL("https://github.com/NexusBot-official/Nexus")
       .setStyle(ButtonStyle.Link);
 
     const inviteButton = new ButtonBuilder()
