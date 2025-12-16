@@ -50,10 +50,76 @@ module.exports = {
       `Joined new server: ${sanitizedName} (${guild.id})`
     );
 
-    // Track invite source if present
+    // Track invite source if present - DO THIS FIRST before tracking
     let inviteSource = "direct"; // default
 
-    // Track with growth tracker
+    try {
+      // Check if we have a tracked source for this user (guild owner)
+      const owner = await guild.fetchOwner().catch(() => null);
+      if (owner) {
+        // Query database for any pending invite tracking for this user
+        const trackedSource = await new Promise((resolve) => {
+          db.db.get(
+            "SELECT source FROM pending_invite_sources WHERE user_id = ? ORDER BY timestamp DESC LIMIT 1",
+            [owner.id],
+            (err, row) => {
+              if (err || !row) {
+                resolve(null);
+              } else {
+                resolve(row.source);
+              }
+            }
+          );
+        });
+
+        if (trackedSource) {
+          inviteSource = trackedSource;
+          // Clean up the pending tracking
+          db.db.run("DELETE FROM pending_invite_sources WHERE user_id = ?", [
+            owner.id,
+          ]);
+          logger.info(
+            "Guild Create",
+            `Found tracked invite source: ${inviteSource} for owner ${owner.id}`
+          );
+        } else {
+          // Fallback: Check for anonymous clicks by IP address (within last 24 hours)
+          // Note: We can't get the owner's IP directly, but we can check recent anonymous clicks
+          // This is a best-effort fallback for when users click invite but don't authenticate
+          const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
+          const anonymousSource = await new Promise((resolve) => {
+            db.db.get(
+              "SELECT source FROM pending_invite_sources WHERE user_id = 'anonymous' AND timestamp > ? ORDER BY timestamp DESC LIMIT 1",
+              [oneDayAgo],
+              (err, row) => {
+                if (err || !row) {
+                  resolve(null);
+                } else {
+                  resolve(row.source);
+                }
+              }
+            );
+          });
+
+          if (anonymousSource) {
+            inviteSource = anonymousSource;
+            logger.info(
+              "Guild Create",
+              `Matched invite source by anonymous click: ${anonymousSource}`
+            );
+          }
+        }
+      }
+    } catch (error) {
+      logger.error("Guild Create", "Failed to lookup invite source", {
+        message: error?.message || String(error),
+        stack: error?.stack,
+        name: error?.name,
+      });
+      // Continue with "direct" as fallback
+    }
+
+    // Now track with the correct source (or "direct" if none found)
     await growthTracker
       .trackServerAdd(guild.id, inviteSource, guild.memberCount || 0)
       .catch((err) => {
@@ -293,60 +359,7 @@ module.exports = {
       }
     }
     try {
-      // Check if we have a tracked source for this user (guild owner)
-      const owner = await guild.fetchOwner().catch(() => null);
-      if (owner) {
-        // Query database for any pending invite tracking for this user
-        const trackedSource = await new Promise((resolve) => {
-          db.db.get(
-            "SELECT source FROM pending_invite_sources WHERE user_id = ? ORDER BY timestamp DESC LIMIT 1",
-            [owner.id],
-            (err, row) => {
-              if (err || !row) {
-                resolve(null);
-              } else {
-                resolve(row.source);
-              }
-            }
-          );
-        });
-
-        if (trackedSource) {
-          inviteSource = trackedSource;
-          // Clean up the pending tracking
-          db.db.run("DELETE FROM pending_invite_sources WHERE user_id = ?", [
-            owner.id,
-          ]);
-        } else {
-          // Fallback: Check for anonymous clicks by IP address (within last 24 hours)
-          // Note: We can't get the owner's IP directly, but we can check recent anonymous clicks
-          // This is a best-effort fallback for when users click invite but don't authenticate
-          const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
-          const anonymousSource = await new Promise((resolve) => {
-            db.db.get(
-              "SELECT source FROM pending_invite_sources WHERE user_id = 'anonymous' AND timestamp > ? ORDER BY timestamp DESC LIMIT 1",
-              [oneDayAgo],
-              (err, row) => {
-                if (err || !row) {
-                  resolve(null);
-                } else {
-                  resolve(row.source);
-                }
-              }
-            );
-          });
-
-          if (anonymousSource) {
-            inviteSource = anonymousSource;
-            logger.info(
-              "Guild Create",
-              `Matched invite source by anonymous click: ${anonymousSource}`
-            );
-          }
-        }
-      }
-
-      // Track the guild join with source
+      // Track the guild join with source (inviteSource already determined above)
       await db.trackGuildJoin(
         guild.id,
         inviteSource,
