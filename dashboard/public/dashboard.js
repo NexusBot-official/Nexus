@@ -3387,9 +3387,37 @@ document.addEventListener("DOMContentLoaded", () => {
               Triggered: ${w.trigger_count || 0} times
             </div>
           </div>
-        `
+        `;
+              }
             )
-            .join("");
+            .join("")}
+        `;
+        
+        // SECURITY: Use event delegation instead of inline onclick handlers
+        if (workflowsList) {
+          workflowsList.addEventListener("change", (e) => {
+            if (e.target.classList.contains("workflow-toggle")) {
+              const workflowId = e.target.getAttribute("data-workflow-id");
+              if (workflowId) {
+                toggleWorkflow(workflowId, e.target.checked);
+              }
+            }
+          });
+          
+          workflowsList.addEventListener("click", (e) => {
+            const btn = e.target.closest(".workflow-edit, .workflow-delete");
+            if (!btn) return;
+            
+            const workflowId = btn.getAttribute("data-workflow-id");
+            if (!workflowId) return;
+            
+            if (btn.classList.contains("workflow-edit")) {
+              editWorkflow(workflowId);
+            } else if (btn.classList.contains("workflow-delete")) {
+              deleteWorkflow(workflowId);
+            }
+          });
+        }
       } else {
         workflowsList.innerHTML = `
           <div class="setting-card" style="text-align: center; padding: 40px;">
