@@ -7,8 +7,10 @@
     "start": "node shard.js",
     "dev": "node index.js",
     "cluster": "node cluster.js",
-    "test": "jest"
-    },
+    "test": "jest",
+    "format": "prettier --write \"**/*.{js,json,md,html,css}\"",
+    "format:check": "prettier --check \"**/*.{js,json,md,html,css}\""
+  },
   "keywords": [
     "discord",
     "bot",
@@ -32,7 +34,8 @@
     "topgg-autoposter": "^2.0.0"
   },
   "devDependencies": {
-    "jest": "^29.7.0"
+    "jest": "^29.7.0",
+    "prettier": "^3.7.4"
   },
   "engines": {
     "node": ">=18.0.0",
