@@ -617,6 +617,17 @@ class BackupManager {
           (c) => c.name === channelData.name && c.type === channelData.type
         );
         if (existing) {
+          // Restore permissions for existing channel if they exist
+          if (
+            channelData.permissions &&
+            Array.isArray(channelData.permissions) &&
+            channelData.permissions.length > 0
+          ) {
+            await this.restoreChannelPermissions(
+              existing,
+              channelData.permissions
+            );
+          }
           continue;
         }
 
