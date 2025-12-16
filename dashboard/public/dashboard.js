@@ -3390,8 +3390,7 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
               }
             )
-            .join("")}
-        `;
+            .join("");
         
         // SECURITY: Use event delegation instead of inline onclick handlers
         if (workflowsList) {
