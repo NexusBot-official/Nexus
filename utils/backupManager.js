@@ -3,6 +3,7 @@
 
 const fs = require("fs").promises;
 const path = require("path");
+const { PermissionFlagsBits } = require("discord.js");
 const db = require("./database");
 const logger = require("./logger");
 
@@ -331,6 +332,49 @@ class BackupManager {
   }
 
   /**
+   * Convert permission name array to PermissionFlagsBits BigInt
+   */
+  convertPermissionsToBigInt(permissions) {
+    if (!permissions) return 0n;
+
+    // If it's already a number/string number, convert directly
+    if (typeof permissions === "number" || typeof permissions === "string") {
+      const num = typeof permissions === "string" ? parseInt(permissions, 10) : permissions;
+      if (!isNaN(num)) {
+        return BigInt(num);
+      }
+    }
+
+    // If it's an array of permission names, convert them
+    if (Array.isArray(permissions)) {
+      let bitfield = 0n;
+      for (const permName of permissions) {
+        // Convert permission name to PermissionFlagsBits value
+        const permValue = PermissionFlagsBits[permName];
+        if (permValue !== undefined) {
+          bitfield |= BigInt(permValue);
+        }
+      }
+      return bitfield;
+    }
+
+    // If it's a comma-separated string, split and convert
+    if (typeof permissions === "string" && permissions.includes(",")) {
+      const permNames = permissions.split(",").map((p) => p.trim());
+      let bitfield = 0n;
+      for (const permName of permNames) {
+        const permValue = PermissionFlagsBits[permName];
+        if (permValue !== undefined) {
+          bitfield |= BigInt(permValue);
+        }
+      }
+      return bitfield;
+    }
+
+    return 0n;
+  }
+
+  /**
    * Restore roles (only creates missing roles, doesn't delete existing)
    */
   async restoreRoles(guild, backupRoles) {
@@ -348,10 +392,14 @@ class BackupManager {
 
         // Create the role
         try {
+          const permissions = this.convertPermissionsToBigInt(
+            roleData.permissions
+          );
+
           await guild.roles.create({
             name: roleData.name,
-            color: roleData.color,
-            permissions: BigInt(roleData.permissions),
+            colors: roleData.color, // Use 'colors' instead of deprecated 'color'
+            permissions: permissions,
             hoist: roleData.hoist,
             mentionable: roleData.mentionable,
             reason: "Restored from backup",
@@ -379,29 +427,81 @@ class BackupManager {
     let restored = 0;
 
     try {
-      // Sort channels by position
-      backupChannels.sort((a, b) => a.position - b.position);
+      // Separate categories from regular channels
+      const categories = backupChannels.filter((c) => c.type === 4); // Category type
+      const regularChannels = backupChannels.filter((c) => c.type !== 4);
 
-      for (const channelData of backupChannels) {
+      // Sort by position
+      categories.sort((a, b) => a.position - b.position);
+      regularChannels.sort((a, b) => a.position - b.position);
+
+      // First, create all categories
+      const categoryMap = new Map(); // Maps old category ID to new category ID
+      for (const categoryData of categories) {
+        // Check if category already exists by name
+        const existing = guild.channels.cache.find(
+          (c) => c.name === categoryData.name && c.type === 4
+        );
+        if (existing) {
+          categoryMap.set(categoryData.id, existing.id);
+          continue;
+        }
+
+        try {
+          const category = await guild.channels.create({
+            name: categoryData.name,
+            type: 4, // Category
+            position: categoryData.position,
+            reason: "Restored from backup",
+          });
+          categoryMap.set(categoryData.id, category.id);
+          restored++;
+        } catch (err) {
+          logger.error(
+            "BackupManager",
+            `Failed to restore category ${categoryData.name}`,
+            err
+          );
+        }
+      }
+
+      // Then, create regular channels (with proper parent mapping)
+      for (const channelData of regularChannels) {
         // Check if channel already exists by name
         const existing = guild.channels.cache.find(
-          (c) => c.name === channelData.name
+          (c) => c.name === channelData.name && c.type === channelData.type
         );
         if (existing) {
           continue;
         }
 
+        // Get the parent category ID (map old ID to new ID if category was recreated)
+        let parentId = channelData.parent || channelData.parentId || null;
+        if (parentId && categoryMap.has(parentId)) {
+          parentId = categoryMap.get(parentId);
+        }
+
         // Create the channel
         try {
-          await guild.channels.create({
+          const channelOptions = {
             name: channelData.name,
             type: channelData.type,
-            parent: channelData.parentId,
             topic: channelData.topic,
-            nsfw: channelData.nsfw,
-            rateLimitPerUser: channelData.rateLimitPerUser,
+            nsfw: channelData.nsfw || false,
+            rateLimitPerUser: channelData.rateLimitPerUser || 0,
+            position: channelData.position,
             reason: "Restored from backup",
-          });
+          };
+
+          // Only set parent if it exists and is valid
+          if (parentId) {
+            const parentChannel = guild.channels.cache.get(parentId);
+            if (parentChannel && parentChannel.type === 4) {
+              channelOptions.parent = parentId;
+            }
+          }
+
+          await guild.channels.create(channelOptions);
           restored++;
         } catch (err) {
           logger.error(
