@@ -7,7 +7,7 @@
 [![Discord](https://img.shields.io/badge/Discord-Join%20Support-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/BE9jPs7Byd)
 [![Top.gg](https://img.shields.io/badge/Top.gg-Vote-FF3366?style=for-the-badge&logo=))](https://top.gg/bot/1444739230679957646)
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-4.3.10-blue?style=for-the-badge)](https://github.com/Azzraya/Nexus)
+[![Version](https://img.shields.io/badge/Version-4.3.10-blue?style=for-the-badge)](https://github.com/NexusBot-official/Nexus)
 
 **Everything Wick does, Nexus does better. 100% FREE.**
 
@@ -142,8 +142,8 @@ https://nexusbot-official.github.io/Nexus/invite.html?source=githubreadme
 
 Nexus is **open source** and **community-driven**.
 
-- 🐛 Found a bug? [Open an issue](https://github.com/Azzraya/Nexus/issues)
-- 💡 Have a feature idea? [Request it](https://github.com/Azzraya/Nexus/issues)
+- 🐛 Found a bug? [Open an issue](https://github.com/NexusBot-official/Nexus/issues)
+- 💡 Have a feature idea? [Request it](https://github.com/NexusBot-official/Nexus/issues)
 - 🔧 Want to contribute? PRs welcome!
 - 💬 Need help? [Join support server](https://discord.gg/BE9jPs7Byd)
 
@@ -205,7 +205,7 @@ Just better security, free forever.
 
 ### ⭐ Star this repo if Nexus protects your server!
 
-[![GitHub stars](https://img.shields.io/github/stars/Azzraya/Nexus?style=social)](https://github.com/Azzraya/Nexus)
+[![GitHub stars](https://img.shields.io/github/stars/NexusBot-official/Nexus?style=social)](https://github.com/NexusBot-official/Nexus)
 
 ---
 
