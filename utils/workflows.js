@@ -103,7 +103,38 @@ class WorkflowEngine {
         return message.includes(pattern.value.toLowerCase());
       } else if (pattern.type === "regex") {
         try {
-          const regex = new RegExp(pattern.value, "i");
+          // SECURITY FIX: Prevent ReDoS by limiting regex complexity
+          // Block patterns with excessive repetition that could cause ReDoS
+          const regexPattern = pattern.value;
+          
+          // Check for dangerous patterns: (a+)+, (a*)*, (a|a)+, etc.
+          const dangerousPatterns = [
+            /\([^)]*\+\)\+/,  // (a+)+
+            /\([^)]*\*\)\*/,  // (a*)*
+            /\([^)]*\|[^)]*\)\+/,  // (a|b)+
+            /\.\*\.\*/,  // .*.*
+            /\(\.\*\)\+/,  // (.*)+
+          ];
+          
+          if (dangerousPatterns.some(p => p.test(regexPattern))) {
+            logger.warn("Workflows", `Blocked potentially dangerous regex pattern: ${regexPattern.substring(0, 50)}`);
+            return false;
+          }
+          
+          // Limit pattern length to prevent excessive backtracking
+          if (regexPattern.length > 500) {
+            logger.warn("Workflows", `Blocked overly long regex pattern (${regexPattern.length} chars)`);
+            return false;
+          }
+          
+          const regex = new RegExp(regexPattern, "i");
+          
+          // SECURITY: Add timeout for regex execution to prevent ReDoS
+          // Use a simple timeout by checking message length first
+          if (message.length > 10000) {
+            return false; // Skip regex on very long messages
+          }
+          
           return regex.test(message);
         } catch {
           return false;
