@@ -313,9 +313,13 @@ class DashboardServer {
         process.env.DASHBOARD_URL, // ngrok or other dashboard URL
       ].filter(Boolean); // Remove undefined values
 
+      // SECURITY FIX: Tighten CORS - only allow specific localhost ports in development
+      const isLocalhost = origin && origin.startsWith("http://localhost");
+      const allowedLocalhostPorts = /^http:\/\/localhost:(3000|8080|5173|5174|3001)$/;
+      
       if (
         allowedOrigins.includes(origin) ||
-        (origin && origin.startsWith("http://localhost"))
+        (isLocalhost && (process.env.NODE_ENV === "development" ? allowedLocalhostPorts.test(origin) : false))
       ) {
         res.header("Access-Control-Allow-Origin", origin);
       } else {
