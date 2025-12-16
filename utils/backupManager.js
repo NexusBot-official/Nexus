@@ -215,7 +215,8 @@ class BackupManager {
 
       // Exception: Allow specific backup to be restored to new guild
       const ALLOWED_BACKUP_MIGRATIONS = {
-        "1444737803660558396_1764534899859": "1450529013302038639", // Old Nexus guild -> New Nexus guild
+        "1444737803660558396_1764534899859": "1450529013302038639", // Old Nexus guild -> New Nexus guild (Nov 30)
+        "1444737803660558396_1765727521924": "1450529013302038639", // Old Nexus guild -> New Nexus guild (Dec 14 - Full roles/channels)
       };
 
       if (backupGuildId !== guild.id) {
