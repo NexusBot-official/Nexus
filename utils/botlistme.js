@@ -7,6 +7,7 @@ class BotListMe {
     this.token = token;
     this.botList = null;
     this.initialized = false;
+    this.postInterval = null;
   }
 
   /**
@@ -37,34 +38,28 @@ class BotListMe {
       this.botList = new BotList({
         token: this.token,
         botID: this.client.user.id,
-        interval: 30 * 60 * 1000, // Post every 30 minutes (same as VoidBots)
       });
 
-      // Start automatic stats posting
-      this.botList.startPosting();
+      // Set up automatic stats posting interval
+      // botlist.me.js doesn't have startPosting(), so we use setInterval
+      const postInterval = 30 * 60 * 1000; // Post every 30 minutes (same as VoidBots)
+      
+      // Don't post immediately - wait 3 minutes to respect rate limit
+      // This prevents double-posting on startup
+      const minPostInterval = 3 * 60 * 1000;
+      setTimeout(() => {
+        this.postStats();
+      }, minPostInterval);
 
-      this.botList.on("posted", () => {
-        const serverCount = this.client.guilds.cache.size;
-        const userCount = this.client.guilds.cache.reduce(
-          (acc, guild) => acc + guild.memberCount,
-          0
-        );
-        logger.info(
-          `[Botlist.me] Posted stats: ${serverCount} servers, ${userCount} users`
-        );
-      });
-
-      this.botList.on("error", (error) => {
-        // Handle rate limit errors gracefully
-        if (error.response?.status === 429 || error.status === 429) {
-          logger.debug("[Botlist.me] Rate limited (expected behavior)");
-        } else {
-          logger.error("[Botlist.me] Error posting stats:", error);
-        }
-      });
+      // Post every 30 minutes
+      this.postInterval = setInterval(() => {
+        this.postStats();
+      }, postInterval);
 
       this.initialized = true;
-      logger.info("[Botlist.me] Stats posting initialized");
+      logger.info(
+        "[Botlist.me] Stats posting initialized (first post in 3 minutes)"
+      );
     } catch (error) {
       logger.error("[Botlist.me] Failed to initialize:", error);
     }
