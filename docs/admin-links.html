@@ -516,17 +516,25 @@
           return;
         }
 
+        // SECURITY FIX: Sanitize link data
+        function escapeHtml(str) {
+          if (typeof str !== 'string') return str;
+          const div = document.createElement("div");
+          div.textContent = str;
+          return div.innerHTML;
+        }
+        
         container.innerHTML = links
           .map((link) => {
-            const fullUrl = `${BASE_INVITE_URL}?source=${link.source}`;
+            const fullUrl = `${BASE_INVITE_URL}?source=${encodeURIComponent(link.source)}`;
             return `
                     <div class="link-card">
                         <div class="link-header">
                             <div>
-                                <div class="link-name">${link.source}</div>
+                                <div class="link-name">${escapeHtml(link.source)}</div>
                                 ${
                                   link.description
-                                    ? `<p style="color: #666; margin-top: 5px;">${link.description}</p>`
+                                    ? `<p style="color: #666; margin-top: 5px;">${escapeHtml(link.description)}</p>`
                                     : ""
                                 }
                             </div>
