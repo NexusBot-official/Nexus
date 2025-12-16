@@ -8,9 +8,8 @@
     "dev": "node index.js",
     "shard": "node shard.js",
     "cluster": "node cluster.js",
-    "test": "jest",
-    "register": "node utils/registerCommands.js"
-  },
+    "test": "jest"
+    },
   "keywords": [
     "discord",
     "bot",
