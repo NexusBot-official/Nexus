@@ -1078,12 +1078,39 @@ class DashboardServer {
       const isWhitelisted =
         this.allowedIPs.includes(cleanIP) || this.allowedIPs.includes(realIP);
 
+      // SECURITY FIX: Sanitize headers to prevent information disclosure
+      // Remove sensitive headers that could leak tokens, cookies, or secrets
+      const sanitizedHeaders = { ...req.headers };
+      const sensitiveHeaders = [
+        "authorization",
+        "cookie",
+        "x-api-key",
+        "x-admin-password",
+        "x-auth-token",
+        "api-key",
+        "token",
+        "secret",
+        "password",
+      ];
+      
+      sensitiveHeaders.forEach((header) => {
+        if (sanitizedHeaders[header]) {
+          sanitizedHeaders[header] = "[REDACTED]";
+        }
+        // Also check case variations
+        Object.keys(sanitizedHeaders).forEach((key) => {
+          if (key.toLowerCase() === header.toLowerCase() && key !== header) {
+            sanitizedHeaders[key] = "[REDACTED]";
+          }
+        });
+      });
+
       res.json({
         ip: cleanIP,
         rawIP: realIP,
         isWhitelisted: isWhitelisted,
         allowedIPs: this.allowedIPs,
-        allHeaders: req.headers,
+        allHeaders: sanitizedHeaders, // ✅ Now sanitized
         message: isWhitelisted
           ? "Your IP is whitelisted and can access /assets"
           : "Add this IP to ALLOWED_IP in .env or dashboard/server.js",
