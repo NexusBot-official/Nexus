@@ -1,0 +1,664 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Invite Link Manager - Nexus Admin</title>
+    <script src="admin-auth.js"></script>
+    <link
+      rel="icon"
+      type="image/png"
+      href="https://cdn.discordapp.com/avatars/1444737244947443773/1c28215e501bc8ef6e04c1fb2a8ae1ed.png"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .header {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .header h1 {
+        color: #667eea;
+        font-size: 28px;
+        margin-bottom: 10px;
+      }
+
+      .nav-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+      }
+
+      .nav-btn {
+        padding: 8px 16px;
+        background: #667eea;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-size: 14px;
+        transition: all 0.3s;
+      }
+
+      .nav-btn:hover {
+        background: #764ba2;
+        transform: translateY(-2px);
+      }
+
+      .create-section {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 25px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .create-section h2 {
+        color: #667eea;
+        margin-bottom: 20px;
+        font-size: 22px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #333;
+        font-weight: 600;
+      }
+
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 5px;
+        font-size: 14px;
+        transition: border-color 0.3s;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus,
+      .form-group textarea:focus {
+        outline: none;
+        border-color: #667eea;
+      }
+
+      .form-group textarea {
+        resize: vertical;
+        min-height: 60px;
+      }
+
+      .btn {
+        padding: 12px 24px;
+        background: #667eea;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .btn:hover {
+        background: #764ba2;
+        transform: translateY(-2px);
+      }
+
+      .btn:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .links-section {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .links-section h2 {
+        color: #667eea;
+        margin-bottom: 20px;
+        font-size: 22px;
+      }
+
+      .link-card {
+        background: #f8f9fa;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 15px;
+        transition: all 0.3s;
+      }
+
+      .link-card:hover {
+        border-color: #667eea;
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+      }
+
+      .link-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+
+      .link-name {
+        font-size: 18px;
+        font-weight: 600;
+        color: #333;
+      }
+
+      .link-stats {
+        display: flex;
+        gap: 20px;
+      }
+
+      .stat {
+        text-align: center;
+      }
+
+      .stat-value {
+        font-size: 24px;
+        font-weight: 700;
+        color: #667eea;
+      }
+
+      .stat-label {
+        font-size: 12px;
+        color: #666;
+        text-transform: uppercase;
+      }
+
+      .link-url {
+        background: white;
+        padding: 12px;
+        border-radius: 5px;
+        font-family: monospace;
+        font-size: 13px;
+        margin-bottom: 15px;
+        word-break: break-all;
+        border: 1px solid #e0e0e0;
+      }
+
+      .link-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      .action-btn {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.3s;
+      }
+
+      .copy-btn {
+        background: #10b981;
+        color: white;
+      }
+
+      .copy-btn:hover {
+        background: #059669;
+      }
+
+      .delete-btn {
+        background: #ef4444;
+        color: white;
+      }
+
+      .delete-btn:hover {
+        background: #dc2626;
+      }
+
+      .success-message {
+        background: #10b981;
+        color: white;
+        padding: 12px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        display: none;
+      }
+
+      .error-message {
+        background: #ef4444;
+        color: white;
+        padding: 12px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        display: none;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 40px;
+        color: #667eea;
+        font-size: 18px;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #666;
+      }
+
+      .empty-state svg {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 20px;
+        opacity: 0.3;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🔗 Invite Link Manager</h1>
+        <p>
+          Create and track custom invite links to see where your users come from
+        </p>
+        <div class="nav-buttons">
+          <a href="admin.html" class="nav-btn">← Admin Hub</a>
+          <a href="admin-ips.html" class="nav-btn">IP Logs</a>
+          <a href="admin-incidents.html" class="nav-btn">Incidents</a>
+        </div>
+      </div>
+
+      <div class="success-message" id="successMessage"></div>
+      <div class="error-message" id="errorMessage"></div>
+
+      <div class="create-section">
+        <h2>📝 Create New Tracking Link</h2>
+        <form id="createLinkForm">
+          <div class="form-group">
+            <label for="sourceName">Source Name *</label>
+            <input
+              type="text"
+              id="sourceName"
+              placeholder="e.g., topgg, reddit, discord-ad"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="sourceDescription">Description</label>
+            <textarea
+              id="sourceDescription"
+              placeholder="Optional: Describe where this link will be used"
+            ></textarea>
+          </div>
+          <button type="submit" class="btn" id="createBtn">
+            🚀 Generate Link
+          </button>
+        </form>
+      </div>
+
+      <div class="links-section">
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+          "
+        >
+          <h2 style="margin: 0">📊 Your Tracking Links</h2>
+          <div style="display: flex; gap: 10px; align-items: center">
+            <span
+              id="lastRefresh"
+              style="font-size: 0.9rem; opacity: 0.7"
+            ></span>
+            <button
+              onclick="loadLinks()"
+              style="
+                padding: 8px 16px;
+                background: #667eea;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: all 0.3s;
+              "
+            >
+              🔄 Refresh Now
+            </button>
+          </div>
+        </div>
+        <div id="linksContainer" class="loading">Loading links...</div>
+      </div>
+    </div>
+
+    <script>
+      const API_URL = "https://regular-puma-clearly.ngrok-free.app";
+      const BASE_INVITE_URL = `https://azzraya.github.io/Nexus/invite.html`;
+
+      let authToken = sessionStorage.getItem("adminToken");
+      let adminPassword = null;
+
+      // Check authentication - use token if available
+      if (
+        !authToken ||
+        sessionStorage.getItem("adminAuthenticated") !== "true"
+      ) {
+        // Fallback to password-based auth for this page (uses different API)
+        adminPassword = localStorage.getItem("nexus_admin_password");
+        if (!adminPassword) {
+          const password = prompt("Enter admin password:");
+          if (!password) {
+            window.location.href = "admin.html";
+          }
+          adminPassword = password;
+          localStorage.setItem("nexus_admin_password", password);
+        }
+      } else {
+        // If we have a session token, use it for consistency
+        adminPassword = localStorage.getItem("nexus_admin_password");
+      }
+
+      // Load links on page load
+      loadLinks();
+
+      // Auto-refresh every 10 seconds
+      setInterval(() => {
+        loadLinks();
+      }, 10000);
+
+      // Show last updated time
+      function updateLastRefreshTime() {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString();
+        const existingTime = document.getElementById("lastRefresh");
+        if (existingTime) {
+          existingTime.textContent = `Last updated: ${timeString}`;
+        }
+      }
+
+      // Create link form
+      document
+        .getElementById("createLinkForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const sourceName = document.getElementById("sourceName").value.trim();
+          const sourceDescription = document
+            .getElementById("sourceDescription")
+            .value.trim();
+
+          if (!sourceName) {
+            showError("Source name is required");
+            return;
+          }
+
+          // Sanitize source name (lowercase, no spaces, alphanumeric + dashes/underscores)
+          const sanitizedSource = sourceName
+            .toLowerCase()
+            .replace(/[^a-z0-9-_]/g, "-");
+
+          document.getElementById("createBtn").disabled = true;
+          document.getElementById("createBtn").textContent = "Creating...";
+
+          try {
+            const response = await fetch(
+              `${API_URL}/api/admin/invite-sources`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  "ngrok-skip-browser-warning": "true",
+                  "x-admin-password": adminPassword,
+                },
+                body: JSON.stringify({
+                  source: sanitizedSource,
+                  description: sourceDescription,
+                }),
+              }
+            );
+
+            if (response.status === 401) {
+              localStorage.removeItem("nexus_admin_password");
+              alert("Invalid password");
+              window.location.reload();
+              return;
+            }
+
+            if (!response.ok) {
+              const errorData = await response.json().catch(() => ({}));
+              throw new Error(errorData.error || "Failed to create link");
+            }
+
+            showSuccess(`Link created: ${sanitizedSource}`);
+            document.getElementById("createLinkForm").reset();
+            loadLinks();
+          } catch (error) {
+            showError("Failed to create link: " + error.message);
+          } finally {
+            document.getElementById("createBtn").disabled = false;
+            document.getElementById("createBtn").textContent =
+              "🚀 Generate Link";
+          }
+        });
+
+      async function loadLinks() {
+        const container = document.getElementById("linksContainer");
+        container.innerHTML = '<div class="loading">Loading links...</div>';
+
+        try {
+          const response = await fetch(`${API_URL}/api/admin/invite-sources`, {
+            headers: {
+              "ngrok-skip-browser-warning": "true",
+              "x-admin-password": adminPassword,
+            },
+          });
+
+          if (response.status === 401) {
+            localStorage.removeItem("nexus_admin_password");
+            alert("Invalid password");
+            window.location.reload();
+            return;
+          }
+
+          if (!response.ok) throw new Error("Failed to load links");
+
+          const data = await response.json();
+          displayLinks(data.sources || []);
+
+          // Update last refresh time
+          const now = new Date();
+          const timeString = now.toLocaleTimeString();
+          const refreshEl = document.getElementById("lastRefresh");
+          if (refreshEl) {
+            refreshEl.textContent = `Last updated: ${timeString}`;
+          }
+        } catch (error) {
+          container.innerHTML = `<div class="error-message" style="display: block;">Failed to load links: ${error.message}</div>`;
+        }
+      }
+
+      function displayLinks(links) {
+        const container = document.getElementById("linksContainer");
+
+        if (links.length === 0) {
+          container.innerHTML = `
+                    <div class="empty-state">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                        </svg>
+                        <h3>No tracking links yet</h3>
+                        <p>Create your first link above to start tracking invites!</p>
+                    </div>
+                `;
+          return;
+        }
+
+        container.innerHTML = links
+          .map((link) => {
+            const fullUrl = `${BASE_INVITE_URL}?source=${link.source}`;
+            return `
+                    <div class="link-card">
+                        <div class="link-header">
+                            <div>
+                                <div class="link-name">${link.source}</div>
+                                ${
+                                  link.description
+                                    ? `<p style="color: #666; margin-top: 5px;">${link.description}</p>`
+                                    : ""
+                                }
+                            </div>
+                             <div class="link-stats">
+                                 <div class="stat">
+                                     <div class="stat-value">${
+                                       link.total_clicks || 0
+                                     }</div>
+                                     <div class="stat-label">Clicks</div>
+                                 </div>
+                                 <div class="stat">
+                                     <div class="stat-value">${
+                                       link.total_joins || 0
+                                     }</div>
+                                     <div class="stat-label">Joins</div>
+                                 </div>
+                                 <div class="stat">
+                                     <div class="stat-value" style="color: ${
+                                       link.total_clicks > 0
+                                         ? link.total_joins /
+                                             link.total_clicks >=
+                                           0.3
+                                           ? "#10b981"
+                                           : link.total_joins /
+                                                 link.total_clicks >=
+                                               0.1
+                                             ? "#f59e0b"
+                                             : "#ef4444"
+                                         : "#999"
+                                     }">${
+                                       link.total_clicks > 0
+                                         ? Math.round(
+                                             (link.total_joins /
+                                               link.total_clicks) *
+                                               100
+                                           )
+                                         : 0
+                                     }%</div>
+                                     <div class="stat-label">Conv Rate</div>
+                                 </div>
+                                 <div class="stat">
+                                     <div class="stat-value" style="color: ${
+                                       link.avg_retention_days >= 30
+                                         ? "#10b981"
+                                         : link.avg_retention_days >= 7
+                                           ? "#f59e0b"
+                                           : link.avg_retention_days > 0
+                                             ? "#ef4444"
+                                             : "#999"
+                                     }">${Math.round(
+                                       link.avg_retention_days || 0
+                                     )}d</div>
+                                     <div class="stat-label">Retention</div>
+                                 </div>
+                             </div>
+                        </div>
+                        <div class="link-url">${fullUrl}</div>
+                        <div class="link-actions">
+                            <button class="action-btn copy-btn" onclick="copyLink('${fullUrl}', this)">📋 Copy Link</button>
+                            <button class="action-btn delete-btn" onclick="deleteLink('${
+                              link.source
+                            }')">🗑️ Delete</button>
+                        </div>
+                        <p style="color: #999; font-size: 12px; margin-top: 10px;">Created: ${new Date(
+                          link.created_at
+                        ).toLocaleString()}</p>
+                    </div>
+                `;
+          })
+          .join("");
+      }
+
+      function copyLink(url, button) {
+        navigator.clipboard
+          .writeText(url)
+          .then(() => {
+            const originalText = button.textContent;
+            button.textContent = "✅ Copied!";
+            button.style.background = "#10b981";
+            setTimeout(() => {
+              button.textContent = originalText;
+              button.style.background = "";
+            }, 2000);
+          })
+          .catch(() => {
+            showError("Failed to copy to clipboard");
+          });
+      }
+
+      async function deleteLink(source) {
+        if (
+          !confirm(
+            `Delete tracking link "${source}"?\n\nThis will remove the link but keep historical data.`
+          )
+        ) {
+          return;
+        }
+
+        try {
+          const response = await fetch(
+            `${API_URL}/api/admin/invite-sources/${source}`,
+            {
+              method: "DELETE",
+              headers: {
+                "ngrok-skip-browser-warning": "true",
+                "x-admin-password": adminPassword,
+              },
+            }
+          );
+
+          if (!response.ok) throw new Error("Failed to delete link");
+
+          showSuccess(`Deleted: ${source}`);
+          loadLinks();
+        } catch (error) {
+          showError("Failed to delete link: " + error.message);
+        }
+      }
+
+      function showSuccess(message) {
+        const el = document.getElementById("successMessage");
+        el.textContent = message;
+        el.style.display = "block";
+        setTimeout(() => (el.style.display = "none"), 5000);
+      }
+
+      function showError(message) {
+        const el = document.getElementById("errorMessage");
+        el.textContent = message;
+        el.style.display = "block";
+        setTimeout(() => (el.style.display = "none"), 5000);
+      }
+    </script>
+  </body>
+</html>

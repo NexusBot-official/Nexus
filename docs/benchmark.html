@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Performance Benchmark - Nexus vs Wick - Nexus Bot</title>
+    <link
+      rel="icon"
+      type="image/webp"
+      href="https://cdn.discordapp.com/avatars/1444739230679957646/32f2d77d44c2f3989fecd858be53f396.webp?size=256"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="pages.css" />
+    <style>
+      .benchmark-container {
+        max-width: 1400px;
+        margin: 100px auto;
+        padding: 40px;
+      }
+
+      .benchmark-header {
+        text-align: center;
+        margin-bottom: 60px;
+      }
+
+      .benchmark-header h1 {
+        font-size: 3rem;
+        margin-bottom: 20px;
+        background: linear-gradient(90deg, #667eea 0%, #00d1b2 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .comparison-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin-bottom: 40px;
+      }
+
+      .comparison-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        padding: 30px;
+        border-radius: 20px;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        transition:
+          transform 0.3s,
+          box-shadow 0.3s;
+      }
+
+      .comparison-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+      }
+
+      .comparison-card.nexus {
+        border-color: #00d1b2;
+      }
+
+      .comparison-card.wick {
+        border-color: #ff6b6b;
+      }
+
+      .metric-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .metric-row:last-child {
+        border-bottom: none;
+      }
+
+      .metric-label {
+        font-size: 1.1rem;
+        font-weight: 600;
+      }
+
+      .metric-value {
+        font-size: 1.3rem;
+        font-weight: 900;
+      }
+
+      .metric-value.nexus {
+        color: #00d1b2;
+      }
+
+      .metric-value.wick {
+        color: #ff6b6b;
+      }
+
+      .winner-badge {
+        display: inline-block;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        margin-left: 10px;
+      }
+
+      .winner-badge.winner {
+        background: #00d1b2;
+        color: #000;
+      }
+
+      .winner-badge.loser {
+        background: rgba(255, 255, 255, 0.2);
+        color: rgba(255, 255, 255, 0.6);
+      }
+
+      .live-indicator {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #00d1b2;
+        margin-right: 8px;
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-top: 40px;
+      }
+
+      .stat-card {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 20px;
+        border-radius: 15px;
+        text-align: center;
+      }
+
+      .stat-value {
+        font-size: 2.5rem;
+        font-weight: 900;
+        margin: 10px 0;
+        background: linear-gradient(90deg, #667eea 0%, #00d1b2 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .stat-label {
+        font-size: 0.9rem;
+        opacity: 0.8;
+      }
+
+      .refresh-btn {
+        background: linear-gradient(90deg, #667eea 0%, #00d1b2 100%);
+        border: none;
+        padding: 15px 30px;
+        border-radius: 10px;
+        color: white;
+        font-weight: 700;
+        cursor: pointer;
+        font-size: 1.1rem;
+        margin: 20px auto;
+        display: block;
+        transition: transform 0.2s;
+      }
+
+      .refresh-btn:hover {
+        transform: scale(1.05);
+      }
+
+      .loading {
+        text-align: center;
+        padding: 40px;
+        opacity: 0.7;
+      }
+
+      @media (max-width: 768px) {
+        .comparison-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="container">
+        <a href="index.html" class="nav-brand">NEXUS</a>
+
+        <div class="nav-right">
+          <!-- Dropdown Menu -->
+          <div class="dropdown">
+            <button class="dropdown-toggle">Menu ▼</button>
+            <div class="dropdown-menu">
+              <div class="dropdown-category">
+                <div class="dropdown-category-header">🚀 Getting Started</div>
+                <a href="setup.html">Setup</a>
+                <a href="setup-wizard.html">Setup Wizard</a>
+                <a href="tutorial.html">Tutorial</a>
+              </div>
+
+              <div class="dropdown-category">
+                <div class="dropdown-category-header">✨ Features</div>
+                <a href="features.html">Features</a>
+                <a href="commands.html">Commands</a>
+                <a href="adaptive-protection.html">Adaptive Protection</a>
+              </div>
+
+              <div class="dropdown-category">
+                <div class="dropdown-category-header">🛠️ Tools</div>
+                <a href="bot-simulator.html">Try Bot Demo</a>
+                <a href="server-health-checker.html">Health Checker</a>
+                <a href="benchmark.html">Performance Benchmark</a>
+              </div>
+
+              <div class="dropdown-category">
+                <div class="dropdown-category-header">⚔️ Compare</div>
+                <a href="comparison.html">vs Wick</a>
+                <a href="live-comparison.html">Live Comparison</a>
+              </div>
+
+              <div class="dropdown-category">
+                <div class="dropdown-category-header">📊 Metrics</div>
+                <a href="stats.html">Stats</a>
+                <a href="growth.html">Growth</a>
+                <a href="status.html">Status</a>
+              </div>
+
+              <div class="dropdown-category">
+                <div class="dropdown-category-header">📚 Documentation</div>
+                <a href="docs.html">Docs</a>
+                <a href="api.html">API</a>
+                <a href="developers.html">For Developers</a>
+                <a href="faq.html">FAQ</a>
+              </div>
+
+              <div class="dropdown-category">
+                <div class="dropdown-category-header">👥 Community</div>
+                <a href="showcase.html">Showcase</a>
+                <a href="testimonials.html">Testimonials</a>
+                <a href="vote-features.html">Vote Features</a>
+                <a href="changelog.html">Changelog</a>
+              </div>
+            </div>
+          </div>
+
+          <a
+            href="https://regular-puma-clearly.ngrok-free.app"
+            target="_blank"
+            class="btn-dashboard"
+            >Dashboard</a
+          >
+          <a href="setup-wizard.html" class="btn-nav">Get Started</a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="benchmark-container">
+      <div class="benchmark-header">
+        <h1>⚡ Performance Benchmark</h1>
+        <p style="font-size: 1.2rem; opacity: 0.9">
+          Real-time comparison: Nexus vs Wick Bot
+        </p>
+        <span class="live-indicator"></span>
+        <span style="opacity: 0.8">Live Data</span>
+      </div>
+
+      <button class="refresh-btn" onclick="loadBenchmark()">
+        🔄 Refresh Metrics
+      </button>
+
+      <div id="loading" class="loading">Loading benchmark data...</div>
+
+      <div id="benchmark-content" style="display: none">
+        <div class="comparison-grid">
+          <div class="comparison-card nexus">
+            <h2 style="margin-bottom: 20px; color: #00d1b2">🚀 Nexus Bot</h2>
+            <div id="nexus-metrics"></div>
+          </div>
+
+          <div class="comparison-card wick">
+            <h2 style="margin-bottom: 20px; color: #ff6b6b">⚔️ Wick Bot</h2>
+            <div id="wick-metrics"></div>
+          </div>
+        </div>
+
+        <div class="stats-grid" id="stats-grid"></div>
+      </div>
+    </div>
+
+    <script>
+      const API_BASE =
+        "https://regular-puma-clearly.ngrok-free.app/api/v2/benchmark";
+
+      async function loadBenchmark() {
+        document.getElementById("loading").style.display = "block";
+        document.getElementById("benchmark-content").style.display = "none";
+
+        try {
+          const response = await fetch(API_BASE, {
+            headers: {
+              "ngrok-skip-browser-warning": "true",
+            },
+          });
+          const data = await response.json();
+
+          if (data.success) {
+            displayBenchmark(data.data);
+          } else {
+            throw new Error(data.error || "Failed to load benchmark");
+          }
+        } catch (error) {
+          console.error("Error loading benchmark:", error);
+          document.getElementById("loading").innerHTML =
+            "❌ Failed to load benchmark data. Please try again.";
+        }
+      }
+
+      function displayBenchmark(data) {
+        const nexus = data.nexus;
+        const wick = data.wick;
+
+        // Display Nexus metrics
+        const nexusMetrics = document.getElementById("nexus-metrics");
+        nexusMetrics.innerHTML = `
+          <div class="metric-row">
+            <span class="metric-label">Response Time</span>
+            <span class="metric-value nexus">${nexus.responseTime}ms</span>
+            ${
+              nexus.responseTime < wick.responseTime
+                ? '<span class="winner-badge winner">FASTER</span>'
+                : '<span class="winner-badge loser">SLOWER</span>'
+            }
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">Raid Detection Speed</span>
+            <span class="metric-value nexus">${nexus.detectionSpeed}ms</span>
+            ${
+              nexus.detectionSpeed < wick.detectionSpeed
+                ? '<span class="winner-badge winner">FASTER</span>'
+                : '<span class="winner-badge loser">SLOWER</span>'
+            }
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">Memory Usage</span>
+            <span class="metric-value nexus">${nexus.memory}MB</span>
+            ${
+              nexus.memory < wick.memory
+                ? '<span class="winner-badge winner">LIGHTER</span>'
+                : '<span class="winner-badge loser">HEAVIER</span>'
+            }
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">CPU Usage</span>
+            <span class="metric-value nexus">${nexus.cpu}%</span>
+            ${
+              nexus.cpu < wick.cpu
+                ? '<span class="winner-badge winner">LOWER</span>'
+                : '<span class="winner-badge loser">HIGHER</span>'
+            }
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">Uptime</span>
+            <span class="metric-value nexus">${nexus.uptime}%</span>
+            ${
+              nexus.uptime > wick.uptime
+                ? '<span class="winner-badge winner">BETTER</span>'
+                : '<span class="winner-badge loser">WORSE</span>'
+            }
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">Commands/sec</span>
+            <span class="metric-value nexus">${nexus.commandsPerSecond}</span>
+            ${
+              nexus.commandsPerSecond > wick.commandsPerSecond
+                ? '<span class="winner-badge winner">FASTER</span>'
+                : '<span class="winner-badge loser">SLOWER</span>'
+            }
+          </div>
+        `;
+
+        // Display Wick metrics
+        const wickMetrics = document.getElementById("wick-metrics");
+        wickMetrics.innerHTML = `
+          <div class="metric-row">
+            <span class="metric-label">Response Time</span>
+            <span class="metric-value wick">${wick.responseTime}ms</span>
+            ${
+              wick.responseTime < nexus.responseTime
+                ? '<span class="winner-badge winner">FASTER</span>'
+                : '<span class="winner-badge loser">SLOWER</span>'
+            }
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">Raid Detection Speed</span>
+            <span class="metric-value wick">${wick.detectionSpeed}ms</span>
+            ${
+              wick.detectionSpeed < nexus.detectionSpeed
+                ? '<span class="winner-badge winner">FASTER</span>'
+                : '<span class="winner-badge loser">SLOWER</span>'
+            }
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">Memory Usage</span>
+            <span class="metric-value wick">${wick.memory}MB</span>
+            ${
+              wick.memory < nexus.memory
+                ? '<span class="winner-badge winner">LIGHTER</span>'
+                : '<span class="winner-badge loser">HEAVIER</span>'
+            }
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">CPU Usage</span>
+            <span class="metric-value wick">${wick.cpu}%</span>
+            ${
+              wick.cpu < nexus.cpu
+                ? '<span class="winner-badge winner">LOWER</span>'
+                : '<span class="winner-badge loser">HIGHER</span>'
+            }
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">Uptime</span>
+            <span class="metric-value wick">${wick.uptime}%</span>
+            ${
+              wick.uptime > nexus.uptime
+                ? '<span class="winner-badge winner">BETTER</span>'
+                : '<span class="winner-badge loser">WORSE</span>'
+            }
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">Commands/sec</span>
+            <span class="metric-value wick">${wick.commandsPerSecond}</span>
+            ${
+              wick.commandsPerSecond > nexus.commandsPerSecond
+                ? '<span class="winner-badge winner">FASTER</span>'
+                : '<span class="winner-badge loser">SLOWER</span>'
+            }
+          </div>
+        `;
+
+        // Display summary stats
+        const statsGrid = document.getElementById("stats-grid");
+        const wins = data.summary.nexusWins;
+        const total = data.summary.totalMetrics;
+        statsGrid.innerHTML = `
+          <div class="stat-card">
+            <div class="stat-value">${wins}/${total}</div>
+            <div class="stat-label">Nexus Wins</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">${Math.round((wins / total) * 100)}%</div>
+            <div class="stat-label">Win Rate</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">${data.summary.avgImprovement}%</div>
+            <div class="stat-label">Avg Improvement</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">${data.timestamp}</div>
+            <div class="stat-label">Last Updated</div>
+          </div>
+        `;
+
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("benchmark-content").style.display = "block";
+      }
+
+      // Load on page load
+      loadBenchmark();
+
+      // Auto-refresh every 30 seconds
+      setInterval(loadBenchmark, 30000);
+    </script>
+  </body>
+</html>

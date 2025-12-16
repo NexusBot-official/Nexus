@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Usage Patterns - Admin</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        color: white;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 50px auto;
+        padding: 20px;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .stat-card {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        padding: 20px;
+        backdrop-filter: blur(10px);
+      }
+
+      .stat-value {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: white;
+      }
+
+      .stat-label {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.9rem;
+        margin-top: 5px;
+      }
+
+      .chart-container {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        backdrop-filter: blur(10px);
+      }
+
+      .maintenance-window {
+        background: rgba(0, 255, 136, 0.15);
+        border: 2px solid #00ff88;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 20px 0;
+      }
+
+      .warning-box {
+        background: rgba(255, 107, 107, 0.15);
+        border: 2px solid #ff6b6b;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 20px 0;
+      }
+
+      .hour-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-top: 15px;
+      }
+
+      .hour-item {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 15px;
+        border-radius: 8px;
+        border-left: 4px solid #667eea;
+      }
+
+      .safe-badge {
+        display: inline-block;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: bold;
+        margin-left: 10px;
+      }
+
+      .safe-yes {
+        background: rgba(0, 255, 136, 0.3);
+        color: #00ff88;
+      }
+
+      .safe-no {
+        background: rgba(255, 107, 107, 0.3);
+        color: #ff6b6b;
+      }
+
+      button {
+        padding: 10px 20px;
+        background: white;
+        color: #667eea;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+      }
+
+      button:hover {
+        background: rgba(255, 255, 255, 0.9);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Auth screen (matches other admin pages) -->
+    <div id="auth-screen">
+      <div class="container" style="max-width: 400px; text-align: center">
+        <h1>🔒 Admin Access</h1>
+        <p>Enter admin password</p>
+        <input
+          type="password"
+          id="password"
+          placeholder="Password"
+          style="
+            width: 100%;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border: none;
+            font-size: 1rem;
+          "
+          onkeypress="if (event.key === 'Enter') login();"
+        />
+        <button onclick="login()" style="width: 100%">Login</button>
+        <p
+          id="error"
+          style="color: #ff6b6b; margin-top: 10px; display: none"
+        ></p>
+      </div>
+    </div>
+
+    <!-- Dashboard (hidden until auth) -->
+    <div id="dashboard" style="display: none">
+      <div class="container">
+        <h1>📊 Usage Patterns Analysis</h1>
+        <p style="opacity: 0.8; margin-bottom: 10px">
+          Internal analytics for maintenance planning
+        </p>
+        <p
+          id="timezoneLabel"
+          style="opacity: 0.6; margin-bottom: 30px; font-size: 0.9rem"
+        >
+          Times shown in: <strong id="currentTimezone">Loading...</strong>
+        </p>
+
+        <div id="currentStatus"></div>
+        <div class="stats-grid" id="statsGrid"></div>
+
+        <div class="chart-container">
+          <h2>⏰ Hourly Usage Pattern</h2>
+          <canvas id="hourlyChart"></canvas>
+        </div>
+
+        <div class="chart-container">
+          <h2>📅 Weekly Usage Pattern</h2>
+          <canvas id="dailyChart"></canvas>
+        </div>
+
+        <div id="maintenanceInfo"></div>
+
+        <div style="margin-top: 30px">
+          <button onclick="window.location.href = 'admin.html'">
+            ← Back to Admin
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const ADMIN_API =
+        "https://regular-puma-clearly.ngrok-free.app/api/admin/auth";
+      const USAGE_API =
+        "https://regular-puma-clearly.ngrok-free.app/api/admin/usage-patterns";
+
+      // Store chart instances globally to update instead of recreate
+      let hourlyChart = null;
+      let dailyChart = null;
+
+      // Check if already authenticated
+      const isAuthenticated = sessionStorage.getItem("adminAuthenticated");
+      if (isAuthenticated === "true") {
+        const expiry = parseInt(
+          sessionStorage.getItem("adminTokenExpiry") || "0"
+        );
+        if (Date.now() < expiry) {
+          document.getElementById("auth-screen").style.display = "none";
+          document.getElementById("dashboard").style.display = "block";
+          loadUsagePatterns();
+        }
+      }
+
+      async function login() {
+        const password = document.getElementById("password").value;
+        const errorEl = document.getElementById("error");
+
+        try {
+          const response = await fetch(ADMIN_API, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "ngrok-skip-browser-warning": "true",
+            },
+            body: JSON.stringify({ password }),
+          });
+
+          if (response.ok) {
+            sessionStorage.setItem("adminAuthenticated", "true");
+            sessionStorage.setItem(
+              "adminTokenExpiry",
+              (Date.now() + 30 * 60 * 1000).toString()
+            );
+
+            document.getElementById("auth-screen").style.display = "none";
+            document.getElementById("dashboard").style.display = "block";
+            loadUsagePatterns();
+          } else {
+            errorEl.textContent = "Invalid password";
+            errorEl.style.display = "block";
+          }
+        } catch (error) {
+          errorEl.textContent = "Connection error";
+          errorEl.style.display = "block";
+        }
+      }
+
+      async function loadUsagePatterns() {
+        try {
+          const response = await fetch(`${USAGE_API}?days=7`, {
+            headers: {
+              "ngrok-skip-browser-warning": "true",
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error(
+              `Failed to load data (${response.status}). Make sure bot is restarted with latest code.`
+            );
+          }
+
+          const data = await response.json();
+
+          // Display timezone
+          document.getElementById("currentTimezone").textContent = data.timezone
+            ? data.timezone.label
+            : "GMT";
+
+          // Current status
+          document.getElementById("currentStatus").innerHTML = `
+            <div class="maintenance-window">
+              <h2>🔄 Current Activity 
+                <span class="safe-badge ${data.maintenanceSafe.safe ? "safe-yes" : "safe-no"}">
+                  ${data.maintenanceSafe.safe ? "SAFE TO UPDATE" : "HIGH ACTIVITY"}
+                </span>
+              </h2>
+              <p><strong>Last 5 min:</strong> ${data.currentActivity.last5Minutes} commands</p>
+              <p><strong>Last hour:</strong> ${data.currentActivity.lastHour} commands</p>
+              <p><strong>Level:</strong> ${data.currentActivity.activityLevel.toUpperCase()}</p>
+              <p><strong>Recommendation:</strong> ${data.maintenanceSafe.recommendation}</p>
+            </div>
+          `;
+
+          // Stats cards
+          document.getElementById("statsGrid").innerHTML = `
+            <div class="stat-card">
+              <div class="stat-value">${data.totalStats.total_commands}</div>
+              <div class="stat-label">Commands (7d)</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">${data.avgCommandsPerDay}</div>
+              <div class="stat-label">Avg/Day</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">${data.totalStats.total_servers}</div>
+              <div class="stat-label">Active Servers</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">${data.busiestDay.day}</div>
+              <div class="stat-label">Busiest Day</div>
+            </div>
+          `;
+
+          // Hourly chart - destroy old one first
+          if (hourlyChart) {
+            hourlyChart.destroy();
+          }
+          hourlyChart = new Chart(document.getElementById("hourlyChart"), {
+            type: "bar",
+            data: {
+              labels: data.hourlyData.map((d) => `${d.hour}:00`),
+              datasets: [
+                {
+                  label: "Commands",
+                  data: data.hourlyData.map((d) => d.commands),
+                  backgroundColor: data.hourlyData.map((d) => {
+                    const max = Math.max(
+                      ...data.hourlyData.map((h) => h.commands)
+                    );
+                    if (d.commands > max * 0.7)
+                      return "rgba(255, 107, 107, 0.7)";
+                    if (d.commands > max * 0.4) return "rgba(255, 193, 7, 0.7)";
+                    return "rgba(0, 255, 136, 0.7)";
+                  }),
+                  borderWidth: 0,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              plugins: {
+                legend: { display: false },
+                title: {
+                  display: true,
+                  text: `Commands by Hour (${data.timezone ? data.timezone.name : "GMT"})`,
+                  color: "#fff",
+                },
+              },
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  ticks: { color: "#fff" },
+                  grid: { color: "rgba(255,255,255,0.1)" },
+                },
+                x: {
+                  ticks: { color: "#fff" },
+                  grid: { color: "rgba(255,255,255,0.1)" },
+                },
+              },
+            },
+          });
+
+          // Daily chart - destroy old one first
+          if (dailyChart) {
+            dailyChart.destroy();
+          }
+          dailyChart = new Chart(document.getElementById("dailyChart"), {
+            type: "bar",
+            data: {
+              labels: data.dailyData.map((d) => d.day),
+              datasets: [
+                {
+                  label: "Commands",
+                  data: data.dailyData.map((d) => d.commands),
+                  backgroundColor: "rgba(255, 255, 255, 0.7)",
+                  borderWidth: 0,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              plugins: {
+                legend: { display: false },
+                title: {
+                  display: true,
+                  text: "Commands by Day",
+                  color: "#fff",
+                },
+              },
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  ticks: { color: "#fff" },
+                  grid: { color: "rgba(255,255,255,0.1)" },
+                },
+                x: {
+                  ticks: { color: "#fff" },
+                  grid: { color: "rgba(255,255,255,0.1)" },
+                },
+              },
+            },
+          });
+
+          // Maintenance info
+          document.getElementById("maintenanceInfo").innerHTML = `
+            <div class="maintenance-window">
+              <h2>🟢 Recommended Maintenance Window</h2>
+              <p style="font-size: 1.5rem; margin: 15px 0;">
+                <strong>${data.maintenanceWindow.start} - ${data.maintenanceWindow.end} ${data.timezone ? data.timezone.name : "GMT"}</strong>
+              </p>
+              <p>${data.maintenanceWindow.reason}</p>
+            </div>
+
+            <div class="warning-box">
+              <h2>🔴 Peak Hours (Avoid)</h2>
+              <div class="hour-list">
+                ${data.peakHours
+                  .map(
+                    (h) => `
+                  <div class="hour-item" style="border-left-color: #ff6b6b;">
+                    <strong>${h.hour}:00 ${data.timezone ? data.timezone.name : "GMT"}</strong><br>
+                    <span style="color: #ff6b6b;">${h.commands} commands</span>
+                  </div>
+                `
+                  )
+                  .join("")}
+              </div>
+            </div>
+
+            <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px;">
+              <h2>🟢 Quiet Hours (Best for Updates)</h2>
+              <div class="hour-list">
+                ${data.quietHours
+                  .map(
+                    (h) => `
+                  <div class="hour-item" style="border-left-color: #00ff88;">
+                    <strong>${h.hour}:00 ${data.timezone ? data.timezone.name : "GMT"}</strong><br>
+                    <span style="color: #00ff88;">${h.commands} commands</span>
+                  </div>
+                `
+                  )
+                  .join("")}
+              </div>
+            </div>
+          `;
+        } catch (error) {
+          console.error("Error:", error);
+          document.getElementById("currentStatus").innerHTML = `
+            <div class="warning-box">
+              <h2>❌ Error Loading</h2>
+              <p>${error.message}</p>
+              <p style="font-size: 0.9rem; margin-top: 10px;">
+                Make sure bot is restarted with latest code (v3.19.0+)
+              </p>
+            </div>
+          `;
+        }
+      }
+
+      // Auto-refresh every 5 minutes
+      setInterval(loadUsagePatterns, 300000);
+    </script>
+  </body>
+</html>

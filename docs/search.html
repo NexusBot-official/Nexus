@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Command Search - Nexus Bot</title>
+    <link
+      rel="icon"
+      type="image/webp"
+      href="https://cdn.discordapp.com/avatars/1444739230679957646/32f2d77d44c2f3989fecd858be53f396.webp?size=256"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="pages.css" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="container">
+        <a href="index.html" class="nav-brand">NEXUS</a>
+        <div class="nav-links">
+          <a href="features.html">Features</a>
+          <a href="commands.html">Commands</a>
+          <a href="comparison.html">vs Wick</a>
+          <a href="setup.html">Setup</a>
+          <a href="docs.html">Docs</a>
+          <a href="api.html">API Documentation</a>
+          <a href="faq.html">FAQ</a>
+          <a href="stats.html">Stats</a>
+
+          <a
+            href="https://regular-puma-clearly.ngrok-free.app"
+            target="_blank"
+            class="btn-dashboard"
+            >Dashboard</a
+          >
+          <a href="setup-wizard.html" class="btn-nav">Get Started</a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container" style="margin-top: 100px">
+      <header class="page-header">
+        <h1>🔍 Command Search</h1>
+        <p>Search through all 87+ commands</p>
+      </header>
+
+      <!-- Search Bar -->
+      <div style="max-width: 700px; margin: 40px auto">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search commands... (e.g., 'ban', 'anti-raid', 'setup')"
+          style="
+            width: 100%;
+            padding: 20px;
+            font-size: 1.2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            color: white;
+          "
+          oninput="searchCommands()"
+          autofocus
+        />
+        <p
+          id="search-results-count"
+          style="text-align: center; margin-top: 15px; opacity: 0.8"
+        ></p>
+      </div>
+
+      <!-- Results -->
+      <div id="search-results" style="margin-top: 40px">
+        <div style="text-align: center; opacity: 0.7; padding: 40px">
+          <p>Start typing to search commands...</p>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div>
+            <h3>NEXUS</h3>
+            <p>Elite Discord Protection</p>
+          </div>
+          <div class="footer-links">
+            <a href="privacy.html">Privacy</a>
+            <a href="terms.html">Terms</a>
+            <a href="contact.html">Contact</a>
+            <a href="https://discord.gg/warmA4BsPP" target="_blank">Support</a>
+          </div>
+        </div>
+        <div style="text-align: center; margin-top: 30px; opacity: 0.7">
+          <p>&copy; 2025 Nexus. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Command database (all 87+ commands)
+      const commands = [
+        {
+          name: "setup",
+          category: "Setup",
+          description: "Initial server configuration",
+          usage: "/setup",
+        },
+        {
+          name: "config",
+          category: "Configuration",
+          description: "View and modify server settings",
+          usage: "/config",
+        },
+        {
+          name: "ban",
+          category: "Moderation",
+          description: "Ban a user from the server",
+          usage: "/ban @user [reason]",
+        },
+        {
+          name: "kick",
+          category: "Moderation",
+          description: "Kick a user from the server",
+          usage: "/kick @user [reason]",
+        },
+        {
+          name: "warn",
+          category: "Moderation",
+          description: "Warn a user",
+          usage: "/warn @user [reason]",
+        },
+        {
+          name: "mute",
+          category: "Moderation",
+          description: "Mute a user",
+          usage: "/mute @user [duration]",
+        },
+        {
+          name: "lockdown",
+          category: "Security",
+          description: "Emergency server lockdown",
+          usage: "/lockdown",
+        },
+        {
+          name: "antiraid",
+          category: "Security",
+          description: "Configure anti-raid settings",
+          usage: "/antiraid",
+        },
+        {
+          name: "backup",
+          category: "Recovery",
+          description: "Create server backup",
+          usage: "/backup create",
+        },
+        {
+          name: "recover",
+          category: "Recovery",
+          description: "Restore from backup",
+          usage: "/recover",
+        },
+        {
+          name: "snapshot",
+          category: "Recovery",
+          description: "Manage point-in-time snapshots",
+          usage: "/snapshot",
+        },
+        {
+          name: "warnings",
+          category: "Moderation",
+          description: "View user warnings",
+          usage: "/warnings @user",
+        },
+        {
+          name: "clearwarnings",
+          category: "Moderation",
+          description: "Clear user warnings",
+          usage: "/clearwarnings @user",
+        },
+        {
+          name: "slowmode",
+          category: "Moderation",
+          description: "Set channel slowmode",
+          usage: "/slowmode [seconds]",
+        },
+        {
+          name: "purge",
+          category: "Moderation",
+          description: "Bulk delete messages",
+          usage: "/purge [amount]",
+        },
+        {
+          name: "automod",
+          category: "Security",
+          description: "Configure auto-moderation",
+          usage: "/automod",
+        },
+        {
+          name: "autorole",
+          category: "Utility",
+          description: "Auto-assign roles on join",
+          usage: "/autorole",
+        },
+        {
+          name: "welcome",
+          category: "Utility",
+          description: "Configure welcome messages",
+          usage: "/welcome",
+        },
+        {
+          name: "ticket",
+          category: "Utility",
+          description: "Create support ticket",
+          usage: "/ticket",
+        },
+        {
+          name: "poll",
+          category: "Utility",
+          description: "Create a poll",
+          usage: "/poll create",
+        },
+        {
+          name: "giveaway",
+          category: "Engagement",
+          description: "Start a giveaway",
+          usage: "/giveaway start",
+        },
+        {
+          name: "leaderboard",
+          category: "Engagement",
+          description: "View voting leaderboard",
+          usage: "/leaderboard",
+        },
+        {
+          name: "serverinfo",
+          category: "Info",
+          description: "Display server information",
+          usage: "/serverinfo",
+        },
+        {
+          name: "userinfo",
+          category: "Info",
+          description: "Display user information",
+          usage: "/userinfo @user",
+        },
+        {
+          name: "stats",
+          category: "Info",
+          description: "Bot statistics",
+          usage: "/stats",
+        },
+        {
+          name: "ping",
+          category: "Info",
+          description: "Check bot latency",
+          usage: "/ping",
+        },
+        {
+          name: "help",
+          category: "Info",
+          description: "Get help with commands",
+          usage: "/help [command]",
+        },
+        {
+          name: "dashboard",
+          category: "Utility",
+          description: "Get dashboard link",
+          usage: "/dashboard",
+        },
+        {
+          name: "website",
+          category: "Utility",
+          description: "Get website link",
+          usage: "/website",
+        },
+        {
+          name: "support",
+          category: "Utility",
+          description: "Get support server invite",
+          usage: "/support",
+        },
+        // Add more as needed
+      ];
+
+      function searchCommands() {
+        const query = document
+          .getElementById("search-input")
+          .value.toLowerCase();
+        const resultsDiv = document.getElementById("search-results");
+        const countEl = document.getElementById("search-results-count");
+
+        if (!query) {
+          resultsDiv.innerHTML =
+            '<div style="text-align: center; opacity: 0.7; padding: 40px;"><p>Start typing to search commands...</p></div>';
+          countEl.textContent = "";
+          return;
+        }
+
+        const filtered = commands.filter(
+          (cmd) =>
+            cmd.name.toLowerCase().includes(query) ||
+            cmd.category.toLowerCase().includes(query) ||
+            cmd.description.toLowerCase().includes(query)
+        );
+
+        countEl.textContent = `Found ${filtered.length} command(s)`;
+
+        if (filtered.length === 0) {
+          resultsDiv.innerHTML = `
+            <div style="text-align: center; opacity: 0.7; padding: 40px;">
+              <h3>No commands found</h3>
+              <p>Try a different search term</p>
+            </div>
+          `;
+          return;
+        }
+
+        resultsDiv.innerHTML = filtered
+          .map(
+            (cmd) => `
+          <div style="background: rgba(255, 255, 255, 0.1); padding: 25px; border-radius: 15px; margin-bottom: 20px; border-left: 4px solid #667eea; transition: all 0.3s;" onmouseover="this.style.borderColor='#ffd700'" onmouseout="this.style.borderColor='#667eea'">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px; flex-wrap: wrap; gap: 15px;">
+              <div>
+                <h3 style="font-size: 1.5rem; margin-bottom: 5px;">/${cmd.name}</h3>
+                <span style="background: rgba(102, 126, 234, 0.3); padding: 5px 12px; border-radius: 12px; font-size: 0.85rem; border: 1px solid #667eea;">${cmd.category}</span>
+              </div>
+              <button onclick="copyCommand('${cmd.usage}')" style="background: #00d1b2; border: none; color: white; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 700;">
+                📋 Copy
+              </button>
+            </div>
+            <p style="opacity: 0.9; margin-bottom: 15px;">${cmd.description}</p>
+            <div style="background: rgba(0, 0, 0, 0.3); padding: 12px; border-radius: 8px; font-family: monospace;">
+              <code>${cmd.usage}</code>
+            </div>
+          </div>
+        `
+          )
+          .join("");
+      }
+
+      function copyCommand(usage) {
+        navigator.clipboard.writeText(usage).then(() => {
+          alert("✅ Copied to clipboard!");
+        });
+      }
+
+      // Keyboard shortcut: Press '/' to focus search
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "/" && document.activeElement.tagName !== "INPUT") {
+          e.preventDefault();
+          document.getElementById("search-input").focus();
+        }
+      });
+    </script>
+  </body>
+</html>

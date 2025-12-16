@@ -1,0 +1,12 @@
+{
+  "enabled": true,
+  "emoji": "🎉",
+  "text": "testing",
+  "buttonText": "Check it out",
+  "buttonLink": "api.html",
+  "dismissible": true,
+  "gradient": {
+    "from": "#667eea",
+    "to": "#764ba2"
+  }
+}

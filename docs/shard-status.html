@@ -1,0 +1,1157 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shard & Cluster Status - Nexus Bot</title>
+    <link
+      rel="icon"
+      type="image/webp"
+      href="https://cdn.discordapp.com/avatars/1444739230679957646/32f2d77d44c2f3989fecd858be53f396.webp?size=256"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #0d1117;
+        color: #fff;
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1600px;
+        margin: 0 auto;
+      }
+
+      .header {
+        margin-bottom: 30px;
+      }
+
+      .header h1 {
+        font-size: 2rem;
+        margin-bottom: 10px;
+        color: #fff;
+      }
+
+      .legend {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.9rem;
+      }
+
+      .legend-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+      }
+
+      .legend-dot.operational {
+        background: #667eea;
+      }
+
+      .legend-dot.partial {
+        background: #f59e0b;
+      }
+
+      .legend-dot.outage {
+        background: #ef4444;
+      }
+
+      .search-bar {
+        margin-bottom: 20px;
+      }
+
+      .search-bar input {
+        width: 100%;
+        max-width: 400px;
+        padding: 12px 16px;
+        background: #161b22;
+        border: 1px solid #30363d;
+        border-radius: 6px;
+        color: #fff;
+        font-size: 1rem;
+      }
+
+      .search-bar input:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+
+      .search-bar input::placeholder {
+        color: #8b949e;
+      }
+
+      .summary {
+        background: #161b22;
+        border: 1px solid #30363d;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 30px;
+      }
+
+      .summary h2 {
+        font-size: 1.3rem;
+        margin-bottom: 15px;
+        color: #fff;
+      }
+
+      .summary-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+      }
+
+      .summary-stat {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .summary-stat-label {
+        font-size: 0.85rem;
+        color: #8b949e;
+      }
+
+      .summary-stat-value {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #fff;
+      }
+
+      .summary-stat-value.problem {
+        color: #f59e0b;
+      }
+
+      .summary-stat-value.critical {
+        color: #ef4444;
+      }
+
+      .shards-section {
+        margin-bottom: 40px;
+      }
+
+      .section-title {
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+        color: #fff;
+      }
+
+      .shards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 8px;
+        background: #161b22;
+        border: 1px solid #30363d;
+        border-radius: 8px;
+        padding: 20px;
+      }
+
+      .shard-item,
+      .cluster-item {
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(102, 126, 234, 0.1);
+        border: 1px solid rgba(102, 126, 234, 0.3);
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.2s;
+        position: relative;
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: #a78bfa;
+        text-align: center;
+        padding: 4px;
+        line-height: 1.2;
+      }
+
+      .shard-item:hover,
+      .cluster-item:hover {
+        transform: scale(1.1);
+        z-index: 10;
+        border-color: #667eea;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.5);
+        background: rgba(102, 126, 234, 0.2);
+      }
+
+      .shard-item.operational,
+      .cluster-item.operational {
+        background: linear-gradient(
+          135deg,
+          rgba(102, 126, 234, 0.3) 0%,
+          rgba(118, 75, 162, 0.3) 100%
+        );
+        border-color: #667eea;
+        color: #c4b5fd;
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+      }
+
+      .shard-item.partial,
+      .cluster-item.partial {
+        background: rgba(245, 158, 11, 0.2);
+        border-color: #f59e0b;
+        color: #fbbf24;
+        box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
+      }
+
+      .shard-item.outage,
+      .cluster-item.outage {
+        background: rgba(239, 68, 68, 0.2);
+        border-color: #ef4444;
+        color: #fca5a5;
+        box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
+      }
+
+      .shard-item.flashing,
+      .cluster-item.flashing {
+        animation: flash 1s ease-in-out infinite;
+        border-color: #667eea !important;
+        box-shadow: 0 0 20px rgba(102, 126, 234, 0.8) !important;
+        background: rgba(102, 126, 234, 0.4) !important;
+        z-index: 100;
+      }
+
+      @keyframes flash {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.7;
+          transform: scale(1.05);
+        }
+      }
+
+      .shard-item.flashing,
+      .cluster-item.flashing {
+        animation: flash 0.5s ease-in-out infinite;
+        border-color: #667eea;
+        box-shadow: 0 0 20px rgba(102, 126, 234, 0.8);
+        z-index: 100;
+      }
+
+      @keyframes flash {
+        0%,
+        100% {
+          background: rgba(102, 126, 234, 0.4);
+          transform: scale(1);
+        }
+        50% {
+          background: rgba(102, 126, 234, 0.7);
+          transform: scale(1.05);
+        }
+      }
+
+      .tooltip {
+        position: absolute;
+        background: #161b22;
+        border: 1px solid #30363d;
+        border-radius: 8px;
+        padding: 16px;
+        min-width: 280px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+
+      .tooltip.visible {
+        opacity: 1;
+      }
+
+      .tooltip-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 12px;
+        color: #fff;
+      }
+
+      .tooltip-info {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        font-size: 0.9rem;
+      }
+
+      .tooltip-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 4px 0;
+        border-bottom: 1px solid #21262d;
+      }
+
+      .tooltip-row:last-child {
+        border-bottom: none;
+      }
+
+      .tooltip-label {
+        color: #8b949e;
+      }
+
+      .tooltip-value {
+        color: #fff;
+        font-weight: 500;
+      }
+
+      .tooltip-value.warning {
+        color: #f59e0b;
+      }
+
+      .tooltip-value.error {
+        color: #ef4444;
+      }
+
+      .tooltip-arrow {
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 8px solid transparent;
+        border-right: 8px solid transparent;
+        border-top: 8px solid #30363d;
+      }
+
+      .tooltip-arrow::after {
+        content: "";
+        position: absolute;
+        bottom: 1px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 7px solid transparent;
+        border-right: 7px solid transparent;
+        border-top: 7px solid #161b22;
+      }
+
+      .refresh-controls {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+
+      .refresh-btn {
+        padding: 10px 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+      }
+
+      .refresh-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+      }
+
+      .refresh-btn:disabled {
+        background: #30363d;
+        cursor: not-allowed;
+      }
+
+      .auto-refresh-toggle {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #8b949e;
+        font-size: 0.9rem;
+      }
+
+      .auto-refresh-toggle input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 40px;
+        color: #8b949e;
+      }
+
+      .error {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid #ef4444;
+        color: #fca5a5;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 20px 0;
+      }
+
+      @media (max-width: 768px) {
+        .shards-grid {
+          grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+          gap: 6px;
+          padding: 15px;
+        }
+
+        .shard-item,
+        .cluster-item {
+          font-size: 0.65rem;
+        }
+
+        .tooltip {
+          min-width: 240px;
+          font-size: 0.85rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Availability per service</h1>
+        <div class="legend">
+          <div class="legend-item">
+            <div class="legend-dot operational"></div>
+            <span>Operational</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot partial"></div>
+            <span>Partial Outage</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot outage"></div>
+            <span>Major Outage</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="search-bar">
+        <input
+          type="text"
+          id="serverSearch"
+          placeholder="Look up your server (by ID)"
+        />
+      </div>
+
+      <div class="summary">
+        <h2>Service: Nexus Bot</h2>
+        <div class="summary-stats">
+          <div class="summary-stat">
+            <span class="summary-stat-label">Total Shards</span>
+            <span class="summary-stat-value" id="totalShards">-</span>
+          </div>
+          <div class="summary-stat">
+            <span class="summary-stat-label">Operational Shards</span>
+            <span class="summary-stat-value" id="operationalShards">-</span>
+          </div>
+          <div class="summary-stat">
+            <span class="summary-stat-label">Total Clusters</span>
+            <span class="summary-stat-value" id="totalClusters">-</span>
+          </div>
+          <div class="summary-stat">
+            <span class="summary-stat-label">Clusters with Problems</span>
+            <span class="summary-stat-value" id="problemClusters">-</span>
+          </div>
+          <div class="summary-stat">
+            <span class="summary-stat-label">Total Servers</span>
+            <span class="summary-stat-value" id="totalGuilds">-</span>
+          </div>
+          <div class="summary-stat">
+            <span class="summary-stat-label">Total Users</span>
+            <span class="summary-stat-value" id="totalUsers">-</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="summary" id="gatewayStats" style="display: none">
+        <h2>🌐 Gateway Health (Enterprise Monitoring)</h2>
+        <div class="summary-stats">
+          <div class="summary-stat">
+            <span class="summary-stat-label">Gateway Quality</span>
+            <span class="summary-stat-value" id="gatewayQuality">-</span>
+          </div>
+          <div class="summary-stat">
+            <span class="summary-stat-label">Avg Latency</span>
+            <span class="summary-stat-value" id="gatewayLatency">-</span>
+          </div>
+          <div class="summary-stat">
+            <span class="summary-stat-label">Total Identifies</span>
+            <span class="summary-stat-value" id="gatewayIdentifies">-</span>
+          </div>
+          <div class="summary-stat">
+            <span class="summary-stat-label">Total Resumes</span>
+            <span class="summary-stat-value" id="gatewayResumes">-</span>
+          </div>
+          <div class="summary-stat">
+            <span class="summary-stat-label">Reconnects</span>
+            <span class="summary-stat-value" id="gatewayReconnects">-</span>
+          </div>
+          <div class="summary-stat">
+            <span class="summary-stat-label">Health Status</span>
+            <span class="summary-stat-value" id="gatewayHealth">-</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="refresh-controls">
+        <button class="refresh-btn" onclick="loadStatus()" id="refreshBtn">
+          🔄 Refresh
+        </button>
+        <label class="auto-refresh-toggle">
+          <input type="checkbox" id="autoRefresh" checked />
+          <span>Auto-refresh every 5 seconds</span>
+        </label>
+      </div>
+
+      <div id="clustersSection" style="display: none">
+        <div class="shards-section">
+          <h2 class="section-title">Clusters</h2>
+          <div class="shards-grid" id="clustersGrid"></div>
+        </div>
+      </div>
+
+      <div class="shards-section">
+        <h2 class="section-title">Shards</h2>
+        <div class="shards-grid" id="shardsGrid">
+          <div class="loading">Loading shards...</div>
+        </div>
+      </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script>
+      const API_BASE =
+        window.NEXUS_API_URL || "https://regular-puma-clearly.ngrok-free.app";
+      let refreshInterval = null;
+      let tooltip = null;
+
+      // Custom Shard & Cluster Names (matching backend)
+      const SHARD_NAMES = [
+        "⚡ Zeus",
+        "🌊 Poseidon",
+        "⚔️ Ares",
+        "🏹 Artemis",
+        "☀️ Apollo",
+        "🛡️ Athena",
+        "🔱 Hades",
+        "💘 Aphrodite",
+        "⚒️ Hephaestus",
+        "🍇 Dionysus",
+        "📨 Hermes",
+        "🌾 Demeter",
+        "🔥 Hestia",
+        "🌙 Selene",
+        "🌟 Helios",
+        "⭐ Aether",
+        "🌑 Nyx",
+        "⚡ Kronos",
+        "🏔️ Atlas",
+        "🌊 Oceanus",
+      ];
+
+      const CLUSTER_NAMES = [
+        "🐉 Dragon",
+        "🦅 Phoenix",
+        "🦁 Sphinx",
+        "🦄 Unicorn",
+        "🐺 Cerberus",
+        "🦂 Hydra",
+        "🦇 Basilisk",
+        "🐍 Leviathan",
+        "🦉 Griffin",
+        "🐲 Wyvern",
+      ];
+
+      function getShardName(shardId) {
+        return shardId < SHARD_NAMES.length
+          ? SHARD_NAMES[shardId]
+          : `⚡ Shard-${shardId}`;
+      }
+
+      function getClusterName(clusterId) {
+        return clusterId < CLUSTER_NAMES.length
+          ? CLUSTER_NAMES[clusterId]
+          : `🔥 Cluster-${clusterId}`;
+      }
+
+      function getShardDisplay(shardId) {
+        return `${getShardName(shardId)} (#${shardId})`;
+      }
+
+      function getClusterDisplay(clusterId) {
+        return `${getClusterName(clusterId)} (#${clusterId})`;
+      }
+
+      function getStatusClass(status, ping, uptime) {
+        // Status 0 = READY
+        if (status === 0 && ping < 200 && uptime > 0) {
+          return "operational";
+        }
+        // Status 0 but high ping or issues
+        if (status === 0 && (ping >= 200 || uptime === 0)) {
+          return "partial";
+        }
+        // Status 5 = DISCONNECTED
+        if (status === 5) {
+          return "outage";
+        }
+        // Other connecting states
+        return "partial";
+      }
+
+      function formatUptime(seconds) {
+        if (!seconds || seconds === 0) return "0s";
+        const days = Math.floor(seconds / 86400);
+        const hours = Math.floor((seconds % 86400) / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const secs = Math.floor(seconds % 60);
+        if (days > 0) return `${days} d, ${hours} h, ${minutes} m, ${secs} s`;
+        if (hours > 0) return `${hours} h, ${minutes} m, ${secs} s`;
+        if (minutes > 0) return `${minutes} m, ${secs} s`;
+        return `${secs} s`;
+      }
+
+      function formatMemory(bytes) {
+        if (!bytes) return "N/A";
+        const mb = bytes / 1024 / 1024;
+        return `${mb.toFixed(1)} MB`;
+      }
+
+      function createTooltip(element, data, isCluster = false) {
+        // Remove existing tooltip
+        if (tooltip) {
+          tooltip.remove();
+        }
+
+        tooltip = document.createElement("div");
+        tooltip.className = "tooltip";
+        tooltip.innerHTML = `
+          <div class="tooltip-title">${isCluster ? getClusterDisplay(data.id) : getShardDisplay(data.id)}</div>
+          <div class="tooltip-info">
+            ${
+              isCluster
+                ? `
+              <div class="tooltip-row">
+                <span class="tooltip-label">Shards:</span>
+                <span class="tooltip-value">${data.shardIds?.join(", ") || "N/A"}</span>
+              </div>
+            `
+                : ""
+            }
+            <div class="tooltip-row">
+              <span class="tooltip-label">Servers:</span>
+              <span class="tooltip-value">${(data.guilds || 0).toLocaleString()}</span>
+            </div>
+            <div class="tooltip-row">
+              <span class="tooltip-label">Users:</span>
+              <span class="tooltip-value">${(data.users || 0).toLocaleString()}</span>
+            </div>
+            <div class="tooltip-row">
+              <span class="tooltip-label">Ping:</span>
+              <span class="tooltip-value ${data.ping >= 200 ? "warning" : ""}">${data.ping || 0}ms</span>
+            </div>
+            <div class="tooltip-row">
+              <span class="tooltip-label">Status:</span>
+              <span class="tooltip-value ${data.status === 5 ? "error" : data.status === 0 ? "" : "warning"}">${getStatusText(data.status)}</span>
+            </div>
+            <div class="tooltip-row">
+              <span class="tooltip-label">Uptime:</span>
+              <span class="tooltip-value">${formatUptime(data.uptime || 0)}</span>
+            </div>
+            ${
+              data.memory
+                ? `
+              <div class="tooltip-row">
+                <span class="tooltip-label">Memory:</span>
+                <span class="tooltip-value">${formatMemory(data.memory.heapUsed || data.memory)}</span>
+              </div>
+            `
+                : ""
+            }
+            ${
+              data.gatewayQuality !== undefined
+                ? `
+              <div class="tooltip-row">
+                <span class="tooltip-label">Gateway Quality:</span>
+                <span class="tooltip-value ${data.gatewayQuality < 30 ? "error" : data.gatewayQuality < 70 ? "warning" : ""}">${data.gatewayQuality}%</span>
+              </div>
+            `
+                : ""
+            }
+            ${
+              data.sessionId && !data.sessionId.startsWith("session-")
+                ? `
+              <div class="tooltip-row">
+                <span class="tooltip-label">Session:</span>
+                <span class="tooltip-value">${data.sessionId.substring(0, 8)}...</span>
+              </div>
+            `
+                : data.sessionId
+                  ? `
+              <div class="tooltip-row">
+                <span class="tooltip-label">Session:</span>
+                <span class="tooltip-value">✅ Active</span>
+              </div>
+            `
+                  : ""
+            }
+          </div>
+          <div class="tooltip-arrow"></div>
+        `;
+
+        document.body.appendChild(tooltip);
+
+        // Position tooltip
+        const rect = element.getBoundingClientRect();
+        const tooltipRect = tooltip.getBoundingClientRect();
+        let left = rect.left + rect.width / 2 - tooltipRect.width / 2;
+        let top = rect.top - tooltipRect.height - 12;
+
+        // Adjust if tooltip goes off screen
+        if (left < 10) left = 10;
+        if (left + tooltipRect.width > window.innerWidth - 10) {
+          left = window.innerWidth - tooltipRect.width - 10;
+        }
+        if (top < 10) {
+          top = rect.bottom + 12;
+          tooltip.querySelector(".tooltip-arrow").style.top = "-8px";
+          tooltip.querySelector(".tooltip-arrow").style.transform =
+            "translateX(-50%) rotate(180deg)";
+        }
+
+        tooltip.style.left = `${left}px`;
+        tooltip.style.top = `${top}px`;
+        tooltip.classList.add("visible");
+      }
+
+      function getStatusText(status) {
+        const statusMap = {
+          0: "READY",
+          1: "CONNECTING",
+          2: "RECONNECTING",
+          3: "IDLE",
+          4: "NEARLY",
+          5: "DISCONNECTED",
+          6: "WAITING_FOR_GUILDS",
+          7: "IDENTIFYING",
+          8: "RESUMING",
+        };
+        return statusMap[status] || "UNKNOWN";
+      }
+
+      function hideTooltip() {
+        if (tooltip) {
+          tooltip.remove();
+          tooltip = null;
+        }
+      }
+
+      async function loadStatus() {
+        const refreshBtn = document.getElementById("refreshBtn");
+        refreshBtn.disabled = true;
+        refreshBtn.textContent = "🔄 Loading...";
+
+        // Preserve flashing state if active
+        const wasFlashing = currentHighlightedShard
+          ? currentHighlightedShard.dataset.shardId
+          : null;
+        const wasFlashingContinuous =
+          wasFlashing &&
+          currentHighlightedShard?.classList.contains("flashing");
+
+        try {
+          // Load both shard stats and gateway stats
+          const [shardData, gatewayData] = await Promise.all([
+            window.apiCall("/api/shards").catch(() => null),
+            window.apiCall("/api/gateway").catch(() => null),
+          ]);
+
+          const data = shardData;
+
+          // Update summary stats
+          const shards = data.shards || [];
+          const operationalShards = shards.filter(
+            (s) => s.status === 0 && s.ping < 200 && s.uptime > 0
+          ).length;
+          const partialShards = shards.filter(
+            (s) => s.status === 0 && (s.ping >= 200 || s.uptime === 0)
+          ).length;
+          const outageShards = shards.filter((s) => s.status === 5).length;
+
+          document.getElementById("totalShards").textContent = shards.length;
+          document.getElementById("operationalShards").textContent =
+            `${operationalShards}/${shards.length}`;
+          document.getElementById("totalGuilds").textContent = (
+            data.totalGuilds || 0
+          ).toLocaleString();
+          document.getElementById("totalUsers").textContent = (
+            data.totalUsers || 0
+          ).toLocaleString();
+
+          // Update gateway stats if available
+          if (gatewayData && gatewayData.global) {
+            document.getElementById("gatewayStats").style.display = "block";
+
+            const quality = Math.round(gatewayData.global.averageQuality || 0);
+            const qualityEl = document.getElementById("gatewayQuality");
+            qualityEl.textContent = `${quality}%`;
+            qualityEl.className = "summary-stat-value";
+            if (quality < 30) qualityEl.classList.add("critical");
+            else if (quality < 70) qualityEl.classList.add("problem");
+
+            const latency = Math.round(gatewayData.global.averageLatency || 0);
+            const latencyEl = document.getElementById("gatewayLatency");
+            latencyEl.textContent = `${latency}ms`;
+            latencyEl.className = "summary-stat-value";
+            if (latency > 500) latencyEl.classList.add("problem");
+
+            document.getElementById("gatewayIdentifies").textContent =
+              gatewayData.global.totalIdentifies || 0;
+            document.getElementById("gatewayResumes").textContent =
+              gatewayData.global.totalResumes || 0;
+            document.getElementById("gatewayReconnects").textContent =
+              gatewayData.global.totalReconnects || 0;
+
+            const healthEl = document.getElementById("gatewayHealth");
+            if (gatewayData.health && gatewayData.health.healthy) {
+              healthEl.textContent = "✅ Healthy";
+              healthEl.className = "summary-stat-value";
+            } else {
+              healthEl.textContent = `⚠️ ${gatewayData.health.issues.length} Issues`;
+              healthEl.className = "summary-stat-value problem";
+            }
+
+            // Merge gateway data into shard data for tooltips
+            if (gatewayData.shards && shards) {
+              shards.forEach((shard) => {
+                const gatewayShard = gatewayData.shards.find(
+                  (g) => g.shardId === shard.id
+                );
+                if (gatewayShard) {
+                  shard.gatewayQuality = gatewayShard.connectionQuality;
+                  shard.sessionId = gatewayShard.sessionId;
+                  shard.resumes = gatewayShard.resumes;
+                  shard.gatewayUrl = gatewayShard.gatewayUrl;
+                  shard.resumeUrl = gatewayShard.resumeUrl;
+                }
+              });
+            }
+          }
+
+          // Handle clusters
+          if (data.clusters && data.clusters.clusters) {
+            document.getElementById("clustersSection").style.display = "block";
+            const clusters = data.clusters.clusters;
+            const problemClusters = clusters.filter(
+              (c) => c.status !== 0 || c.ping >= 200
+            ).length;
+
+            document.getElementById("totalClusters").textContent =
+              clusters.length;
+            document.getElementById("problemClusters").textContent =
+              `${problemClusters}/${clusters.length}`;
+            if (problemClusters > 0) {
+              document
+                .getElementById("problemClusters")
+                .classList.add("problem");
+            }
+
+            const clustersGrid = document.getElementById("clustersGrid");
+            clustersGrid.innerHTML = clusters
+              .map((cluster) => {
+                const statusClass = getStatusClass(
+                  cluster.status,
+                  cluster.ping,
+                  cluster.uptime
+                );
+                const clusterName = getClusterName(cluster.clusterId);
+                return `<div class="cluster-item ${statusClass}" data-cluster-id="${cluster.clusterId}" title="${getClusterDisplay(cluster.clusterId)}">${clusterName}</div>`;
+              })
+              .join("");
+
+            // Add hover events for clusters
+            clustersGrid.querySelectorAll(".cluster-item").forEach((item) => {
+              const clusterId = parseInt(item.dataset.clusterId);
+              const clusterData = clusters.find(
+                (c) => c.clusterId === clusterId
+              );
+              item.addEventListener("mouseenter", (e) => {
+                createTooltip(e.target, clusterData, true);
+              });
+              item.addEventListener("mouseleave", hideTooltip);
+            });
+          } else {
+            document.getElementById("clustersSection").style.display = "none";
+            document.getElementById("totalClusters").textContent = "N/A";
+            document.getElementById("problemClusters").textContent = "N/A";
+          }
+
+          // Display shards
+          const shardsGrid = document.getElementById("shardsGrid");
+          if (shards && shards.length > 0) {
+            shardsGrid.innerHTML = shards
+              .map((shard) => {
+                const statusClass = getStatusClass(
+                  shard.status,
+                  shard.ping,
+                  shard.uptime
+                );
+                const shardName = getShardName(shard.id);
+                return `<div class="shard-item ${statusClass}" data-shard-id="${shard.id}" title="${getShardDisplay(shard.id)}">${shardName}</div>`;
+              })
+              .join("");
+
+            // Add hover events for shards
+            shardsGrid.querySelectorAll(".shard-item").forEach((item) => {
+              const shardId = parseInt(item.dataset.shardId);
+              const shardData = shards.find((s) => s.id === shardId);
+              item.addEventListener("mouseenter", (e) => {
+                createTooltip(e.target, shardData, false);
+              });
+              item.addEventListener("mouseleave", hideTooltip);
+            });
+
+            // Restore flashing state if a shard was being flashed
+            restoreFlashState();
+          } else {
+            shardsGrid.innerHTML =
+              '<div class="error">No shard data available</div>';
+          }
+        } catch (error) {
+          console.error("Failed to load status:", error);
+          document.getElementById("shardsGrid").innerHTML = `
+            <div class="error">
+              <h3>❌ Error Loading Status</h3>
+              <p>${error.message}</p>
+            </div>
+          `;
+        } finally {
+          refreshBtn.disabled = false;
+          refreshBtn.textContent = "🔄 Refresh";
+        }
+      }
+
+      // Auto-refresh toggle
+      document.getElementById("autoRefresh").addEventListener("change", (e) => {
+        if (e.target.checked) {
+          refreshInterval = setInterval(loadStatus, 5000);
+        } else {
+          if (refreshInterval) {
+            clearInterval(refreshInterval);
+            refreshInterval = null;
+          }
+        }
+      });
+
+      let flashInterval = null;
+      let currentHighlightedShard = null;
+      let flashingShardId = null; // Track which shard should be flashing
+      let isContinuousFlash = false; // Track if flash should be continuous
+
+      function flashShard(shardId, continuous = false) {
+        flashingShardId = shardId;
+        isContinuousFlash = continuous;
+
+        // Clear any existing flash
+        if (flashInterval) {
+          clearInterval(flashInterval);
+          flashInterval = null;
+        }
+        if (currentHighlightedShard) {
+          currentHighlightedShard.classList.remove("flashing");
+        }
+
+        // Find the shard element
+        const shardElement = document.querySelector(
+          `.shard-item[data-shard-id="${shardId}"]`
+        );
+        if (!shardElement) {
+          console.warn(`Shard ${shardId} not found in grid`);
+          return;
+        }
+
+        currentHighlightedShard = shardElement;
+        shardElement.classList.add("flashing");
+        shardElement.scrollIntoView({ behavior: "smooth", block: "center" });
+
+        // If not continuous, flash for 5 seconds then stop
+        if (!continuous) {
+          setTimeout(() => {
+            if (
+              currentHighlightedShard === shardElement &&
+              !isContinuousFlash
+            ) {
+              currentHighlightedShard.classList.remove("flashing");
+              currentHighlightedShard = null;
+              flashingShardId = null;
+            }
+          }, 5000);
+        }
+        // If continuous, it will keep flashing until search is cleared
+      }
+
+      function stopFlashing() {
+        if (flashInterval) {
+          clearInterval(flashInterval);
+          flashInterval = null;
+        }
+        if (currentHighlightedShard) {
+          currentHighlightedShard.classList.remove("flashing");
+          currentHighlightedShard = null;
+        }
+        flashingShardId = null;
+        isContinuousFlash = false;
+      }
+
+      // Restore flashing state after grid refresh
+      function restoreFlashState() {
+        if (flashingShardId && isContinuousFlash) {
+          // Re-apply flashing to the shard after grid refresh
+          setTimeout(() => {
+            const shardElement = document.querySelector(
+              `.shard-item[data-shard-id="${flashingShardId}"]`
+            );
+            if (shardElement) {
+              currentHighlightedShard = shardElement;
+              shardElement.classList.add("flashing");
+            }
+          }, 100);
+        }
+      }
+
+      async function searchForGuild(guildId, continuous = false) {
+        if (!guildId || !/^\d+$/.test(guildId)) {
+          return null;
+        }
+
+        try {
+          const response = await window.apiCall(`/api/shards?guild=${guildId}`);
+          if (response.yourGuild && response.yourGuild.shardId !== undefined) {
+            const shardId = response.yourGuild.shardId;
+            flashShard(shardId, continuous);
+            return shardId;
+          } else if (response.yourGuild && response.yourGuild.error) {
+            alert(`Server not found: ${response.yourGuild.error}`);
+            return null;
+          }
+        } catch (error) {
+          console.error("Failed to fetch guild shard:", error);
+          alert(`Error finding server: ${error.message}`);
+          return null;
+        }
+        return null;
+      }
+
+      // Server search functionality
+      document
+        .getElementById("serverSearch")
+        .addEventListener("input", async (e) => {
+          const searchId = e.target.value.trim();
+
+          // Reset all highlights
+          stopFlashing();
+          document
+            .querySelectorAll(".shard-item, .cluster-item")
+            .forEach((item) => {
+              item.style.border = "";
+              item.style.boxShadow = "";
+              item.style.background = "";
+            });
+
+          if (!searchId) {
+            return;
+          }
+
+          // Check if it's a numeric ID (likely a guild ID)
+          if (/^\d+$/.test(searchId) && searchId.length > 10) {
+            // This looks like a guild ID, fetch shard info (non-continuous for typing)
+            await searchForGuild(searchId, false);
+            return;
+          }
+
+          // Otherwise, highlight matching shard/cluster by ID
+          document
+            .querySelectorAll(".shard-item, .cluster-item")
+            .forEach((item) => {
+              if (item.textContent === searchId) {
+                item.style.border = "2px solid #667eea";
+                item.style.boxShadow = "0 0 15px rgba(102, 126, 234, 0.7)";
+                item.style.background = "rgba(102, 126, 234, 0.3)";
+                item.scrollIntoView({ behavior: "smooth", block: "center" });
+              }
+            });
+        });
+
+      // Handle Enter key for continuous flashing
+      document
+        .getElementById("serverSearch")
+        .addEventListener("keypress", async (e) => {
+          if (e.key === "Enter") {
+            const searchId = e.target.value.trim();
+
+            // Stop any existing flash
+            stopFlashing();
+
+            // Reset all highlights
+            document
+              .querySelectorAll(".shard-item, .cluster-item")
+              .forEach((item) => {
+                item.style.border = "";
+                item.style.boxShadow = "";
+                item.style.background = "";
+              });
+
+            if (!searchId) {
+              return;
+            }
+
+            // Check if it's a numeric ID (likely a guild ID)
+            if (/^\d+$/.test(searchId) && searchId.length > 10) {
+              // This looks like a guild ID, fetch shard info and flash continuously
+              await searchForGuild(searchId, true);
+              return;
+            }
+
+            // Otherwise, highlight matching shard/cluster by ID
+            const matchingItem = Array.from(
+              document.querySelectorAll(".shard-item, .cluster-item")
+            ).find((item) => item.textContent === searchId);
+
+            if (matchingItem) {
+              matchingItem.classList.add("flashing");
+              matchingItem.scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+              });
+              currentHighlightedShard = matchingItem;
+            }
+          }
+        });
+
+      // Initial load
+      loadStatus();
+      if (document.getElementById("autoRefresh").checked) {
+        refreshInterval = setInterval(loadStatus, 5000);
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1187 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nexus vs Wick Comparison - Which is Better?</title>
+    <link
+      rel="icon"
+      type="image/webp"
+      href="https://cdn.discordapp.com/avatars/1444739230679957646/32f2d77d44c2f3989fecd858be53f396.webp?size=256"
+    />
+    <meta
+      name="description"
+      content="Detailed comparison between Nexus and Wick Discord security bots. See why Nexus exceeds Wick in every category."
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="pages.css" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="container">
+        <a href="index.html" class="nav-brand">NEXUS</a>
+
+        <div class="nav-right">
+          <!-- Dropdown Menu -->
+          <div class="dropdown">
+            <button class="dropdown-toggle">Menu ▼</button>
+            <div class="dropdown-menu">
+              <div class="dropdown-category">
+                <div class="dropdown-category-header">🚀 Getting Started</div>
+                <a href="setup.html">Setup</a>
+                <a href="tutorial.html">Tutorial</a>
+              </div>
+
+              <div class="dropdown-category">
+                <div class="dropdown-category-header">✨ Features</div>
+                <a href="features.html">Features</a>
+                <a href="commands.html">Commands</a>
+                <a href="adaptive-protection.html">Adaptive Protection</a>
+              </div>
+
+              <div class="dropdown-category">
+                <div class="dropdown-category-header">⚔️ Compare</div>
+                <a href="comparison.html">vs Wick</a>
+                <a href="live-comparison.html">Live Comparison</a>
+              </div>
+
+              <div class="dropdown-category">
+                <div class="dropdown-category-header">📊 Metrics</div>
+                <a href="stats.html">Stats</a>
+                <a href="growth.html">Growth</a>
+                <a href="status.html">Status</a>
+              </div>
+
+              <div class="dropdown-category">
+                <div class="dropdown-category-header">📚 Documentation</div>
+                <a href="docs.html">Docs</a>
+                <a href="api.html">API</a>
+                <a href="faq.html">FAQ</a>
+              </div>
+
+              <div class="dropdown-category">
+                <div class="dropdown-category-header">👥 Community</div>
+                <a href="showcase.html">Showcase</a>
+                <a href="testimonials.html">Testimonials</a>
+                <a href="vote-features.html">Vote Features</a>
+                <a href="changelog.html">Changelog</a>
+              </div>
+            </div>
+          </div>
+
+          <a
+            href="https://regular-puma-clearly.ngrok-free.app"
+            target="_blank"
+            class="btn-dashboard"
+            >Dashboard</a
+          >
+          <a href="setup-wizard.html" class="btn-nav">Get Started</a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="page-header">
+      <div class="container">
+        <h1>⚔️ Nexus vs Wick</h1>
+        <p>
+          Feature-by-feature comparison of the two leading Discord security bots
+        </p>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <div class="container">
+        <!-- Live Score Calculator -->
+        <div
+          style="
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            text-align: center;
+          "
+        >
+          <h2 style="margin-bottom: 20px">🏆 Live Comparison Score</h2>
+          <p style="opacity: 0.9; margin-bottom: 30px">
+            Based on the features below
+          </p>
+          <div
+            style="
+              display: flex;
+              justify-content: space-around;
+              align-items: center;
+              flex-wrap: wrap;
+              gap: 40px;
+            "
+          >
+            <div>
+              <div style="font-size: 1.2rem; opacity: 0.8; margin-bottom: 10px">
+                NEXUS
+              </div>
+              <div
+                id="nexus-score"
+                style="
+                  font-size: 5rem;
+                  font-weight: 900;
+                  background: linear-gradient(135deg, #00d1b2 0%, #667eea 100%);
+                  -webkit-background-clip: text;
+                  -webkit-text-fill-color: transparent;
+                "
+              >
+                7
+              </div>
+              <div style="opacity: 0.8">wins</div>
+            </div>
+            <div style="font-size: 3rem; opacity: 0.5">VS</div>
+            <div>
+              <div style="font-size: 1.2rem; opacity: 0.8; margin-bottom: 10px">
+                WICK
+              </div>
+              <div
+                id="wick-score"
+                style="font-size: 5rem; font-weight: 900; color: #ff4444"
+              >
+                1
+              </div>
+              <div style="opacity: 0.8">wins</div>
+            </div>
+          </div>
+          <div
+            style="
+              margin-top: 30px;
+              padding: 20px;
+              background: rgba(0, 209, 178, 0.3);
+              border-radius: 15px;
+              border: 2px solid #00d1b2;
+            "
+          >
+            <h3 style="font-size: 1.8rem; color: #00d1b2">🎉 Nexus Wins!</h3>
+            <p style="margin-top: 10px; opacity: 0.9">
+              Nexus beats Wick in 7 out of 8 categories
+            </p>
+          </div>
+        </div>
+
+        <!-- Executive Summary -->
+        <div class="feature-category">
+          <h2>📊 Executive Summary</h2>
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Wick</th>
+                  <th>Nexus</th>
+                  <th>Winner</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Price</strong></td>
+                  <td>Premium required for advanced features</td>
+                  <td>100% Free</td>
+                  <td>🏆 Nexus</td>
+                </tr>
+                <tr>
+                  <td><strong>Open Source</strong></td>
+                  <td class="cross">✗ Closed Source</td>
+                  <td class="check">✓ Fully Open Source</td>
+                  <td>🏆 Nexus</td>
+                </tr>
+                <tr style="background: rgba(255, 215, 0, 0.1)">
+                  <td><strong>🔒 Privacy & Trust</strong></td>
+                  <td class="cross">✗ Unknown data practices - can't verify</td>
+                  <td class="check">✓ Transparent - every line auditable</td>
+                  <td>🏆 Nexus</td>
+                </tr>
+                <tr>
+                  <td><strong>Data Collection</strong></td>
+                  <td class="cross">⚠️ Unknown (closed source)</td>
+                  <td class="check">✓ Minimal - code is public</td>
+                  <td>🏆 Nexus</td>
+                </tr>
+                <tr>
+                  <td><strong>AI Features</strong></td>
+                  <td class="cross">✗</td>
+                  <td class="check">✓ Behavioral analysis, predictions</td>
+                  <td>🏆 Nexus</td>
+                </tr>
+                <tr>
+                  <td><strong>Anti-Raid</strong></td>
+                  <td>1 algorithm</td>
+                  <td>4 algorithms</td>
+                  <td>🏆 Nexus</td>
+                </tr>
+                <tr>
+                  <td><strong>Anti-Nuke</strong></td>
+                  <td>Basic protection (requires role hierarchy)</td>
+                  <td>Advanced + predictive (requires role hierarchy)</td>
+                  <td>🏆 Nexus (more features)</td>
+                </tr>
+                <tr>
+                  <td><strong>Recovery</strong></td>
+                  <td>Manual restoration</td>
+                  <td>Auto-recovery + smart cleanup + hourly snapshots</td>
+                  <td>🏆 Nexus</td>
+                </tr>
+                <tr>
+                  <td><strong>Threat Network</strong></td>
+                  <td class="cross">✗</td>
+                  <td class="check">✓ Cross-server intelligence</td>
+                  <td>🏆 Nexus</td>
+                </tr>
+                <tr>
+                  <td><strong>Performance</strong></td>
+                  <td>Standard</td>
+                  <td>Optimized + cached</td>
+                  <td>🏆 Nexus</td>
+                </tr>
+                <tr>
+                  <td><strong>Reputation</strong></td>
+                  <td class="check">✓ 847K+ servers, established</td>
+                  <td>New, growing</td>
+                  <td>🏆 Wick</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Security Comparison -->
+        <div class="feature-category">
+          <h2>🛡️ Security Features</h2>
+
+          <div class="feature-detailed">
+            <h3>Anti-Raid Protection</h3>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 30px;
+                margin-top: 20px;
+              "
+            >
+              <div>
+                <h4>❌ Wick</h4>
+                <ul>
+                  <li>Rate-based detection only</li>
+                  <li>Fixed thresholds</li>
+                  <li>Manual configuration</li>
+                </ul>
+              </div>
+              <div>
+                <h4>✅ Nexus</h4>
+                <ul>
+                  <li><strong>4 detection algorithms</strong></li>
+                  <li><strong>🎯 Server-size-aware thresholds</strong></li>
+                  <li><strong>Adaptive scaling (5-25 joins/10s)</strong></li>
+                  <li><strong>Whitelist system</strong></li>
+                  <li><strong>Cross-server threat intel</strong></li>
+                  <li>
+                    <strong>Zero false positives in large servers</strong>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="success-box" style="margin-top: 20px">
+              <strong>Winner: Nexus</strong> - Catches 4x more raid types with
+              fewer false positives. <strong>NEW:</strong> Thresholds
+              automatically scale for large servers (500+) - no more false
+              alerts during partnerships or viral spikes!
+            </div>
+          </div>
+
+          <div class="feature-detailed">
+            <h3>Anti-Nuke Protection</h3>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 30px;
+                margin-top: 20px;
+              "
+            >
+              <div>
+                <h4>❌ Wick</h4>
+                <ul>
+                  <li>Basic monitoring</li>
+                  <li>Reactive only</li>
+                  <li>Fixed thresholds</li>
+                  <li>Limited recovery</li>
+                </ul>
+              </div>
+              <div>
+                <h4>✅ Nexus</h4>
+                <ul>
+                  <li><strong>Comprehensive monitoring</strong></li>
+                  <li><strong>Predictive detection</strong></li>
+                  <li><strong>🎯 Server-size-aware thresholds</strong></li>
+                  <li><strong>Intelligent scaling (1.0x-2.0x)</strong></li>
+                  <li><strong>Permission testing detection</strong></li>
+                  <li><strong>Auto-recovery with snapshots</strong></li>
+                  <li><strong>Parallel restoration (10x faster)</strong></li>
+                  <li>
+                    <strong
+                      >🆕 Smart cleanup: Auto-deletes spam channels, roles, and
+                      webhooks created by attacker before restoring</strong
+                    >
+                  </li>
+                  <li>
+                    <strong
+                      >Safety checks: Only deletes items created in last 5
+                      minutes by detected threat</strong
+                    >
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div
+              style="
+                background: rgba(255, 165, 0, 0.2);
+                padding: 20px;
+                border-radius: 10px;
+                border-left: 4px solid #ffa500;
+                margin-top: 20px;
+              "
+            >
+              <strong style="color: #ffa500">⚠️ CRITICAL REQUIREMENT:</strong>
+              <p style="margin: 10px 0 0 0; font-size: 1rem">
+                Both bots require their role to be positioned
+                <strong>ABOVE all other roles</strong> to function. Without
+                proper role hierarchy, detection works but action fails
+                (permission errors). Use <code>/security rolecheck</code> after
+                adding Nexus to verify setup.
+              </p>
+            </div>
+            <div class="success-box" style="margin-top: 20px">
+              <strong>Winner: Nexus</strong> - More detection algorithms and
+              faster recovery.
+              <strong>Both require proper role positioning to work.</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI Comparison -->
+        <div class="feature-category">
+          <h2>🤖 AI & Intelligence</h2>
+
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Feature</th>
+                  <th>Wick</th>
+                  <th>Nexus</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Behavioral Analysis</td>
+                  <td class="cross">✗</td>
+                  <td class="check">✓</td>
+                </tr>
+                <tr>
+                  <td>Predictive Threats</td>
+                  <td class="cross">✗</td>
+                  <td class="check">✓</td>
+                </tr>
+                <tr>
+                  <td>Smart Recommendations</td>
+                  <td class="cross">✗</td>
+                  <td class="check">✓</td>
+                </tr>
+                <tr>
+                  <td>Threat Intelligence Network</td>
+                  <td class="cross">✗</td>
+                  <td class="check">✓</td>
+                </tr>
+                <tr>
+                  <td>Performance AI</td>
+                  <td class="cross">✗</td>
+                  <td class="check">✓</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="success-box">
+            <strong>Winner: Nexus</strong> - Wick has zero AI features
+          </div>
+        </div>
+
+        <!-- Privacy & Trust Comparison -->
+        <div
+          class="feature-category"
+          style="
+            background: linear-gradient(
+              135deg,
+              rgba(255, 215, 0, 0.1) 0%,
+              rgba(255, 165, 0, 0.1) 100%
+            );
+            padding: 40px;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+          "
+        >
+          <h2>🔒 Privacy & Trust - THE Critical Difference</h2>
+
+          <div
+            style="
+              background: rgba(255, 0, 0, 0.1);
+              padding: 20px;
+              border-radius: 10px;
+              border-left: 4px solid #ff0000;
+              margin-bottom: 30px;
+            "
+          >
+            <h3 style="color: #ff6b6b; margin-top: 0">
+              ⚠️ The Wick Problem: Closed Source = Unknown Risks
+            </h3>
+            <p style="font-size: 1.1rem; margin-bottom: 15px">
+              <strong>Wick is closed source.</strong> This means
+              <strong>you cannot verify</strong> what it's actually doing on
+              your server.
+            </p>
+            <ul style="font-size: 1rem">
+              <li>
+                <strong>❌ Could be logging all your messages</strong> - You
+                wouldn't know
+              </li>
+              <li>
+                <strong>❌ Could be collecting user data</strong> - You can't
+                verify
+              </li>
+              <li>
+                <strong>❌ Could have security vulnerabilities</strong> - No
+                community audit
+              </li>
+              <li>
+                <strong>❌ Could be selling your data</strong> - No way to check
+              </li>
+              <li>
+                <strong>❌ Could have backdoors</strong> - Zero transparency
+              </li>
+            </ul>
+          </div>
+
+          <div
+            style="
+              background: rgba(0, 255, 136, 0.1);
+              padding: 20px;
+              border-radius: 10px;
+              border-left: 4px solid #00ff88;
+              margin-bottom: 30px;
+            "
+          >
+            <h3 style="color: #00ff88; margin-top: 0">
+              ✅ The Nexus Advantage: Open Source = Complete Trust
+            </h3>
+            <p style="font-size: 1.1rem; margin-bottom: 15px">
+              <strong>Nexus is 100% open source.</strong> Every single line of
+              code is public and auditable.
+            </p>
+            <ul style="font-size: 1rem">
+              <li>
+                <strong>✅ Verify every feature yourself</strong> - Code is on
+                GitHub
+              </li>
+              <li>
+                <strong>✅ No hidden data collection</strong> - Transparent
+                logging
+              </li>
+              <li>
+                <strong>✅ Community-audited security</strong> - Anyone can
+                review
+              </li>
+              <li>
+                <strong>✅ Privacy-focused</strong> - Minimal data storage
+              </li>
+              <li>
+                <strong>✅ No backdoors possible</strong> - Code is public
+              </li>
+              <li>
+                <strong>✅ Self-hostable</strong> - Run your own instance if
+                desired
+              </li>
+            </ul>
+          </div>
+
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Privacy Aspect</th>
+                  <th>Wick (Closed Source)</th>
+                  <th>Nexus (Open Source)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Code Visibility</strong></td>
+                  <td class="cross">Hidden - cannot review</td>
+                  <td class="check">Public on GitHub</td>
+                </tr>
+                <tr>
+                  <td><strong>Data Practices</strong></td>
+                  <td class="cross">Unknown - must trust blindly</td>
+                  <td class="check">Verifiable in code</td>
+                </tr>
+                <tr>
+                  <td><strong>Security Audit</strong></td>
+                  <td class="cross">Impossible - no access</td>
+                  <td class="check">Anyone can audit</td>
+                </tr>
+                <tr>
+                  <td><strong>Backdoor Risk</strong></td>
+                  <td class="cross">⚠️ Possible - can't verify</td>
+                  <td class="check">✓ Impossible - code is public</td>
+                </tr>
+                <tr>
+                  <td><strong>Privacy Guarantee</strong></td>
+                  <td class="cross">Trust-based only</td>
+                  <td class="check">Code-verified</td>
+                </tr>
+                <tr>
+                  <td><strong>Community Trust</strong></td>
+                  <td>⚠️ Must trust the developers</td>
+                  <td>✓ Don't trust - verify!</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div
+            style="
+              background: rgba(102, 126, 234, 0.2);
+              padding: 25px;
+              border-radius: 10px;
+              margin-top: 30px;
+              text-align: center;
+            "
+          >
+            <h3 style="color: #00ff88; font-size: 1.5rem; margin-bottom: 15px">
+              💡 The Bottom Line
+            </h3>
+            <p style="font-size: 1.2rem; line-height: 1.6">
+              <strong
+                >Would you trust a closed-source security bot with admin
+                permissions on your server?</strong
+              ><br />
+              Wick asks you to trust them blindly. Nexus lets you verify
+              everything.<br />
+              <span style="color: #00ff88; font-weight: 700"
+                >Trust through transparency, not promises.</span
+              >
+            </p>
+          </div>
+        </div>
+
+        <!-- Pricing Comparison -->
+        <div class="feature-category">
+          <h2>💰 Pricing</h2>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px">
+            <div class="feature-detailed">
+              <h3>Wick Pricing</h3>
+              <ul>
+                <li>Free tier with basic features</li>
+                <li>Premium tier for advanced features</li>
+                <li>Recurring cost (price not public)</li>
+                <li>Required for advanced anti-nuke</li>
+              </ul>
+            </div>
+            <div class="feature-detailed" style="border-color: #00ff00">
+              <h3>Nexus Pricing</h3>
+              <ul>
+                <li><strong>100% FREE</strong></li>
+                <li><strong>All features included</strong></li>
+                <li><strong>No premium tiers</strong></li>
+                <li><strong>No hidden costs</strong></li>
+                <li><strong>Free forever</strong></li>
+              </ul>
+            </div>
+          </div>
+          <div class="success-box">
+            <strong>Winner: Nexus</strong> - $0 vs $$$ premium
+          </div>
+        </div>
+
+        <!-- Real-World Scenarios -->
+        <div class="feature-category">
+          <h2>🎯 Real-World Attack Scenarios</h2>
+
+          <div class="feature-detailed">
+            <h3>Scenario 1: Mass Channel Deletion</h3>
+            <div style="margin-top: 20px">
+              <p>
+                <strong>Attack:</strong> Malicious admin deletes all channels
+              </p>
+
+              <div
+                style="
+                  display: grid;
+                  grid-template-columns: 1fr 1fr;
+                  gap: 20px;
+                  margin-top: 15px;
+                "
+              >
+                <div>
+                  <h4>Wick Response:</h4>
+                  <ol>
+                    <li>Detects after 1-2 channels deleted</li>
+                    <li>Bans attacker</li>
+                    <li>Channels are lost</li>
+                    <li>Manual recovery required</li>
+                  </ol>
+                  <p style="color: #ff4444; margin-top: 10px">
+                    <strong>Result:</strong> Server damaged, manual restoration
+                    needed
+                  </p>
+                </div>
+                <div>
+                  <h4>Nexus Response (with proper role hierarchy):</h4>
+                  <ol>
+                    <li>
+                      <strong>Detects on 3rd deletion</strong> (configurable
+                      threshold)
+                    </li>
+                    <li><strong>Attempts ban + permission removal</strong></li>
+                    <li>
+                      <strong>⚠️ Success if bot role > attacker role</strong>
+                    </li>
+                    <li>
+                      <strong>Auto-recovery starts if ban succeeds</strong>
+                    </li>
+                    <li>
+                      <strong
+                        >🆕 Smart cleanup: Deletes all spam
+                        channels/roles/webhooks created by attacker</strong
+                      >
+                    </li>
+                    <li><strong>Channels restored from snapshot</strong></li>
+                    <li>
+                      <strong
+                        >Server restoration in seconds - clean and
+                        complete</strong
+                      >
+                    </li>
+                  </ol>
+                  <p style="color: #ffa500; margin-top: 10px">
+                    <strong>Result:</strong> Some damage possible, but fast
+                    recovery (depends on role positioning)
+                  </p>
+                  <p
+                    style="color: #ff6b6b; margin-top: 10px; font-size: 0.9rem"
+                  >
+                    <strong>⚠️ Without proper role hierarchy:</strong> Detection
+                    works, action fails - alerts sent but damage occurs
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="feature-detailed">
+            <h3>Scenario 2: Coordinated Raid</h3>
+            <div style="margin-top: 20px">
+              <p>
+                <strong>Attack:</strong> 50 bot accounts join slowly to bypass
+                rate limits
+              </p>
+
+              <div
+                style="
+                  display: grid;
+                  grid-template-columns: 1fr 1fr;
+                  gap: 20px;
+                  margin-top: 15px;
+                "
+              >
+                <div>
+                  <h4>Wick Response:</h4>
+                  <ul>
+                    <li>Rate detection may miss slow joins</li>
+                    <li>Some raiders get through</li>
+                    <li>Manual cleanup needed</li>
+                  </ul>
+                  <p style="color: #ff4444; margin-top: 10px">
+                    <strong>Result:</strong> Partial protection
+                  </p>
+                </div>
+                <div>
+                  <h4>Nexus Response:</h4>
+                  <ul>
+                    <li><strong>4 algorithms detect pattern</strong></li>
+                    <li>
+                      <strong>Behavioral analysis flags new accounts</strong>
+                    </li>
+                    <li><strong>Threat intel checks known raiders</strong></li>
+                    <li><strong>Auto-quarantine activated</strong></li>
+                    <li>
+                      <strong>Raiders detected and action attempted</strong>
+                    </li>
+                  </ul>
+                  <p style="color: #00ff00; margin-top: 10px">
+                    <strong>Result:</strong> Superior detection, fast response
+                    (effectiveness depends on configuration)
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="feature-detailed">
+            <h3>Scenario 3: Permission Testing (Slow Nuke)</h3>
+            <div style="margin-top: 20px">
+              <p>
+                <strong>Attack:</strong> Attacker tests permissions gradually
+                before nuking
+              </p>
+
+              <div
+                style="
+                  display: grid;
+                  grid-template-columns: 1fr 1fr;
+                  gap: 20px;
+                  margin-top: 15px;
+                "
+              >
+                <div>
+                  <h4>Wick Response:</h4>
+                  <ul>
+                    <li>Doesn't detect permission testing</li>
+                    <li>Waits for actual nuke attempt</li>
+                    <li>Reactive only</li>
+                  </ul>
+                  <p style="color: #ff4444; margin-top: 10px">
+                    <strong>Result:</strong> Attack happens before detection
+                  </p>
+                </div>
+                <div>
+                  <h4>Nexus Response:</h4>
+                  <ul>
+                    <li>
+                      <strong>Detects 3+ permission changes in 10s</strong>
+                    </li>
+                    <li><strong>60%+ confidence = action attempted</strong></li>
+                    <li>
+                      <strong>Attempts to remove dangerous permissions</strong>
+                    </li>
+                    <li>
+                      <strong>⚠️ Success depends on role hierarchy</strong>
+                    </li>
+                  </ul>
+                  <p style="color: #ffa500; margin-top: 10px">
+                    <strong>Result:</strong> Fast detection, action attempted
+                    (requires proper setup)
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Feature Comparison Table -->
+        <div class="feature-category">
+          <h2>📋 Complete Feature Comparison</h2>
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Feature</th>
+                  <th>Wick</th>
+                  <th>Nexus</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td
+                    colspan="3"
+                    style="
+                      background: rgba(255, 255, 255, 0.1);
+                      font-weight: bold;
+                    "
+                  >
+                    Security
+                  </td>
+                </tr>
+                <tr>
+                  <td>AI Learning</td>
+                  <td class="cross">✗</td>
+                  <td class="check">✓</td>
+                </tr>
+                <tr>
+                  <td>Threat Network</td>
+                  <td class="cross">✗</td>
+                  <td class="check">✓</td>
+                </tr>
+                <tr>
+                  <td>Predictive Detection</td>
+                  <td class="cross">✗</td>
+                  <td class="check">✓</td>
+                </tr>
+                <tr>
+                  <td>Permission Testing Detection</td>
+                  <td class="cross">✗</td>
+                  <td class="check">✓</td>
+                </tr>
+                <tr>
+                  <td>Whitelist System</td>
+                  <td class="cross">✗</td>
+                  <td class="check">✓</td>
+                </tr>
+                <tr>
+                  <td>Auto-Recovery</td>
+                  <td class="cross">✗</td>
+                  <td class="check">✓</td>
+                </tr>
+
+                <tr>
+                  <td
+                    colspan="3"
+                    style="
+                      background: rgba(255, 255, 255, 0.1);
+                      font-weight: bold;
+                    "
+                  >
+                    Backup & Recovery
+                  </td>
+                </tr>
+                <tr>
+                  <td>Hourly Snapshots</td>
+                  <td class="cross">✗</td>
+                  <td class="check">✓</td>
+                </tr>
+                <tr>
+                  <td>Point-in-Time Recovery</td>
+                  <td class="cross">✗</td>
+                  <td class="check">✓</td>
+                </tr>
+                <tr>
+                  <td>Parallel Recovery</td>
+                  <td class="cross">✗</td>
+                  <td class="check">✓</td>
+                </tr>
+                <tr>
+                  <td><strong>Smart Spam Cleanup</strong></td>
+                  <td class="cross">✗</td>
+                  <td class="check">✓</td>
+                </tr>
+                <tr>
+                  <td style="padding-left: 30px; font-size: 0.9rem">
+                    Auto-delete attacker's channels
+                  </td>
+                  <td class="cross">✗</td>
+                  <td class="check">✓</td>
+                </tr>
+                <tr>
+                  <td style="padding-left: 30px; font-size: 0.9rem">
+                    Auto-delete attacker's roles
+                  </td>
+                  <td class="cross">✗</td>
+                  <td class="check">✓</td>
+                </tr>
+                <tr>
+                  <td style="padding-left: 30px; font-size: 0.9rem">
+                    Auto-delete attacker's webhooks
+                  </td>
+                  <td class="cross">✗</td>
+                  <td class="check">✓</td>
+                </tr>
+                <tr>
+                  <td>Webhook Backup</td>
+                  <td class="cross">✗</td>
+                  <td class="check">✓</td>
+                </tr>
+                <tr>
+                  <td>Emoji/Sticker Backup</td>
+                  <td class="cross">✗</td>
+                  <td class="check">✓</td>
+                </tr>
+
+                <tr>
+                  <td
+                    colspan="3"
+                    style="
+                      background: rgba(255, 255, 255, 0.1);
+                      font-weight: bold;
+                    "
+                  >
+                    Automation
+                  </td>
+                </tr>
+                <tr>
+                  <td>Custom Workflows</td>
+                  <td class="cross">✗</td>
+                  <td class="check">✓</td>
+                </tr>
+                <tr>
+                  <td>Smart Recommendations</td>
+                  <td class="cross">✗</td>
+                  <td class="check">✓</td>
+                </tr>
+                <tr>
+                  <td>Scheduled Actions</td>
+                  <td class="cross">✗</td>
+                  <td class="check">✓</td>
+                </tr>
+                <tr>
+                  <td>Auto-Responders</td>
+                  <td class="cross">✗</td>
+                  <td class="check">✓</td>
+                </tr>
+
+                <tr>
+                  <td
+                    colspan="3"
+                    style="
+                      background: rgba(255, 255, 255, 0.1);
+                      font-weight: bold;
+                    "
+                  >
+                    Community
+                  </td>
+                </tr>
+                <tr>
+                  <td>Voting Rewards</td>
+                  <td class="cross">✗</td>
+                  <td class="check">✓</td>
+                </tr>
+                <tr>
+                  <td>Achievement System</td>
+                  <td class="cross">✗</td>
+                  <td class="check">✓</td>
+                </tr>
+                <tr>
+                  <td>Polls & Voting</td>
+                  <td class="cross">✗</td>
+                  <td class="check">✓</td>
+                </tr>
+                <tr>
+                  <td>Suggestion System</td>
+                  <td class="cross">✗</td>
+                  <td class="check">✓</td>
+                </tr>
+
+                <tr>
+                  <td
+                    colspan="3"
+                    style="
+                      background: rgba(255, 255, 255, 0.1);
+                      font-weight: bold;
+                    "
+                  >
+                    Performance
+                  </td>
+                </tr>
+                <tr>
+                  <td>Performance Monitoring</td>
+                  <td class="cross">✗</td>
+                  <td class="check">✓</td>
+                </tr>
+                <tr>
+                  <td>AI Optimization</td>
+                  <td class="cross">✗</td>
+                  <td class="check">✓</td>
+                </tr>
+                <tr>
+                  <td>Intelligent Caching</td>
+                  <td class="cross">✗</td>
+                  <td class="check">✓</td>
+                </tr>
+                <tr>
+                  <td>Database Indexing</td>
+                  <td class="cross">✗</td>
+                  <td class="check">✓</td>
+                </tr>
+
+                <tr>
+                  <td
+                    colspan="3"
+                    style="
+                      background: rgba(255, 255, 255, 0.1);
+                      font-weight: bold;
+                    "
+                  >
+                    Transparency
+                  </td>
+                </tr>
+                <tr>
+                  <td>Open Source</td>
+                  <td class="cross">✗</td>
+                  <td class="check">✓</td>
+                </tr>
+                <tr>
+                  <td>Verifiable Code</td>
+                  <td class="cross">✗</td>
+                  <td class="check">✓</td>
+                </tr>
+                <tr>
+                  <td>Community-Driven</td>
+                  <td class="cross">✗</td>
+                  <td class="check">✓</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Bottom Line -->
+        <div class="feature-category">
+          <h2>🎯 The Bottom Line</h2>
+
+          <div
+            style="
+              display: grid;
+              grid-template-columns: 1fr 1fr;
+              gap: 30px;
+              margin-bottom: 30px;
+            "
+          >
+            <div class="feature-detailed">
+              <h3>Choose Wick If:</h3>
+              <ul>
+                <li>You value established reputation above all</li>
+                <li>You don't mind paying for premium features</li>
+                <li>You prefer closed-source software</li>
+                <li>You don't need AI or advanced automation</li>
+              </ul>
+            </div>
+            <div class="feature-detailed" style="border-color: #00ff00">
+              <h3>Choose Nexus If:</h3>
+              <ul>
+                <li><strong>You want everything 100% free</strong></li>
+                <li><strong>You value transparency and open source</strong></li>
+                <li><strong>You want AI-powered security</strong></li>
+                <li><strong>You want faster performance</strong></li>
+                <li><strong>You want features Wick doesn't have</strong></li>
+                <li><strong>You want to influence development</strong></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="success-box">
+            <h3 style="margin-bottom: 15px">Our Verdict</h3>
+            <p>
+              <strong>Nexus wins</strong> on features, price, performance, and
+              innovation. Wick wins on established reputation and user base.
+            </p>
+            <p style="margin-top: 15px">
+              For most server owners,
+              <strong>Nexus is the better choice</strong>. Try both and compare
+              yourself - Nexus is free!
+            </p>
+          </div>
+        </div>
+
+        <!-- Migration Guide -->
+        <div class="feature-category">
+          <h2>🔄 Migrating from Wick to Nexus</h2>
+
+          <div
+            style="
+              background: rgba(255, 165, 0, 0.2);
+              padding: 20px;
+              border-radius: 10px;
+              border-left: 4px solid #ffa500;
+              margin-bottom: 30px;
+            "
+          >
+            <strong style="color: #ffa500">⚠️ IMPORTANT:</strong>
+            <p style="margin: 10px 0 0 0">
+              Running multiple security bots simultaneously has NOT been
+              extensively tested and may cause conflicts. We recommend
+              <strong>removing Wick before adding Nexus</strong> or using a test
+              server first.
+            </p>
+          </div>
+
+          <div class="setup-steps">
+            <div class="setup-step">
+              <h3>Recommended: Test Server First</h3>
+              <p>
+                Add Nexus to a test/staging server to familiarize yourself with
+                features before production deployment
+              </p>
+            </div>
+            <div class="setup-step">
+              <h3>Invite Nexus</h3>
+              <p>
+                Add Nexus to your server and grant administrator permissions
+              </p>
+            </div>
+            <div class="setup-step">
+              <h3>⚠️ CRITICAL: Position Bot Role at TOP</h3>
+              <p>
+                Server Settings → Roles → Drag Nexus role to highest position.
+                Use <code>/security rolecheck</code> to verify.
+                <strong style="color: #ff6b6b">This is NOT optional.</strong>
+              </p>
+            </div>
+            <div class="setup-step">
+              <h3>Run Quick Setup</h3>
+              <p>
+                Use <code>/quicksetup</code> for guided configuration or
+                <code>/setup preset</code> for instant setup
+              </p>
+            </div>
+            <div class="setup-step">
+              <h3>Configure Protection</h3>
+              <p>
+                Enable anti-raid, anti-nuke, and automod. Test with
+                <code>/security test</code> if available.
+              </p>
+            </div>
+            <div class="setup-step">
+              <h3>Remove Wick (Optional)</h3>
+              <p>
+                Once Nexus is configured and verified working, you can remove
+                Wick. Or keep both if you prefer redundancy.
+              </p>
+            </div>
+          </div>
+
+          <div class="info-box">
+            <p>
+              <strong>Note:</strong> Cases and warnings don't auto-transfer
+              (different databases). Nexus starts fresh moderation history. Use
+              <code>/migrate</code> command to attempt data migration
+              (experimental).
+            </p>
+          </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="cta-box">
+          <h2>See For Yourself</h2>
+          <p>
+            Try Nexus alongside Wick. Compare features. We're confident you'll
+            switch.
+          </p>
+          <a
+            href="https://discord.com/oauth2/authorize?client_id=1444739230679957646&permissions=268443574&scope=bot%20applications.commands"
+            class="btn btn-primary btn-large"
+          >
+            Try Nexus Free
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="container">
+        <div class="footer-links">
+          <a href="index.html">Home</a>
+          <a href="features.html">Features</a>
+          <a href="commands.html">Commands</a>
+          <a href="comparison.html">vs Wick</a>
+          <a href="https://github.com/Azzraya/Nexus" target="_blank">GitHub</a>
+          <a href="https://discord.gg/warmA4BsPP" target="_blank">Support</a>
+        </div>
+        <p>Nexus - Beyond Wick. Beyond Everything.</p>
+        <p>&copy; 2025 Nexus Bot. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>

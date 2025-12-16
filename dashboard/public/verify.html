@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verify - Nexus Bot</title>
+    <script
+      src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+      async
+      defer
+    ></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      .verify-container {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        padding: 40px;
+        max-width: 500px;
+        width: 100%;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        text-align: center;
+      }
+
+      .logo {
+        font-size: 3rem;
+        margin-bottom: 10px;
+      }
+
+      h1 {
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 2rem;
+      }
+
+      .subtitle {
+        color: #666;
+        margin-bottom: 30px;
+        font-size: 1rem;
+      }
+
+      .verify-form {
+        margin-top: 30px;
+      }
+
+      .status-message {
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        font-weight: 500;
+        display: none;
+      }
+
+      .status-message.success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+        display: block;
+      }
+
+      .status-message.error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+        display: block;
+      }
+
+      .status-message.info {
+        background: #d1ecf1;
+        color: #0c5460;
+        border: 1px solid #bee5eb;
+        display: block;
+      }
+
+      .turnstile-container {
+        display: flex;
+        justify-content: center;
+        margin: 30px 0;
+        min-height: 65px;
+      }
+
+      .verify-button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 15px 40px;
+        border-radius: 10px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+        width: 100%;
+        margin-top: 20px;
+      }
+
+      .verify-button:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+      }
+
+      .verify-button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .server-info {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+      }
+
+      .server-info h3 {
+        color: #333;
+        margin-bottom: 10px;
+      }
+
+      .server-info p {
+        color: #666;
+        font-size: 0.9rem;
+      }
+
+      .loading {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: white;
+        animation: spin 0.8s linear infinite;
+        margin-right: 10px;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .footer {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #e0e0e0;
+        color: #999;
+        font-size: 0.85rem;
+      }
+
+      .security-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: #e8f5e9;
+        color: #2e7d32;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        margin-top: 10px;
+      }
+
+      .progress-indicator {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin: 20px 0;
+      }
+
+      .progress-step {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #e0e0e0;
+        transition: all 0.3s;
+      }
+
+      .progress-step.active {
+        background: #667eea;
+        transform: scale(1.2);
+      }
+
+      .progress-step.complete {
+        background: #10b981;
+      }
+
+      .feature-list {
+        text-align: left;
+        margin: 20px 0;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        font-size: 0.9rem;
+      }
+
+      .feature-list li {
+        margin: 8px 0;
+        color: #555;
+      }
+
+      .footer a {
+        color: #667eea;
+        text-decoration: none;
+      }
+
+      .footer a:hover {
+        text-decoration: underline;
+      }
+
+      @media (max-width: 600px) {
+        .verify-container {
+          padding: 30px 20px;
+        }
+
+        h1 {
+          font-size: 1.5rem;
+        }
+
+        .logo {
+          font-size: 2.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="verify-container">
+      <div class="logo">🛡️</div>
+      <h1>Server Verification</h1>
+      <p class="subtitle">
+        Complete the verification below to gain access to the server
+      </p>
+
+      <div id="serverInfo" class="server-info" style="display: none">
+        <h3 id="serverName">Loading...</h3>
+        <p id="serverDescription"></p>
+      </div>
+
+      <div class="progress-indicator">
+        <div class="progress-step active" id="step1"></div>
+        <div class="progress-step" id="step2"></div>
+        <div class="progress-step" id="step3"></div>
+      </div>
+
+      <div class="feature-list" style="display: none" id="securityFeatures">
+        <strong>🛡️ Security Features:</strong>
+        <ul style="margin-top: 10px; margin-left: 20px">
+          <li>Cloudflare Turnstile bot protection</li>
+          <li>Account age verification</li>
+          <li>Suspicious activity detection</li>
+          <li>Secure verification process</li>
+        </ul>
+      </div>
+
+      <div id="statusMessage" class="status-message"></div>
+
+      <form class="verify-form" id="verifyForm">
+        <div class="turnstile-container">
+          <div
+            class="cf-turnstile"
+            data-sitekey=""
+            data-callback="onTurnstileSuccess"
+            data-error-callback="onTurnstileError"
+            data-expired-callback="onTurnstileExpired"
+            id="turnstileWidget"
+          ></div>
+        </div>
+
+        <button type="submit" class="verify-button" id="verifyButton" disabled>
+          Verify My Account
+        </button>
+      </form>
+
+      <div class="footer">
+        <p>
+          Protected by <strong>Nexus Bot</strong> | Powered by Cloudflare
+          Turnstile
+        </p>
+        <p style="margin-top: 5px">
+          Having trouble? Contact server administrators
+        </p>
+      </div>
+    </div>
+
+    <script>
+      let turnstileToken = null;
+      let verificationId = null;
+      let siteKey = "";
+
+      // Get verification ID and site key from URL
+      const urlParams = new URLSearchParams(window.location.search);
+      verificationId = urlParams.get("id");
+      const serverId = urlParams.get("server");
+
+      if (!verificationId) {
+        showError(
+          "Invalid verification link. Please use the link provided in Discord."
+        );
+      }
+
+      // Load server info if server ID is provided
+      if (serverId) {
+        fetch(`/api/verify/server-info/${serverId}`)
+          .then((r) => r.json())
+          .then((data) => {
+            if (data.success) {
+              document.getElementById("serverName").textContent = data.name;
+              document.getElementById("serverDescription").textContent =
+                data.description || "Discord Server";
+              document.getElementById("serverInfo").style.display = "block";
+
+              // Set Turnstile site key
+              if (data.turnstileSiteKey) {
+                siteKey = data.turnstileSiteKey;
+                document.getElementById("step1").classList.add("complete");
+                document.getElementById("securityFeatures").style.display =
+                  "block";
+                document
+                  .querySelector(".cf-turnstile")
+                  .setAttribute("data-sitekey", siteKey);
+                // Re-render Turnstile widget
+                if (typeof turnstile !== "undefined") {
+                  turnstile.render(document.getElementById("turnstileWidget"), {
+                    sitekey: siteKey,
+                    callback: onTurnstileSuccess,
+                    "error-callback": onTurnstileError,
+                    "expired-callback": onTurnstileExpired,
+                  });
+                }
+              } else {
+                // Fallback: try to get site key from env/config or show error
+                showError(
+                  "Turnstile site key not configured. Please contact server administrators."
+                );
+                document.getElementById("verifyButton").disabled = true;
+              }
+            }
+          })
+          .catch((err) => {
+            console.error("Failed to load server info:", err);
+          });
+      }
+
+      // Turnstile callbacks
+      function onTurnstileSuccess(token) {
+        turnstileToken = token;
+        document.getElementById("verifyButton").disabled = false;
+        document.getElementById("step2").classList.add("complete");
+        document.getElementById("step2").classList.add("active");
+        document.getElementById("step1").classList.remove("active");
+        hideStatus();
+      }
+
+      function onTurnstileError() {
+        showError(
+          "Verification failed. Please refresh the page and try again."
+        );
+        document.getElementById("verifyButton").disabled = true;
+        turnstileToken = null;
+      }
+
+      function onTurnstileExpired() {
+        showInfo("Verification expired. Please complete it again.");
+        document.getElementById("verifyButton").disabled = true;
+        turnstileToken = null;
+      }
+
+      // Form submission
+      document
+        .getElementById("verifyForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          if (!turnstileToken) {
+            showError("Please complete the verification challenge.");
+            return;
+          }
+
+          const button = document.getElementById("verifyButton");
+          button.disabled = true;
+          button.innerHTML = '<span class="loading"></span> Verifying...';
+
+          try {
+            const response = await fetch("/api/verify/complete", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                verificationId: verificationId,
+                turnstileToken: turnstileToken,
+              }),
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+              document.getElementById("step3").classList.add("complete");
+              document.getElementById("step3").classList.add("active");
+              document.getElementById("step2").classList.remove("active");
+              showSuccess(
+                "✅ Verification successful! You can now close this page and return to Discord."
+              );
+              button.textContent = "✓ Verified";
+              button.style.background = "#10b981";
+              button.disabled = true;
+
+              // Show security badge
+              const badge = document.createElement("div");
+              badge.className = "security-badge";
+              badge.innerHTML = "🔒 Securely Verified";
+              document.getElementById("statusMessage").appendChild(badge);
+
+              // Optionally redirect after a delay
+              setTimeout(() => {
+                window.close();
+              }, 3000);
+            } else {
+              showError(
+                data.reason || "Verification failed. Please try again."
+              );
+              button.disabled = false;
+              button.textContent = "Verify My Account";
+              turnstileToken = null;
+              // Reset Turnstile
+              if (typeof turnstile !== "undefined") {
+                turnstile.reset();
+              }
+            }
+          } catch (error) {
+            showError(
+              "Network error. Please check your connection and try again."
+            );
+            button.disabled = false;
+            button.textContent = "Verify My Account";
+          }
+        });
+
+      // Status message helpers
+      function showSuccess(message) {
+        const el = document.getElementById("statusMessage");
+        el.className = "status-message success";
+        el.textContent = message;
+      }
+
+      function showError(message) {
+        const el = document.getElementById("statusMessage");
+        el.className = "status-message error";
+        el.textContent = message;
+      }
+
+      function showInfo(message) {
+        const el = document.getElementById("statusMessage");
+        el.className = "status-message info";
+        el.textContent = message;
+      }
+
+      function hideStatus() {
+        document.getElementById("statusMessage").style.display = "none";
+      }
+    </script>
+  </body>
+</html>

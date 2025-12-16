@@ -1,0 +1,441 @@
+const AutoMod = require("../utils/automod");
+const db = require("../utils/database");
+const logger = require("../utils/logger");
+
+module.exports = {
+  name: "messageCreate",
+  async execute(message, client) {
+    // PERFORMANCE: Early returns to avoid unnecessary processing
+    if (message.author.bot) {
+      return;
+    }
+
+    if (message.system) {
+      return;
+    } // System messages
+    if (!message.guild) {
+      return;
+    } // DM messages
+
+    // Track behavioral patterns (metadata only, no content)
+    if (client.behavioralFP) {
+      client.behavioralFP.trackBehavior(
+        message.author.id,
+        message.guild.id,
+        "message",
+        {
+          length: message.content?.length || 0,
+          wordCount: message.content?.split(/\s+/).length || 0,
+          hasAttachments: message.attachments.size > 0,
+          hasMentions: message.mentions.users.size > 0,
+          hasLinks: /https?:\/\//.test(message.content || ""),
+          // NO content stored - only metadata
+        }
+      );
+    }
+
+    // Run security checks in parallel for better performance
+    const securityChecks = [];
+    if (client.advancedAntiNuke && message.channel) {
+      securityChecks.push(
+        client.advancedAntiNuke
+          .monitorChannelMessage(message.channel, message.author.id)
+          .catch((err) => {
+            logger.debug(
+              `[messageCreate] Channel message monitoring failed:`,
+              err.message
+            );
+          })
+      );
+      securityChecks.push(
+        client.advancedAntiNuke
+          .monitorEmojiSpam(message, message.author.id)
+          .catch((err) => {
+            logger.debug(
+              `[messageCreate] Emoji spam monitoring failed:`,
+              err.message
+            );
+          })
+      );
+    }
+
+    // Run security checks and stats update in parallel
+    await Promise.all([
+      ...securityChecks,
+      db
+        .updateUserStats(message.guild.id, message.author.id, "messages_sent")
+        .catch((err) => {
+          logger.debug(
+            `[messageCreate] User stats update failed:`,
+            err.message
+          );
+        }),
+    ]);
+
+    // XP is awarded via xpSystem.awardMessageXP() below (has cooldown protection)
+
+    // Check for custom commands (OPTIMIZED: Cache custom commands in Redis)
+    if (message.content.startsWith("!")) {
+      const commandName = message.content.slice(1).split(" ")[0].toLowerCase();
+
+      // Try cache first
+      const redisCache = require("../utils/redisCache");
+      const cacheKey = `custom_cmd_${message.guild.id}_${commandName}`;
+      let customCommand = await redisCache.get(cacheKey).catch(() => null);
+
+      if (!customCommand) {
+        // Fetch from database
+        customCommand = await new Promise((resolve, reject) => {
+          db.db.get(
+            "SELECT * FROM custom_commands WHERE guild_id = ? AND command_name = ?",
+            [message.guild.id, commandName],
+            (err, row) => {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(row);
+              }
+            }
+          );
+        });
+
+        // Cache for 10 minutes
+        if (customCommand) {
+          await redisCache.set(cacheKey, customCommand, 600).catch(() => {});
+        }
+      }
+
+      if (customCommand) {
+        // Support both old (response) and new (response_content) schemas
+        let response = customCommand.response_content || customCommand.response;
+
+        // Replace variables
+        if (response) {
+          response = response
+            .replace(/{user}/g, `<@${message.author.id}>`)
+            .replace(/{user\.tag}/g, message.author.tag)
+            .replace(/{user\.id}/g, message.author.id)
+            .replace(/{guild}/g, message.guild.name)
+            .replace(
+              /{member}/g,
+              message.member?.displayName || message.author.username
+            )
+            .replace(/{channel}/g, `<#${message.channel.id}>`);
+        }
+
+        if (!response) {
+          return; // No response content
+        }
+
+        if (
+          customCommand.use_embed ||
+          customCommand.response_type === "embed"
+        ) {
+          const { EmbedBuilder } = require("discord.js");
+          const embed = new EmbedBuilder()
+            .setDescription(response)
+            .setColor(0x5865f2)
+            .setTimestamp();
+          await message.reply({ embeds: [embed] });
+        } else {
+          await message.reply(response);
+        }
+        return;
+      }
+    }
+
+    // Check auto-responders
+    const AutoResponder = require("../commands/autoresponder");
+    await AutoResponder.checkAutoResponder(message);
+
+    // Check word filter (EXCEEDS WICK - advanced variation detection)
+    // Always checks default blacklist + server-specific blacklist
+    const wordFilter = require("../utils/wordFilter");
+    const config = await db.getServerConfig(message.guild.id);
+
+    // Check word filter (default blacklist is always active, server blacklist if enabled)
+    const serverBlacklist = config?.blacklisted_words
+      ? JSON.parse(config.blacklisted_words)
+      : [];
+
+    // Always check default blacklist, plus server blacklist if word filter is enabled
+    const filterResult = wordFilter.checkText(
+      message.content,
+      serverBlacklist,
+      true // Always include default blacklist
+    );
+
+    if (filterResult.detected) {
+      // For default blacklist violations, always delete (more strict)
+      // For server blacklist violations, use configured action
+      const isDefaultViolation = filterResult.isDefault;
+      const action = isDefaultViolation
+        ? "delete" // Default blacklist always just deletes
+        : config?.word_filter_action || "delete";
+
+      try {
+        // Delete message first
+        await message.delete().catch(() => {
+          // Silently fail if can't delete
+        });
+
+        // Execute action based on config (only for server blacklist violations)
+        if (!isDefaultViolation) {
+          const member = await message.guild.members
+            .fetch(message.author.id)
+            .catch(() => null);
+
+          if (member) {
+            switch (action) {
+              case "warn":
+                await message.channel
+                  .send({
+                    content: `⚠️ ${message.author}, your message was removed for containing inappropriate content.`,
+                  })
+                  .catch(() => {});
+                break;
+              case "timeout":
+                await member
+                  .timeout(600000, "Word filter violation")
+                  .catch(() => {});
+                break;
+              case "kick":
+                await member.kick("Word filter violation").catch(() => {});
+                break;
+              case "ban":
+                await member
+                  .ban({
+                    reason: "Word filter violation",
+                    deleteMessageDays: 1,
+                  })
+                  .catch(() => {});
+                break;
+              // "delete" is default - just delete, no additional action
+            }
+          }
+        }
+
+        // Log to database (encrypted at rest via Database.logAutomodViolation)
+        db.logAutomodViolation(
+          message.guild.id,
+          message.author.id,
+          "word_filter",
+          message.content.substring(0, 500), // further limited/encrypted in DB helper
+          action
+        ).catch(() => {
+          // Silently continue if logging fails
+        });
+
+        return; // Stop processing this message
+      } catch (error) {
+        logger.error("WordFilter", "Error processing word filter violation", {
+          message: error?.message || String(error),
+        });
+      }
+    }
+
+    // Check auto-moderation
+    await AutoMod.checkMessage(message, client);
+
+    // Check ADVANCED automod (EXCEEDS WICK - comprehensive message scanning)
+    if (client.advancedAutomod) {
+      try {
+        const violations = await client.advancedAutomod.checkMessage(message);
+        if (violations && violations.length > 0) {
+          const config = await db.getAutomodConfig(message.guild.id);
+          // Execute action for first violation (could be modified to handle all)
+          await client.advancedAutomod.executeAction(
+            message,
+            violations[0],
+            config
+          );
+        }
+      } catch (error) {
+        logger.error("AdvancedAutomod", "Message check failed", {
+          message: error?.message || String(error),
+          stack: error?.stack,
+          name: error?.name,
+        });
+      }
+    }
+
+    // Advanced Heat System
+    if (
+      client.heatSystem &&
+      typeof client.heatSystem.calculateHeat === "function"
+    ) {
+      try {
+        // Get server config for heat system
+        const config = await db.getServerConfig(message.guild.id);
+        const heatConfig = {
+          heatThreshold: config?.heat_threshold || 100,
+          heatCap: config?.heat_cap || 150,
+          firstTimeoutDuration: config?.first_timeout_duration || 86400000, // 1 day
+          capTimeoutDuration: config?.cap_timeout_duration || 1209600000, // 14 days
+          panicModeRaiders: config?.panic_mode_raiders || 3,
+          panicModeDuration: config?.panic_mode_duration || 600000, // 10 minutes
+          panicTimeoutDuration: config?.panic_timeout_duration || 600000, // 10 minutes
+          pingRaidThreshold: config?.ping_raid_threshold || 50,
+          pingRaidTimeWindow: config?.ping_raid_time_window || 30000, // 30 seconds
+          blacklistedWords: config?.blacklisted_words
+            ? JSON.parse(config.blacklisted_words)
+            : [],
+          blacklistedLinks: config?.blacklisted_links
+            ? JSON.parse(config.blacklisted_links)
+            : [],
+        };
+
+        // Calculate heat for this message
+        const heatAmount = client.heatSystem.calculateHeat(message, heatConfig);
+
+        if (heatAmount > 0) {
+          // Add heat to user
+          const heatScore = await client.heatSystem.addHeat(
+            message.guild.id,
+            message.author.id,
+            heatAmount,
+            "Message heat calculation"
+          );
+
+          // Check for ping raid (mentions)
+          const mentionCount =
+            message.mentions.users.size + message.mentions.roles.size;
+          if (mentionCount > 0) {
+            await client.heatSystem.checkPingRaid(
+              message.guild.id,
+              message.author.id,
+              mentionCount,
+              heatConfig
+            );
+          }
+
+          // Check if punishment is needed
+          const punishment = await client.heatSystem.checkPunishment(
+            message.guild.id,
+            message.author.id,
+            heatScore,
+            heatConfig
+          );
+
+          if (punishment) {
+            const ErrorHandler = require("../utils/errorHandler");
+            const member = await message.guild.members
+              .fetch(message.author.id)
+              .catch(() => null);
+
+            if (member && punishment.action === "timeout") {
+              // Check if bot has permission to timeout
+              const botMember = message.guild.members.me;
+              const canTimeout =
+                botMember && botMember.permissions.has("ModerateMembers");
+
+              if (!canTimeout) {
+                // Silently skip if bot doesn't have permissions (don't log as error)
+                const logger = require("../utils/logger");
+                logger.debug(
+                  `[messageCreate] Skipping timeout - bot lacks ModerateMembers permission in guild ${message.guild.id}`
+                );
+                return; // Skip timeout if no permission
+              }
+
+              // Apply timeout with multiplier
+              await ErrorHandler.safeExecute(
+                () => member.timeout(punishment.duration, punishment.reason),
+                `messageCreate [${message.guild.id}]`
+              );
+
+              // Delete message if needed (check permission first)
+              if (punishment.purgeMessages) {
+                const canDelete = message.channel
+                  .permissionsFor(botMember)
+                  ?.has("ManageMessages");
+                if (canDelete) {
+                  await ErrorHandler.safeExecute(
+                    () => message.delete(),
+                    `messageCreate [${message.guild.id}]`
+                  );
+                } else {
+                  const logger = require("../utils/logger");
+                  logger.debug(
+                    `[messageCreate] Skipping message delete - bot lacks ManageMessages permission in channel ${message.channel.id}`
+                  );
+                }
+              }
+
+              // Mark as raider if in panic mode
+              if (client.heatSystem.heatPanicMode.has(message.guild.id)) {
+                client.heatSystem.markRaider(
+                  message.guild.id,
+                  message.author.id
+                );
+              }
+
+              // Increase multiplier for next violation
+              client.heatSystem.increaseTimeoutMultiplier(
+                message.guild.id,
+                message.author.id
+              );
+            }
+          }
+
+          // Check for heat panic mode trigger (multiple raiders)
+          // This would need to track raiders across multiple users
+          // For now, we'll trigger it if a single user reaches cap multiple times
+          if (heatScore >= heatConfig.heatCap) {
+            // Check if we should trigger panic mode
+            const raiderCount = Array.from(
+              client.heatSystem.raiderDetection.values()
+            ).filter((r) => r.guildId === message.guild.id).length;
+
+            if (raiderCount >= heatConfig.panicModeRaiders) {
+              client.heatSystem.triggerHeatPanicMode(
+                message.guild.id,
+                raiderCount,
+                heatConfig
+              );
+            }
+          }
+        }
+      } catch (error) {
+        logger.error("HeatSystem", "Error processing message heat", {
+          message: error?.message || String(error),
+          stack: error?.stack,
+          name: error?.name,
+        });
+      }
+    }
+
+    // Track behavior
+    const BehavioralAnalysis = require("../utils/behavioralAnalysis");
+    await BehavioralAnalysis.trackBehavior(
+      message.guild.id,
+      message.author.id,
+      "message",
+      {
+        content: message.content,
+        length: message.content.length,
+        hasLinks: /https?:\/\//.test(message.content),
+        hasMentions: /<@!?\d+>/.test(message.content),
+      }
+    );
+
+    // Check workflows
+    if (client.workflows) {
+      await client.workflows.checkTriggers(message.guild.id, "messageCreate", {
+        message,
+        user: message.author,
+        member: message.member,
+        guild: message.guild,
+      });
+    }
+
+    // Award XP for message (with cooldown protection to prevent spam)
+    const XPSystem = require("../utils/xpSystem");
+    const xpSystem = client.xpSystem || new XPSystem(client);
+    try {
+      await xpSystem.awardMessageXP(message);
+    } catch (error) {
+      logger.debug("[XP] Failed to award XP:", error.message);
+    }
+  },
+};

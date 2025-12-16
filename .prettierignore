@@ -1,0 +1,10 @@
+node_modules
+*.db
+*.log
+.env
+dist
+build
+coverage
+*.min.js
+*.min.css
+

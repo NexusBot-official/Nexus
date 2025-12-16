@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shard Status - Nexus Bot</title>
+    <link rel="icon" type="image/png" href="icon.png" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+        color: #fff;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 10px;
+        font-size: 2.5rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .subtitle {
+        text-align: center;
+        margin-bottom: 40px;
+        opacity: 0.9;
+        font-size: 1.1rem;
+      }
+
+      .checker-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 15px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        color: #333;
+      }
+
+      .input-group {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      input {
+        flex: 1;
+        padding: 15px;
+        border: 2px solid #667eea;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s;
+      }
+
+      input:focus {
+        outline: none;
+        border-color: #764ba2;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+
+      button {
+        padding: 15px 30px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: transform 0.2s;
+        font-weight: 600;
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+      }
+
+      button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .result {
+        margin-top: 20px;
+        padding: 20px;
+        background: #f0f4ff;
+        border-radius: 10px;
+        border-left: 4px solid #667eea;
+      }
+
+      .result h3 {
+        color: #667eea;
+        margin-bottom: 10px;
+      }
+
+      .result-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid #e0e7ff;
+      }
+
+      .result-row:last-child {
+        border-bottom: none;
+      }
+
+      .result-label {
+        font-weight: 600;
+        color: #666;
+      }
+
+      .result-value {
+        color: #333;
+        font-weight: 600;
+      }
+
+      .shard-badge {
+        display: inline-block;
+        padding: 5px 15px;
+        background: #667eea;
+        color: white;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 1.1rem;
+      }
+
+      .shards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+      }
+
+      .shard-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 20px;
+        border-radius: 10px;
+        color: white;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .shard-card h4 {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+      }
+
+      .shard-stat {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .shard-stat:last-child {
+        border-bottom: none;
+      }
+
+      .error {
+        background: #fee;
+        color: #c33;
+        border-left-color: #c33;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 20px;
+        color: #667eea;
+      }
+
+      .back-btn {
+        display: inline-block;
+        margin-bottom: 20px;
+        padding: 10px 20px;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: all 0.3s;
+      }
+
+      .back-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 2rem;
+        }
+
+        .input-group {
+          flex-direction: column;
+        }
+
+        .shards-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <a href="index.html" class="back-btn">← Back to Home</a>
+
+      <h1>🔍 Shard Status Checker</h1>
+      <p class="subtitle">
+        Find out which shard your server is on and view all shard stats
+      </p>
+
+      <!-- Guild Checker -->
+      <div class="checker-card">
+        <h2 style="margin-bottom: 15px">Check Your Server's Shard</h2>
+        <p style="margin-bottom: 20px; color: #666">
+          Enter your server (guild) ID to find which shard it's on:
+        </p>
+        <div class="input-group">
+          <input
+            type="text"
+            id="guildInput"
+            placeholder="Enter Guild ID (e.g., 1234567890123456789)"
+            pattern="[0-9]+"
+          />
+          <button onclick="checkGuildShard()">Check Shard</button>
+        </div>
+        <div id="guildResult"></div>
+      </div>
+
+      <!-- All Shards Overview -->
+      <div class="checker-card">
+        <h2 style="margin-bottom: 15px">All Shards Status</h2>
+        <button onclick="loadAllShards()" id="loadBtn">Load Shard Stats</button>
+        <div id="shardsResult"></div>
+      </div>
+    </div>
+
+    <script>
+      // Use ngrok URL (matches DASHBOARD_URL in .env)
+      const API_URL = "https://regular-puma-clearly.ngrok-free.app";
+
+      async function checkGuildShard() {
+        const guildId = document.getElementById("guildInput").value.trim();
+        const resultDiv = document.getElementById("guildResult");
+
+        if (!guildId) {
+          resultDiv.innerHTML =
+            '<div class="result error">Please enter a Guild ID</div>';
+          return;
+        }
+
+        if (!/^\d+$/.test(guildId)) {
+          resultDiv.innerHTML =
+            '<div class="result error">Guild ID must be numbers only</div>';
+          return;
+        }
+
+        resultDiv.innerHTML = '<div class="loading">🔍 Checking...</div>';
+
+        try {
+          const response = await fetch(
+            `${API_URL}/api/shards?guild=${guildId}`
+          );
+          const data = await response.json();
+
+          if (data.yourGuild && data.yourGuild.error) {
+            resultDiv.innerHTML = `<div class="result error">
+              <h3>❌ Guild Not Found</h3>
+              <p>${data.yourGuild.error}</p>
+              <p style="margin-top: 10px; font-size: 0.9rem;">Make sure Nexus is in your server and you're using the correct Guild ID.</p>
+            </div>`;
+          } else if (data.yourGuild) {
+            resultDiv.innerHTML = `<div class="result">
+              <h3>✅ Found Your Server!</h3>
+              <div class="result-row">
+                <span class="result-label">Server Name:</span>
+                <span class="result-value">${data.yourGuild.name}</span>
+              </div>
+              <div class="result-row">
+                <span class="result-label">Shard ID:</span>
+                <span class="shard-badge">Shard ${data.yourGuild.shardId}</span>
+              </div>
+              <div class="result-row">
+                <span class="result-label">Members:</span>
+                <span class="result-value">${data.yourGuild.memberCount.toLocaleString()}</span>
+              </div>
+              <div class="result-row">
+                <span class="result-label">Total Bot Servers:</span>
+                <span class="result-value">${data.totalGuilds.toLocaleString()}</span>
+              </div>
+            </div>`;
+          }
+        } catch (error) {
+          resultDiv.innerHTML = `<div class="result error">
+            <h3>❌ Error</h3>
+            <p>Failed to check shard: ${error.message}</p>
+          </div>`;
+        }
+      }
+
+      async function loadAllShards() {
+        const resultDiv = document.getElementById("shardsResult");
+        const btn = document.getElementById("loadBtn");
+
+        btn.disabled = true;
+        btn.textContent = "Loading...";
+        resultDiv.innerHTML =
+          '<div class="loading">📊 Loading shard data...</div>';
+
+        try {
+          const response = await fetch(`${API_URL}/api/shards`);
+          const data = await response.json();
+
+          let html = `<div class="result">
+            <h3>📊 Bot Statistics</h3>
+            <div class="result-row">
+              <span class="result-label">Total Shards:</span>
+              <span class="result-value">${data.shards.length}</span>
+            </div>
+            <div class="result-row">
+              <span class="result-label">Total Servers:</span>
+              <span class="result-value">${data.totalGuilds.toLocaleString()}</span>
+            </div>
+            <div class="result-row">
+              <span class="result-label">Total Users:</span>
+              <span class="result-value">${data.totalUsers.toLocaleString()}</span>
+            </div>
+          </div>`;
+
+          if (data.shards.length > 1) {
+            html += '<div class="shards-grid">';
+            data.shards.forEach((shard) => {
+              html += `<div class="shard-card">
+                <h4>Shard ${shard.id}</h4>
+                <div class="shard-stat">
+                  <span>Servers:</span>
+                  <span>${shard.guilds.toLocaleString()}</span>
+                </div>
+                <div class="shard-stat">
+                  <span>Users:</span>
+                  <span>${shard.users.toLocaleString()}</span>
+                </div>
+                <div class="shard-stat">
+                  <span>Ping:</span>
+                  <span>${shard.ping}ms</span>
+                </div>
+              </div>`;
+            });
+            html += "</div>";
+          }
+
+          resultDiv.innerHTML = html;
+          btn.textContent = "Refresh Stats";
+        } catch (error) {
+          resultDiv.innerHTML = `<div class="result error">
+            <h3>❌ Error</h3>
+            <p>Failed to load shard data: ${error.message}</p>
+          </div>`;
+          btn.textContent = "Try Again";
+        } finally {
+          btn.disabled = false;
+        }
+      }
+
+      // Allow Enter key to check shard
+      document
+        .getElementById("guildInput")
+        .addEventListener("keypress", (e) => {
+          if (e.key === "Enter") {
+            checkGuildShard();
+          }
+        });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Referral - Invite Nexus Bot</title>
+    <link
+      rel="icon"
+      type="image/webp"
+      href="https://cdn.discordapp.com/avatars/1444739230679957646/32f2d77d44c2f3989fecd858be53f396.webp?size=256"
+    />
+    <style>
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        color: white;
+      }
+
+      .container {
+        text-align: center;
+        padding: 40px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        max-width: 500px;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+      }
+
+      p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin-bottom: 30px;
+      }
+
+      .loader {
+        width: 50px;
+        height: 50px;
+        border: 5px solid rgba(255, 255, 255, 0.3);
+        border-top-color: white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 20px;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .info {
+        background: rgba(0, 255, 136, 0.2);
+        border: 2px solid #00ff88;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 20px;
+        font-size: 0.95rem;
+      }
+
+      .info h3 {
+        margin-top: 0;
+        color: #00ff88;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🎉 Referral Invite</h1>
+      <div class="loader"></div>
+      <p>Redirecting you to Discord to add Nexus...</p>
+      <div class="info" id="referral-info">
+        <h3>✨ You're using a referral link!</h3>
+        <p>The person who shared this will get credit when you add the bot.</p>
+      </div>
+    </div>
+
+    <script>
+      // Extract ref parameter from URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const referrerId = urlParams.get("ref");
+
+      if (!referrerId) {
+        // No referrer, redirect to main invite page
+        window.location.href =
+          "https://discord.com/oauth2/authorize?client_id=1444739230679957646&permissions=8&scope=bot%20applications.commands";
+      } else {
+        // Track referral in backend
+        const apiUrl =
+          "https://regular-puma-clearly.ngrok-free.app/api/v1/referral/track";
+
+        fetch(apiUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true",
+          },
+          body: JSON.stringify({
+            referrerId: referrerId,
+            source: "referral",
+            timestamp: Date.now(),
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("Referral tracked:", data);
+          })
+          .catch((err) => {
+            console.error("Failed to track referral:", err);
+          });
+
+        // Build OAuth URL
+        const oauthUrl = `https://discord.com/oauth2/authorize?client_id=1444739230679957646&permissions=8&scope=bot%20applications.commands&state=${encodeURIComponent(
+          JSON.stringify({ ref: referrerId })
+        )}`;
+
+        // Redirect after 2 seconds
+        setTimeout(() => {
+          window.location.href = oauthUrl;
+        }, 2000);
+      }
+    </script>
+  </body>
+</html>

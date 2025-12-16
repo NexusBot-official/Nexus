@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Banner Manager - Nexus Admin</title>
+    <script src="admin-auth.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        color: #fff;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        text-align: center;
+      }
+
+      .subtitle {
+        text-align: center;
+        opacity: 0.9;
+        margin-bottom: 40px;
+      }
+
+      .card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 30px;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        margin-bottom: 30px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        font-size: 1.1rem;
+      }
+
+      input,
+      textarea,
+      select {
+        width: 100%;
+        padding: 12px 16px;
+        border-radius: 10px;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        font-size: 1rem;
+        font-family: inherit;
+      }
+
+      input::placeholder,
+      textarea::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+      }
+
+      textarea {
+        min-height: 100px;
+        resize: vertical;
+      }
+
+      .btn {
+        padding: 15px 30px;
+        border-radius: 10px;
+        border: none;
+        font-weight: 600;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-right: 10px;
+      }
+
+      .btn-primary {
+        background: #fff;
+        color: #667eea;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(255, 255, 255, 0.3);
+      }
+
+      .btn-secondary {
+        background: rgba(255, 255, 255, 0.2);
+        color: #fff;
+      }
+
+      .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      .preview {
+        background: #fff;
+        color: #333;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-top: 20px;
+      }
+
+      .preview-banner {
+        padding: 15px 30px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+
+      .preview-content {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .preview-emoji {
+        font-size: 1.5rem;
+      }
+
+      .preview-text {
+        font-weight: 600;
+        font-size: 1.1rem;
+      }
+
+      .preview-buttons {
+        display: flex;
+        gap: 10px;
+      }
+
+      .preview-button {
+        padding: 8px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        transition: all 0.2s;
+      }
+
+      .preview-button-primary {
+        background: white;
+        color: #667eea;
+      }
+
+      .preview-button-dismiss {
+        background: rgba(255, 255, 255, 0.3);
+        color: white;
+      }
+
+      .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 30px;
+      }
+
+      .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(255, 255, 255, 0.3);
+        transition: 0.4s;
+        border-radius: 30px;
+      }
+
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 22px;
+        width: 22px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: 0.4s;
+        border-radius: 50%;
+      }
+
+      input:checked + .slider {
+        background-color: #00d1b2;
+      }
+
+      input:checked + .slider:before {
+        transform: translateX(30px);
+      }
+
+      .color-input-group {
+        display: flex;
+        gap: 20px;
+      }
+
+      .color-input-wrapper {
+        flex: 1;
+      }
+
+      .color-input {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      input[type="color"] {
+        width: 60px;
+        height: 40px;
+        padding: 0;
+        border: none;
+        cursor: pointer;
+      }
+
+      .back-link {
+        display: inline-block;
+        margin-bottom: 20px;
+        color: #fff;
+        text-decoration: none;
+        font-weight: 600;
+        opacity: 0.9;
+      }
+
+      .back-link:hover {
+        opacity: 1;
+      }
+
+      .success {
+        background: rgba(0, 209, 178, 0.3);
+        border: 2px solid #00d1b2;
+        padding: 15px 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        display: none;
+      }
+
+      .error {
+        background: rgba(255, 68, 68, 0.3);
+        border: 2px solid #ff4444;
+        padding: 15px 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <a href="admin.html" class="back-link">← Back to Admin Hub</a>
+
+      <h1>📢 Banner Manager</h1>
+      <p class="subtitle">Control the site-wide announcement banner</p>
+
+      <div id="success" class="success">
+        <strong>✅ Success!</strong> Banner updated successfully!
+      </div>
+
+      <div id="error" class="error">
+        <strong>❌ Error!</strong> <span id="error-message"></span>
+      </div>
+
+      <!-- Banner Editor -->
+      <div class="card">
+        <h2 style="margin-bottom: 20px">🎨 Edit Banner</h2>
+
+        <div class="form-group">
+          <label>
+            <span style="display: flex; align-items: center; gap: 10px">
+              Banner Enabled
+              <label class="toggle-switch">
+                <input type="checkbox" id="enabled" checked />
+                <span class="slider"></span>
+              </label>
+            </span>
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label for="emoji">Emoji</label>
+          <input
+            type="text"
+            id="emoji"
+            placeholder="🎉"
+            maxlength="2"
+            value="🎉"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="text">Banner Text</label>
+          <input
+            type="text"
+            id="text"
+            placeholder="NEW: Complete API with Interactive Playground + 34 Endpoints!"
+            value="NEW: Complete API with Interactive Playground + 34 Endpoints!"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="buttonText">Button Text</label>
+          <input
+            type="text"
+            id="buttonText"
+            placeholder="Check it out"
+            value="Check it out"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="buttonLink">Button Link</label>
+          <input
+            type="text"
+            id="buttonLink"
+            placeholder="api.html"
+            value="api.html"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>
+            <span style="display: flex; align-items: center; gap: 10px">
+              Allow Dismiss
+              <label class="toggle-switch">
+                <input type="checkbox" id="dismissible" checked />
+                <span class="slider"></span>
+              </label>
+            </span>
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label>Gradient Colors</label>
+          <div class="color-input-group">
+            <div class="color-input-wrapper">
+              <label for="gradientFrom">From</label>
+              <div class="color-input">
+                <input type="color" id="gradientFrom" value="#667eea" />
+                <input
+                  type="text"
+                  id="gradientFromText"
+                  value="#667eea"
+                  style="flex: 1"
+                />
+              </div>
+            </div>
+            <div class="color-input-wrapper">
+              <label for="gradientTo">To</label>
+              <div class="color-input">
+                <input type="color" id="gradientTo" value="#764ba2" />
+                <input
+                  type="text"
+                  id="gradientToText"
+                  value="#764ba2"
+                  style="flex: 1"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" onclick="saveBanner()">
+          💾 Save Banner
+        </button>
+        <button class="btn btn-secondary" onclick="loadBanner()">
+          🔄 Reset
+        </button>
+      </div>
+
+      <!-- Live Preview -->
+      <div class="card">
+        <h2 style="margin-bottom: 20px">👁️ Live Preview</h2>
+        <div class="preview">
+          <div class="preview-banner" id="previewBanner">
+            <div class="preview-content">
+              <span class="preview-emoji" id="previewEmoji">🎉</span>
+              <span class="preview-text" id="previewText"
+                >NEW: Complete API with Interactive Playground + 34
+                Endpoints!</span
+              >
+            </div>
+            <div class="preview-buttons">
+              <button
+                class="preview-button preview-button-primary"
+                id="previewButton"
+              >
+                Check it out →
+              </button>
+              <button
+                class="preview-button preview-button-dismiss"
+                id="previewDismiss"
+              >
+                Dismiss
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const API_URL = "https://regular-puma-clearly.ngrok-free.app";
+
+      // Load banner on page load
+      loadBanner();
+
+      // Update preview in real-time
+      document.getElementById("emoji").addEventListener("input", updatePreview);
+      document.getElementById("text").addEventListener("input", updatePreview);
+      document
+        .getElementById("buttonText")
+        .addEventListener("input", updatePreview);
+      document
+        .getElementById("gradientFrom")
+        .addEventListener("input", updatePreview);
+      document
+        .getElementById("gradientTo")
+        .addEventListener("input", updatePreview);
+      document
+        .getElementById("gradientFromText")
+        .addEventListener("input", updatePreview);
+      document
+        .getElementById("gradientToText")
+        .addEventListener("input", updatePreview);
+      document
+        .getElementById("dismissible")
+        .addEventListener("change", updatePreview);
+
+      // Sync color inputs
+      document.getElementById("gradientFrom").addEventListener("input", (e) => {
+        document.getElementById("gradientFromText").value = e.target.value;
+        updatePreview();
+      });
+      document
+        .getElementById("gradientFromText")
+        .addEventListener("input", (e) => {
+          document.getElementById("gradientFrom").value = e.target.value;
+          updatePreview();
+        });
+      document.getElementById("gradientTo").addEventListener("input", (e) => {
+        document.getElementById("gradientToText").value = e.target.value;
+        updatePreview();
+      });
+      document
+        .getElementById("gradientToText")
+        .addEventListener("input", (e) => {
+          document.getElementById("gradientTo").value = e.target.value;
+          updatePreview();
+        });
+
+      async function loadBanner() {
+        try {
+          const response = await fetch(`${API_URL}/api/admin/banner`, {
+            headers: {
+              "ngrok-skip-browser-warning": "true",
+            },
+          });
+
+          if (!response.ok) throw new Error("Failed to load banner");
+
+          const banner = await response.json();
+
+          document.getElementById("enabled").checked = banner.enabled;
+          document.getElementById("emoji").value = banner.emoji || "🎉";
+          document.getElementById("text").value = banner.text || "";
+          document.getElementById("buttonText").value =
+            banner.buttonText || "Learn More";
+          document.getElementById("buttonLink").value =
+            banner.buttonLink || "#";
+          document.getElementById("dismissible").checked =
+            banner.dismissible !== false;
+          document.getElementById("gradientFrom").value =
+            banner.gradient?.from || "#667eea";
+          document.getElementById("gradientFromText").value =
+            banner.gradient?.from || "#667eea";
+          document.getElementById("gradientTo").value =
+            banner.gradient?.to || "#764ba2";
+          document.getElementById("gradientToText").value =
+            banner.gradient?.to || "#764ba2";
+
+          updatePreview();
+        } catch (error) {
+          showError("Failed to load banner: " + error.message);
+        }
+      }
+
+      async function saveBanner() {
+        try {
+          const banner = {
+            enabled: document.getElementById("enabled").checked,
+            emoji: document.getElementById("emoji").value,
+            text: document.getElementById("text").value,
+            buttonText: document.getElementById("buttonText").value,
+            buttonLink: document.getElementById("buttonLink").value,
+            dismissible: document.getElementById("dismissible").checked,
+            gradient: {
+              from: document.getElementById("gradientFrom").value,
+              to: document.getElementById("gradientTo").value,
+            },
+          };
+
+          const response = await fetch(`${API_URL}/api/admin/banner`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              "ngrok-skip-browser-warning": "true",
+            },
+            body: JSON.stringify(banner),
+          });
+
+          if (!response.ok) throw new Error("Failed to save banner");
+
+          showSuccess();
+        } catch (error) {
+          showError("Failed to save banner: " + error.message);
+        }
+      }
+
+      function updatePreview() {
+        const emoji = document.getElementById("emoji").value || "🎉";
+        const text =
+          document.getElementById("text").value ||
+          "Your announcement text here...";
+        const buttonText =
+          document.getElementById("buttonText").value || "Learn More";
+        const gradientFrom =
+          document.getElementById("gradientFrom").value || "#667eea";
+        const gradientTo =
+          document.getElementById("gradientTo").value || "#764ba2";
+        const dismissible = document.getElementById("dismissible").checked;
+
+        document.getElementById("previewEmoji").textContent = emoji;
+        document.getElementById("previewText").textContent = text;
+        document.getElementById("previewButton").textContent =
+          buttonText + " →";
+        document.getElementById("previewBanner").style.background =
+          `linear-gradient(135deg, ${gradientFrom} 0%, ${gradientTo} 100%)`;
+        document.getElementById("previewDismiss").style.display = dismissible
+          ? "block"
+          : "none";
+      }
+
+      function showSuccess() {
+        document.getElementById("success").style.display = "block";
+        document.getElementById("error").style.display = "none";
+        setTimeout(() => {
+          document.getElementById("success").style.display = "none";
+        }, 3000);
+      }
+
+      function showError(message) {
+        document.getElementById("error-message").textContent = message;
+        document.getElementById("error").style.display = "block";
+        document.getElementById("success").style.display = "none";
+      }
+    </script>
+  </body>
+</html>

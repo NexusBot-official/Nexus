@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nexus Dashboard</title>
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#9333ea" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <!-- apple-mobile-web-app-capable kept for backward compatibility with older iOS devices -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="apple-mobile-web-app-title" content="Nexus" />
+
+    <!-- Resource Hints for Performance -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
+
+    <!-- Critical CSS -->
+    <link rel="stylesheet" href="/dashboard.css" />
+
+    <!-- Defer non-critical scripts -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"
+      defer
+    ></script>
+  </head>
+  <body>
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+      <span id="themeIcon">🌙</span>
+    </button>
+
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" id="mobileMenuToggle">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="dashboard-container">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <div class="logo">🛡️</div>
+          <h2>NEXUS</h2>
+        </div>
+
+        <div class="current-server-display" id="currentServerDisplay">
+          <div class="loading">Loading...</div>
+        </div>
+
+        <button
+          class="change-server-btn"
+          onclick="window.location.href = '/dashboard'"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <polyline points="1 4 1 10 7 10"></polyline>
+            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+          </svg>
+          Change Server
+        </button>
+
+        <nav class="sidebar-nav">
+          <a href="#overview" class="nav-item active" data-page="overview">
+            <span class="nav-icon">📊</span>
+            <span>Overview</span>
+          </a>
+          <a href="#anti-nuke" class="nav-item" data-page="anti-nuke">
+            <span class="nav-icon">🛡️</span>
+            <span>Anti-Nuke</span>
+          </a>
+          <a href="#anti-raid" class="nav-item" data-page="anti-raid">
+            <span class="nav-icon">⚔️</span>
+            <span>Anti-Raid</span>
+          </a>
+          <a href="#joingate" class="nav-item" data-page="joingate">
+            <span class="nav-icon">🛡️</span>
+            <span>Join Gate</span>
+          </a>
+          <a href="#verification" class="nav-item" data-page="verification">
+            <span class="nav-icon">✅</span>
+            <span>Verification</span>
+          </a>
+          <a href="#auto-mod" class="nav-item" data-page="auto-mod">
+            <span class="nav-icon">🤖</span>
+            <span>Auto-Mod</span>
+          </a>
+          <a href="#modlogs" class="nav-item" data-page="modlogs">
+            <span class="nav-icon">⚖️</span>
+            <span>Mod Logs</span>
+          </a>
+          <a href="#message-logs" class="nav-item" data-page="message-logs">
+            <span class="nav-icon">💬</span>
+            <span>Message Logs</span>
+          </a>
+          <a href="#security" class="nav-item" data-page="security">
+            <span class="nav-icon">🔒</span>
+            <span>Security Logs</span>
+          </a>
+          <a href="#logging" class="nav-item" data-page="logging">
+            <span class="nav-icon">📝</span>
+            <span>Logging</span>
+          </a>
+          <a href="#recovery" class="nav-item" data-page="recovery">
+            <span class="nav-icon">📸</span>
+            <span>Recovery</span>
+          </a>
+          <a href="#bulk" class="nav-item" data-page="bulk">
+            <span class="nav-icon">⚡</span>
+            <span>Bulk Operations</span>
+          </a>
+          <a href="#templates" class="nav-item" data-page="templates">
+            <span class="nav-icon">📋</span>
+            <span>Templates</span>
+          </a>
+          <a href="#workflows" class="nav-item" data-page="workflows">
+            <span class="nav-icon">⚙️</span>
+            <span>Workflows</span>
+          </a>
+          <a href="#analytics" class="nav-item" data-page="analytics">
+            <span class="nav-icon">📊</span>
+            <span>Analytics</span>
+          </a>
+          <a href="#leaderboard" class="nav-item" data-page="leaderboard">
+            <span class="nav-icon">🏆</span>
+            <span>Leaderboard</span>
+          </a>
+          <a href="#comparison" class="nav-item" data-page="comparison">
+            <span class="nav-icon">📈</span>
+            <span>Comparison</span>
+          </a>
+          <a href="#migration" class="nav-item" data-page="migration">
+            <span class="nav-icon">🔄</span>
+            <span>Migrate from Wick</span>
+          </a>
+          <a href="#api-keys" class="nav-item" data-page="api-keys">
+            <span class="nav-icon">🔑</span>
+            <span>API Keys</span>
+          </a>
+        </nav>
+
+        <div class="sidebar-footer">
+          <a href="/logout" class="logout-btn">Logout</a>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <header class="top-bar">
+          <h1 id="currentPage">Overview</h1>
+          <div class="user-info">
+            <img id="userAvatar" src="" alt="User" class="user-avatar" />
+            <span id="userName">Loading...</span>
+          </div>
+        </header>
+
+        <div class="content-area" id="contentArea">
+          <!-- Content loads here dynamically -->
+        </div>
+      </main>
+    </div>
+
+    <script src="/dashboard.js" defer></script>
+
+    <!-- PWA Service Worker Registration -->
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          // Unregister all old service workers first to force update
+          navigator.serviceWorker.getRegistrations().then((registrations) => {
+            registrations.forEach((registration) => {
+              registration.unregister();
+            });
+          });
+
+          // Register new service worker (cache version is in CACHE_NAME constant)
+          navigator.serviceWorker
+            .register("/service-worker.js")
+            .then((reg) => {
+              console.log("Service Worker registered", reg);
+              // Don't force update immediately - let it activate naturally
+            })
+            .catch((err) =>
+              console.log("Service Worker registration failed", err)
+            );
+        });
+      }
+    </script>
+
+    <script>
+      // Lazy Loading System
+      document.addEventListener("DOMContentLoaded", () => {
+        // Lazy load images
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const img = entry.target;
+              if (img.dataset.src) {
+                img.src = img.dataset.src;
+                img.removeAttribute("data-src");
+                observer.unobserve(img);
+              }
+            }
+          });
+        });
+
+        // Observe all images with data-src
+        document.querySelectorAll("img[data-src]").forEach((img) => {
+          imageObserver.observe(img);
+        });
+
+        // Prefetch disabled - causes 404 errors when currentServer is undefined
+        // Prefetch will be handled by dashboard.js after server selection
+
+        // Performance monitoring
+        if ("PerformanceObserver" in window) {
+          const perfObserver = new PerformanceObserver((list) => {
+            for (const entry of list.getEntries()) {
+              if (entry.duration > 1000) {
+                console.warn(
+                  `Slow operation: ${entry.name} took ${entry.duration}ms`
+                );
+              }
+            }
+          });
+          perfObserver.observe({ entryTypes: ["measure", "navigation"] });
+        }
+      });
+    </script>
+  </body>
+</html>
