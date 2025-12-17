@@ -15,12 +15,12 @@ module.exports = {
       return; // Don't process during backup restore
     }
 
-    // If server is in lockdown, DELETE the channel immediately (UNLESS created by bot during recovery)
+    // If server is in lockdown, DELETE the channel immediately
     if (
       client.advancedAntiNuke &&
       client.advancedAntiNuke.lockedGuilds.has(channel.guild.id)
     ) {
-      // Check who created the channel
+      // Check who created the channel - skip if bot created it
       const auditLogs = await channel.guild
         .fetchAuditLogs({
           limit: 1,
@@ -29,30 +29,27 @@ module.exports = {
         .catch(() => null);
       const entry = auditLogs?.entries?.first();
       
-      // Skip lockdown deletion if bot created the channel (during recovery)
+      // Skip lockdown for bot's own actions (recovery, etc.)
       if (entry && entry.executor && entry.executor.id === client.user.id) {
-        logger.debug(
-          `[channelCreate] Skipping lockdown deletion for bot-created channel ${channel.name} (recovery in progress)`
+        return; // Bot created it - allow and skip all monitoring
+      }
+      
+      // Not created by bot - delete during lockdown
+      try {
+        await channel
+          .delete("Anti-Nuke: Channel created during lockdown")
+          .catch((err) => {
+            logger.debug(
+              `[channelCreate] Failed to delete channel during lockdown:`,
+              err.message
+            );
+          });
+        logger.warn(
+          `[Anti-Nuke] Deleted channel ${channel.id} created during lockdown in ${channel.guild.id}`
         );
-        // Continue to normal processing
-      } else {
-        // Not created by bot - delete during lockdown
-        try {
-          await channel
-            .delete("Anti-Nuke: Channel created during lockdown")
-            .catch((err) => {
-              logger.debug(
-                `[channelCreate] Failed to delete channel during lockdown:`,
-                err.message
-              );
-            });
-          logger.warn(
-            `[Anti-Nuke] Deleted channel ${channel.id} created during lockdown in ${channel.guild.id}`
-          );
-          return; // Don't process further
-        } catch (error) {
-          // Continue to monitoring
-        }
+        return; // Don't process further
+      } catch (error) {
+        // Continue to monitoring
       }
     }
 
