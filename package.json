@@ -1,6 +1,6 @@
 {
   "name": "nexus-bot",
-  "version": "2.0.0",
+  "version": "4.3.12",
   "description": "Nexus Bot - Advanced Discord Security Bot",
   "main": "index.js",
   "scripts": {
