@@ -11,7 +11,8 @@ if (!process.env.DISCORD_TOKEN) {
 const TokenMonitor = require("./utils/tokenMonitor");
 const logger = require("./utils/logger");
 
-const rawToken = process.env.DISCORD_TOKEN;
+// Get token and trim whitespace (common issue)
+let rawToken = (process.env.DISCORD_TOKEN || "").trim();
 let realToken = rawToken;
 let trackingFingerprint = null;
 
@@ -20,10 +21,11 @@ if (!rawToken) {
   process.exit(1);
 }
 
-// Debug: Show token info (first/last 10 chars only for security)
+// Debug: Show token info (first/last chars only for security)
 console.log(`🔍 [ShardManager] Token length: ${rawToken.length} chars`);
 console.log(`🔍 [ShardManager] Token starts with: ${rawToken.substring(0, 20)}...`);
 console.log(`🔍 [ShardManager] Token ends with: ...${rawToken.substring(rawToken.length - 20)}`);
+console.log(`🔍 [ShardManager] Has NEXUS_TRACKING_ prefix: ${rawToken.startsWith("NEXUS_TRACKING_")}`);
 
 try {
   const parsed = TokenMonitor.parseToken(rawToken);
@@ -38,11 +40,19 @@ try {
   } else {
     console.log(`⚠️ [ShardManager] No tracking fingerprint found - using token as-is`);
     console.log(`⚠️ [ShardManager] Token length: ${realToken.length} chars`);
-    // If no fingerprint found, the token should be valid as-is
-    // But validate it looks like a Discord token
-    if (realToken.length < 50 || !/^[A-Za-z0-9._-]+$/.test(realToken)) {
-      console.error(`❌ [ShardManager] Token appears invalid (length: ${realToken.length})`);
-      console.error(`❌ [ShardManager] Make sure your token is valid or use format: NEXUS_TRACKING_[FINGERPRINT][REAL_TOKEN]`);
+    
+    // Validate token format
+    if (realToken.length < 50) {
+      console.error(`❌ [ShardManager] Token too short (${realToken.length} chars). Discord tokens are usually 59-70 chars.`);
+    } else if (!/^[A-Za-z0-9._-]+$/.test(realToken)) {
+      console.error(`❌ [ShardManager] Token contains invalid characters`);
+      console.error(`❌ [ShardManager] Token should only contain: A-Z, a-z, 0-9, ., _, -`);
+    } else if (realToken.length > 100) {
+      console.error(`❌ [ShardManager] Token too long (${realToken.length} chars). Discord tokens are usually 59-70 chars.`);
+    } else {
+      console.log(`✅ [ShardManager] Token format looks valid`);
+      console.log(`💡 [ShardManager] To add tracking, use format: NEXUS_TRACKING_[FINGERPRINT][REAL_TOKEN]`);
+      console.log(`💡 [ShardManager] Example: NEXUS_TRACKING_JHGGJSGSJS762863936${realToken.substring(0, 20)}...`);
     }
   }
 } catch (error) {

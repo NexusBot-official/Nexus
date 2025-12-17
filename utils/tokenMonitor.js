@@ -53,6 +53,9 @@ class TokenMonitor {
     if (!combinedToken || typeof combinedToken !== "string") {
       return { trackingFingerprint: null, realToken: combinedToken };
     }
+    
+    // Trim whitespace (common issue with .env files)
+    combinedToken = combinedToken.trim();
 
     // Check if token contains tracking prefix
     if (combinedToken.startsWith("NEXUS_TRACKING_")) {
