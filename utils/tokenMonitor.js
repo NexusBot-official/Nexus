@@ -59,6 +59,8 @@ class TokenMonitor {
       // Extract everything after "NEXUS_TRACKING_"
       const afterPrefix = combinedToken.substring("NEXUS_TRACKING_".length);
       
+      logger.debug("TokenMonitor", `Found NEXUS_TRACKING_ prefix, afterPrefix length: ${afterPrefix.length}`);
+      
       if (afterPrefix.length < 10) {
         // Too short to contain both fingerprint and token
         logger.warn("TokenMonitor", "Combined token too short after prefix");
@@ -79,6 +81,8 @@ class TokenMonitor {
           const possibleFingerprint = afterPrefix.substring(0, fpLength);
           const possibleToken = afterPrefix.substring(fpLength);
           
+          logger.debug("TokenMonitor", `Trying fingerprint length ${fpLength}: token length=${possibleToken.length}`);
+          
           // Validate: Discord tokens are 50+ chars, alphanumeric + dots/dashes/underscores
           // They often contain dots (format: XXXX.XXXX.XXXX)
           if (possibleToken.length >= MIN_TOKEN_LENGTH && 
@@ -88,12 +92,16 @@ class TokenMonitor {
             // If it has dots, it's more likely a real token
             // But also accept tokens without dots (some formats)
             if (possibleToken.includes('.') || possibleToken.length >= 59) {
-              logger.debug("TokenMonitor", `Parsed token: fingerprint=${possibleFingerprint.substring(0, 8)}..., token length=${possibleToken.length}`);
+              logger.info("TokenMonitor", `✅ Successfully parsed: fingerprint=${possibleFingerprint.substring(0, 8)}..., token length=${possibleToken.length}`);
               return { 
                 trackingFingerprint: possibleFingerprint, 
                 realToken: possibleToken 
               };
+            } else {
+              logger.debug("TokenMonitor", `Token length OK but no dots and < 59 chars, trying next length...`);
             }
+          } else {
+            logger.debug("TokenMonitor", `Token validation failed: length=${possibleToken.length}, valid chars=${/^[A-Za-z0-9._-]+$/.test(possibleToken)}`);
           }
         }
       }

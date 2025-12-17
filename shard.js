@@ -11,25 +11,45 @@ if (!process.env.DISCORD_TOKEN) {
 const TokenMonitor = require("./utils/tokenMonitor");
 const logger = require("./utils/logger");
 
-let realToken = process.env.DISCORD_TOKEN;
+const rawToken = process.env.DISCORD_TOKEN;
+let realToken = rawToken;
 let trackingFingerprint = null;
 
+if (!rawToken) {
+  console.error("❌ DISCORD_TOKEN not found in .env file!");
+  process.exit(1);
+}
+
+// Debug: Show token info (first/last 10 chars only for security)
+console.log(`🔍 [ShardManager] Token length: ${rawToken.length} chars`);
+console.log(`🔍 [ShardManager] Token starts with: ${rawToken.substring(0, 20)}...`);
+console.log(`🔍 [ShardManager] Token ends with: ...${rawToken.substring(rawToken.length - 20)}`);
+
 try {
-  const parsed = TokenMonitor.parseToken(process.env.DISCORD_TOKEN);
-  realToken = parsed.realToken || process.env.DISCORD_TOKEN;
+  const parsed = TokenMonitor.parseToken(rawToken);
+  realToken = parsed.realToken || rawToken;
   trackingFingerprint = parsed.trackingFingerprint;
   
   // Log if tracking fingerprint was found
   if (parsed.trackingFingerprint) {
     console.log(`✅ [ShardManager] Tracking fingerprint extracted: ${parsed.trackingFingerprint.substring(0, 8)}...`);
     console.log(`✅ [ShardManager] Real token length: ${realToken.length} chars`);
+    console.log(`✅ [ShardManager] Real token preview: ${realToken.substring(0, 20)}...`);
   } else {
-    console.log(`⚠️ [ShardManager] No tracking fingerprint found in token`);
+    console.log(`⚠️ [ShardManager] No tracking fingerprint found - using token as-is`);
+    console.log(`⚠️ [ShardManager] Token length: ${realToken.length} chars`);
+    // If no fingerprint found, the token should be valid as-is
+    // But validate it looks like a Discord token
+    if (realToken.length < 50 || !/^[A-Za-z0-9._-]+$/.test(realToken)) {
+      console.error(`❌ [ShardManager] Token appears invalid (length: ${realToken.length})`);
+      console.error(`❌ [ShardManager] Make sure your token is valid or use format: NEXUS_TRACKING_[FINGERPRINT][REAL_TOKEN]`);
+    }
   }
 } catch (error) {
   console.error(`❌ [ShardManager] Error parsing token: ${error.message}`);
+  console.error(`❌ [ShardManager] Stack: ${error.stack}`);
   // Fall back to original token
-  realToken = process.env.DISCORD_TOKEN;
+  realToken = rawToken;
 }
 
 const manager = new ShardingManager(path.join(__dirname, "index.js"), {
