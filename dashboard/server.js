@@ -315,11 +315,15 @@ class DashboardServer {
 
       // SECURITY FIX: Tighten CORS - only allow specific localhost ports in development
       const isLocalhost = origin && origin.startsWith("http://localhost");
-      const allowedLocalhostPorts = /^http:\/\/localhost:(3000|8080|5173|5174|3001)$/;
-      
+      const allowedLocalhostPorts =
+        /^http:\/\/localhost:(3000|8080|5173|5174|3001)$/;
+
       if (
         allowedOrigins.includes(origin) ||
-        (isLocalhost && (process.env.NODE_ENV === "development" ? allowedLocalhostPorts.test(origin) : false))
+        (isLocalhost &&
+          (process.env.NODE_ENV === "development"
+            ? allowedLocalhostPorts.test(origin)
+            : false))
       ) {
         res.header("Access-Control-Allow-Origin", origin);
       } else {
@@ -1226,8 +1230,14 @@ class DashboardServer {
         );
 
         if (!hasAccess) {
-          logger.warn("Dashboard", `Unauthorized access attempt to guild ${req.params.id} by user ${req.user?.id}`);
-          return res.status(403).json({ error: "Access denied. You don't have permission to access this server." });
+          logger.warn(
+            "Dashboard",
+            `Unauthorized access attempt to guild ${req.params.id} by user ${req.user?.id}`
+          );
+          return res.status(403).json({
+            error:
+              "Access denied. You don't have permission to access this server.",
+          });
         }
 
         // Use the already-required db from top level
@@ -1264,8 +1274,14 @@ class DashboardServer {
           );
 
           if (!hasAccess) {
-            logger.warn("Dashboard", `Unauthorized config update attempt to guild ${req.params.id} by user ${req.user?.id}`);
-            return res.status(403).json({ error: "Access denied. You don't have permission to modify this server." });
+            logger.warn(
+              "Dashboard",
+              `Unauthorized config update attempt to guild ${req.params.id} by user ${req.user?.id}`
+            );
+            return res.status(403).json({
+              error:
+                "Access denied. You don't have permission to modify this server.",
+            });
           }
 
           const updates = req.body;
@@ -1612,8 +1628,14 @@ class DashboardServer {
           );
 
           if (!hasAccess) {
-            logger.warn("Dashboard", `Unauthorized modlogs access attempt to guild ${req.params.id} by user ${req.user?.id}`);
-            return res.status(403).json({ error: "Access denied. You don't have permission to access this server." });
+            logger.warn(
+              "Dashboard",
+              `Unauthorized modlogs access attempt to guild ${req.params.id} by user ${req.user?.id}`
+            );
+            return res.status(403).json({
+              error:
+                "Access denied. You don't have permission to access this server.",
+            });
           }
 
           const limit = parseInt(req.query.limit) || 50;
@@ -1639,8 +1661,14 @@ class DashboardServer {
           );
 
           if (!hasAccess) {
-            logger.warn("Dashboard", `Unauthorized warnings access attempt to guild ${req.params.id} by user ${req.user?.id}`);
-            return res.status(403).json({ error: "Access denied. You don't have permission to access this server." });
+            logger.warn(
+              "Dashboard",
+              `Unauthorized warnings access attempt to guild ${req.params.id} by user ${req.user?.id}`
+            );
+            return res.status(403).json({
+              error:
+                "Access denied. You don't have permission to access this server.",
+            });
           }
 
           const userId = req.query.userId;
@@ -1669,8 +1697,14 @@ class DashboardServer {
           );
 
           if (!hasAccess) {
-            logger.warn("Dashboard", `Unauthorized security logs access attempt to guild ${req.params.id} by user ${req.user?.id}`);
-            return res.status(403).json({ error: "Access denied. You don't have permission to access this server." });
+            logger.warn(
+              "Dashboard",
+              `Unauthorized security logs access attempt to guild ${req.params.id} by user ${req.user?.id}`
+            );
+            return res.status(403).json({
+              error:
+                "Access denied. You don't have permission to access this server.",
+            });
           }
 
           const logs = await db.searchLogs(req.params.id, {
@@ -1697,8 +1731,14 @@ class DashboardServer {
           );
 
           if (!hasAccess) {
-            logger.warn("Dashboard", `Unauthorized antiraid access attempt to guild ${req.params.id} by user ${req.user?.id}`);
-            return res.status(403).json({ error: "Access denied. You don't have permission to access this server." });
+            logger.warn(
+              "Dashboard",
+              `Unauthorized antiraid access attempt to guild ${req.params.id} by user ${req.user?.id}`
+            );
+            return res.status(403).json({
+              error:
+                "Access denied. You don't have permission to access this server.",
+            });
           }
 
           const logs = await new Promise((resolve, reject) => {
@@ -2707,8 +2747,14 @@ class DashboardServer {
         );
 
         if (!hasAccess) {
-          logger.warn("Dashboard", `Unauthorized stats access attempt to guild ${req.params.id} by user ${req.user?.id}`);
-          return res.status(403).json({ error: "Access denied. You don't have permission to access this server." });
+          logger.warn(
+            "Dashboard",
+            `Unauthorized stats access attempt to guild ${req.params.id} by user ${req.user?.id}`
+          );
+          return res.status(403).json({
+            error:
+              "Access denied. You don't have permission to access this server.",
+          });
         }
 
         // Get counts from database
@@ -2783,8 +2829,14 @@ class DashboardServer {
           );
 
           if (!hasAccess) {
-            logger.warn("Dashboard", `Unauthorized message-logs access attempt to guild ${req.params.id} by user ${req.user?.id}`);
-            return res.status(403).json({ error: "Access denied. You don't have permission to access this server." });
+            logger.warn(
+              "Dashboard",
+              `Unauthorized message-logs access attempt to guild ${req.params.id} by user ${req.user?.id}`
+            );
+            return res.status(403).json({
+              error:
+                "Access denied. You don't have permission to access this server.",
+            });
           }
 
           const guildId = req.params.id;
@@ -2849,8 +2901,14 @@ class DashboardServer {
           );
 
           if (!hasAccess) {
-            logger.warn("Dashboard", `Unauthorized automod access attempt to guild ${req.params.id} by user ${req.user?.id}`);
-            return res.status(403).json({ error: "Access denied. You don't have permission to access this server." });
+            logger.warn(
+              "Dashboard",
+              `Unauthorized automod access attempt to guild ${req.params.id} by user ${req.user?.id}`
+            );
+            return res.status(403).json({
+              error:
+                "Access denied. You don't have permission to access this server.",
+            });
           }
 
           const rules = await DiscordAutoMod.getRules(guild);
@@ -2881,8 +2939,14 @@ class DashboardServer {
           );
 
           if (!hasAccess) {
-            logger.warn("Dashboard", `Unauthorized automod create attempt to guild ${req.params.id} by user ${req.user?.id}`);
-            return res.status(403).json({ error: "Access denied. You don't have permission to modify this server." });
+            logger.warn(
+              "Dashboard",
+              `Unauthorized automod create attempt to guild ${req.params.id} by user ${req.user?.id}`
+            );
+            return res.status(403).json({
+              error:
+                "Access denied. You don't have permission to modify this server.",
+            });
           }
 
           const rule = await DiscordAutoMod.createRule(guild, req.body);
@@ -2911,8 +2975,14 @@ class DashboardServer {
           );
 
           if (!hasAccess) {
-            logger.warn("Dashboard", `Unauthorized automod update attempt to guild ${req.params.id} by user ${req.user?.id}`);
-            return res.status(403).json({ error: "Access denied. You don't have permission to modify this server." });
+            logger.warn(
+              "Dashboard",
+              `Unauthorized automod update attempt to guild ${req.params.id} by user ${req.user?.id}`
+            );
+            return res.status(403).json({
+              error:
+                "Access denied. You don't have permission to modify this server.",
+            });
           }
 
           const rule = await DiscordAutoMod.editRule(
@@ -2945,8 +3015,14 @@ class DashboardServer {
           );
 
           if (!hasAccess) {
-            logger.warn("Dashboard", `Unauthorized automod delete attempt to guild ${req.params.id} by user ${req.user?.id}`);
-            return res.status(403).json({ error: "Access denied. You don't have permission to modify this server." });
+            logger.warn(
+              "Dashboard",
+              `Unauthorized automod delete attempt to guild ${req.params.id} by user ${req.user?.id}`
+            );
+            return res.status(403).json({
+              error:
+                "Access denied. You don't have permission to modify this server.",
+            });
           }
 
           await DiscordAutoMod.deleteRule(guild, req.params.ruleId);
@@ -2975,8 +3051,14 @@ class DashboardServer {
           );
 
           if (!hasAccess) {
-            logger.warn("Dashboard", `Unauthorized automod toggle attempt to guild ${req.params.id} by user ${req.user?.id}`);
-            return res.status(403).json({ error: "Access denied. You don't have permission to modify this server." });
+            logger.warn(
+              "Dashboard",
+              `Unauthorized automod toggle attempt to guild ${req.params.id} by user ${req.user?.id}`
+            );
+            return res.status(403).json({
+              error:
+                "Access denied. You don't have permission to modify this server.",
+            });
           }
 
           const { enabled } = req.body;
@@ -3083,8 +3165,14 @@ class DashboardServer {
           );
 
           if (!hasAccess) {
-            logger.warn("Dashboard", `Unauthorized joingate access attempt to guild ${req.params.id} by user ${req.user?.id}`);
-            return res.status(403).json({ error: "Access denied. You don't have permission to access this server." });
+            logger.warn(
+              "Dashboard",
+              `Unauthorized joingate access attempt to guild ${req.params.id} by user ${req.user?.id}`
+            );
+            return res.status(403).json({
+              error:
+                "Access denied. You don't have permission to access this server.",
+            });
           }
 
           const config = await JoinGate.getConfig(req.params.id);
@@ -3108,8 +3196,14 @@ class DashboardServer {
           );
 
           if (!hasAccess) {
-            logger.warn("Dashboard", `Unauthorized joingate update attempt to guild ${req.params.id} by user ${req.user?.id}`);
-            return res.status(403).json({ error: "Access denied. You don't have permission to modify this server." });
+            logger.warn(
+              "Dashboard",
+              `Unauthorized joingate update attempt to guild ${req.params.id} by user ${req.user?.id}`
+            );
+            return res.status(403).json({
+              error:
+                "Access denied. You don't have permission to modify this server.",
+            });
           }
 
           await JoinGate.setConfig(req.params.id, req.body);
@@ -4141,37 +4235,45 @@ class DashboardServer {
     });
 
     // Public API Endpoints (require API key)
-    this.app.get("/api/v1/server/:id", this.apiAuth.bind(this), async (req, res) => {
-      try {
-        const guild = this.client.guilds.cache.get(req.params.id);
-        if (!guild) {
-          return res.status(404).json({ error: "Server not found" });
+    this.app.get(
+      "/api/v1/server/:id",
+      this.apiAuth.bind(this),
+      async (req, res) => {
+        try {
+          const guild = this.client.guilds.cache.get(req.params.id);
+          if (!guild) {
+            return res.status(404).json({ error: "Server not found" });
+          }
+
+          // SECURITY FIX: Verify user has permission to access this server
+          const permCheck = await this.checkServerPermissions(
+            req,
+            guild,
+            "ViewAuditLog"
+          );
+          if (!permCheck.allowed) {
+            return res.status(403).json({ error: permCheck.error });
+          }
+
+          const config = await db.getServerConfig(req.params.id);
+          const stats = await db.getServerStats(req.params.id);
+
+          res.json({
+            id: guild.id,
+            name: guild.name,
+            memberCount: guild.memberCount,
+            features: {
+              antiNuke: config.anti_nuke_enabled,
+              antiRaid: config.anti_raid_enabled,
+              autoMod: config.auto_mod_enabled,
+            },
+            stats: stats,
+          });
+        } catch (error) {
+          res.status(500).json({ error: error.message });
         }
-
-        // SECURITY FIX: Verify user has permission to access this server
-        const permCheck = await this.checkServerPermissions(req, guild, "ViewAuditLog");
-        if (!permCheck.allowed) {
-          return res.status(403).json({ error: permCheck.error });
-        }
-
-        const config = await db.getServerConfig(req.params.id);
-        const stats = await db.getServerStats(req.params.id);
-
-        res.json({
-          id: guild.id,
-          name: guild.name,
-          memberCount: guild.memberCount,
-          features: {
-            antiNuke: config.anti_nuke_enabled,
-            antiRaid: config.anti_raid_enabled,
-            autoMod: config.auto_mod_enabled,
-          },
-          stats: stats,
-        });
-      } catch (error) {
-        res.status(500).json({ error: error.message });
       }
-    });
+    );
 
     this.app.get(
       "/api/v1/user/:userId/warnings",
@@ -4191,7 +4293,11 @@ class DashboardServer {
           }
 
           // SECURITY FIX: Verify user has permission to access this server
-          const permCheck = await this.checkServerPermissions(req, guild, "ViewAuditLog");
+          const permCheck = await this.checkServerPermissions(
+            req,
+            guild,
+            "ViewAuditLog"
+          );
           if (!permCheck.allowed) {
             return res.status(403).json({ error: permCheck.error });
           }
@@ -7182,56 +7288,72 @@ class DashboardServer {
     );
 
     // 4. GET /api/v1/server/:id/health - Get server health
-    this.app.get("/api/v1/server/:id/health", this.apiAuth.bind(this), async (req, res) => {
-      try {
-        const serverId = req.params.id;
-        const guild = this.client.guilds.cache.get(serverId);
-        if (!guild) {
-          return res.status(404).json({ error: "Server not found" });
+    this.app.get(
+      "/api/v1/server/:id/health",
+      this.apiAuth.bind(this),
+      async (req, res) => {
+        try {
+          const serverId = req.params.id;
+          const guild = this.client.guilds.cache.get(serverId);
+          if (!guild) {
+            return res.status(404).json({ error: "Server not found" });
+          }
+
+          // SECURITY FIX: Verify user has permission to access this server
+          const permCheck = await this.checkServerPermissions(
+            req,
+            guild,
+            "ViewAuditLog"
+          );
+          if (!permCheck.allowed) {
+            return res.status(403).json({ error: permCheck.error });
+          }
+
+          const serverHealth = require("../utils/serverHealth");
+          const health = await serverHealth.calculateHealth(serverId);
+
+          res.json(health);
+        } catch (error) {
+          res.status(500).json({ error: error.message });
         }
-
-        // SECURITY FIX: Verify user has permission to access this server
-        const permCheck = await this.checkServerPermissions(req, guild, "ViewAuditLog");
-        if (!permCheck.allowed) {
-          return res.status(403).json({ error: permCheck.error });
-        }
-
-        const serverHealth = require("../utils/serverHealth");
-        const health = await serverHealth.calculateHealth(serverId);
-
-        res.json(health);
-      } catch (error) {
-        res.status(500).json({ error: error.message });
       }
-    });
+    );
 
     // 5. POST /api/v1/server/:id/analyze - Run health analysis
-    this.app.post("/api/v1/server/:id/analyze", this.apiAuth.bind(this), async (req, res) => {
-      try {
-        const serverId = req.params.id;
-        const guild = this.client.guilds.cache.get(serverId);
-        if (!guild) {
-          return res.status(404).json({ error: "Server not found" });
+    this.app.post(
+      "/api/v1/server/:id/analyze",
+      this.apiAuth.bind(this),
+      async (req, res) => {
+        try {
+          const serverId = req.params.id;
+          const guild = this.client.guilds.cache.get(serverId);
+          if (!guild) {
+            return res.status(404).json({ error: "Server not found" });
+          }
+
+          // SECURITY FIX: Verify user has permission to access this server
+          const permCheck = await this.checkServerPermissions(
+            req,
+            guild,
+            "ViewAuditLog"
+          );
+          if (!permCheck.allowed) {
+            return res.status(403).json({ error: permCheck.error });
+          }
+
+          const serverHealth = require("../utils/serverHealth");
+          const health = await serverHealth.calculateHealth(serverId);
+
+          res.json({
+            ...health,
+            timestamp: Date.now(),
+            analyzed: true,
+          });
+        } catch (error) {
+          res.status(500).json({ error: error.message });
         }
-
-        // SECURITY FIX: Verify user has permission to access this server
-        const permCheck = await this.checkServerPermissions(req, guild, "ViewAuditLog");
-        if (!permCheck.allowed) {
-          return res.status(403).json({ error: permCheck.error });
-        }
-
-        const serverHealth = require("../utils/serverHealth");
-        const health = await serverHealth.calculateHealth(serverId);
-
-        res.json({
-          ...health,
-          timestamp: Date.now(),
-          analyzed: true,
-        });
-      } catch (error) {
-        res.status(500).json({ error: error.message });
       }
-    });
+    );
 
     // ==================== MODERATION API (6-10) ====================
 
@@ -7451,200 +7573,233 @@ class DashboardServer {
     );
 
     // 10. GET /api/v1/moderation/logs - Get moderation logs
-    this.app.get("/api/v1/moderation/logs", this.apiAuth.bind(this), async (req, res) => {
-      try {
-        const { serverId, limit = 50, action, userId } = req.query;
+    this.app.get(
+      "/api/v1/moderation/logs",
+      this.apiAuth.bind(this),
+      async (req, res) => {
+        try {
+          const { serverId, limit = 50, action, userId } = req.query;
 
-        if (!serverId) {
-          return res.status(400).json({ error: "serverId is required" });
-        }
+          if (!serverId) {
+            return res.status(400).json({ error: "serverId is required" });
+          }
 
-        const guild = this.client.guilds.cache.get(serverId);
-        if (!guild) {
-          return res.status(404).json({ error: "Server not found" });
-        }
+          const guild = this.client.guilds.cache.get(serverId);
+          if (!guild) {
+            return res.status(404).json({ error: "Server not found" });
+          }
 
-        // SECURITY FIX: Verify user has permission to access this server
-        const permCheck = await this.checkServerPermissions(req, guild, "ViewAuditLog");
-        if (!permCheck.allowed) {
-          return res.status(403).json({ error: permCheck.error });
-        }
+          // SECURITY FIX: Verify user has permission to access this server
+          const permCheck = await this.checkServerPermissions(
+            req,
+            guild,
+            "ViewAuditLog"
+          );
+          if (!permCheck.allowed) {
+            return res.status(403).json({ error: permCheck.error });
+          }
 
-        let query = "SELECT * FROM moderation_logs WHERE guild_id = ?";
-        const params = [serverId];
+          let query = "SELECT * FROM moderation_logs WHERE guild_id = ?";
+          const params = [serverId];
 
-        if (action) {
-          query += " AND action = ?";
-          params.push(action);
-        }
+          if (action) {
+            query += " AND action = ?";
+            params.push(action);
+          }
 
-        if (userId) {
-          query += " AND user_id = ?";
-          params.push(userId);
-        }
+          if (userId) {
+            query += " AND user_id = ?";
+            params.push(userId);
+          }
 
-        query += " ORDER BY timestamp DESC LIMIT ?";
-        params.push(parseInt(limit));
+          query += " ORDER BY timestamp DESC LIMIT ?";
+          params.push(parseInt(limit));
 
-        const logs = await new Promise((resolve, reject) => {
-          db.db.all(query, params, (err, rows) => {
-            if (err) {
-              reject(err);
-            } else {
-              resolve(rows || []);
-            }
+          const logs = await new Promise((resolve, reject) => {
+            db.db.all(query, params, (err, rows) => {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(rows || []);
+              }
+            });
           });
-        });
 
-        res.json({ logs });
-      } catch (error) {
-        res.status(500).json({ error: error.message });
+          res.json({ logs });
+        } catch (error) {
+          res.status(500).json({ error: error.message });
+        }
       }
-    });
+    );
 
     // ==================== USER INTELLIGENCE API (11-14) ====================
 
     // 11. GET /api/v1/user/:id/risk - Get user risk score
-    this.app.get("/api/v1/user/:id/risk", this.apiAuth.bind(this), async (req, res) => {
-      try {
-        const { serverId } = req.query;
-        const userId = req.params.id;
+    this.app.get(
+      "/api/v1/user/:id/risk",
+      this.apiAuth.bind(this),
+      async (req, res) => {
+        try {
+          const { serverId } = req.query;
+          const userId = req.params.id;
 
-        if (!serverId) {
-          return res
-            .status(400)
-            .json({ error: "serverId query parameter required" });
+          if (!serverId) {
+            return res
+              .status(400)
+              .json({ error: "serverId query parameter required" });
+          }
+
+          const guild = this.client.guilds.cache.get(serverId);
+          if (!guild) {
+            return res.status(404).json({ error: "Server not found" });
+          }
+
+          // SECURITY FIX: Verify user has permission to access this server
+          const permCheck = await this.checkServerPermissions(
+            req,
+            guild,
+            "ViewAuditLog"
+          );
+          if (!permCheck.allowed) {
+            return res.status(403).json({ error: permCheck.error });
+          }
+
+          const member = await guild.members.fetch(userId).catch(() => null);
+          if (!member) {
+            return res.status(404).json({ error: "User not found in server" });
+          }
+
+          const memberIntelligence = require("../utils/memberIntelligence");
+          const risk = await memberIntelligence.calculateRiskScore(member);
+
+          res.json(risk);
+        } catch (error) {
+          res.status(500).json({ error: error.message });
         }
-
-        const guild = this.client.guilds.cache.get(serverId);
-        if (!guild) {
-          return res.status(404).json({ error: "Server not found" });
-        }
-
-        // SECURITY FIX: Verify user has permission to access this server
-        const permCheck = await this.checkServerPermissions(req, guild, "ViewAuditLog");
-        if (!permCheck.allowed) {
-          return res.status(403).json({ error: permCheck.error });
-        }
-
-        const member = await guild.members.fetch(userId).catch(() => null);
-        if (!member) {
-          return res.status(404).json({ error: "User not found in server" });
-        }
-
-        const memberIntelligence = require("../utils/memberIntelligence");
-        const risk = await memberIntelligence.calculateRiskScore(member);
-
-        res.json(risk);
-      } catch (error) {
-        res.status(500).json({ error: error.message });
       }
-    });
+    );
 
     // 12. GET /api/v1/user/:id/history - Get user moderation history
-    this.app.get("/api/v1/user/:id/history", this.apiAuth.bind(this), async (req, res) => {
-      try {
-        const { serverId } = req.query;
-        const userId = req.params.id;
+    this.app.get(
+      "/api/v1/user/:id/history",
+      this.apiAuth.bind(this),
+      async (req, res) => {
+        try {
+          const { serverId } = req.query;
+          const userId = req.params.id;
 
-        if (!serverId) {
-          return res.status(400).json({ error: "serverId is required" });
-        }
+          if (!serverId) {
+            return res.status(400).json({ error: "serverId is required" });
+          }
 
-        const guild = this.client.guilds.cache.get(serverId);
-        if (!guild) {
-          return res.status(404).json({ error: "Server not found" });
-        }
+          const guild = this.client.guilds.cache.get(serverId);
+          if (!guild) {
+            return res.status(404).json({ error: "Server not found" });
+          }
 
-        // SECURITY FIX: Verify user has permission to access this server
-        const permCheck = await this.checkServerPermissions(req, guild, "ViewAuditLog");
-        if (!permCheck.allowed) {
-          return res.status(403).json({ error: permCheck.error });
-        }
-
-        const history = await new Promise((resolve, reject) => {
-          db.db.all(
-            "SELECT * FROM moderation_logs WHERE guild_id = ? AND user_id = ? ORDER BY timestamp DESC",
-            [serverId, userId],
-            (err, rows) => {
-              if (err) {
-                reject(err);
-              } else {
-                resolve(rows || []);
-              }
-            }
+          // SECURITY FIX: Verify user has permission to access this server
+          const permCheck = await this.checkServerPermissions(
+            req,
+            guild,
+            "ViewAuditLog"
           );
-        });
+          if (!permCheck.allowed) {
+            return res.status(403).json({ error: permCheck.error });
+          }
 
-        const warnings = await new Promise((resolve, reject) => {
-          db.db.all(
-            "SELECT * FROM warnings WHERE guild_id = ? AND user_id = ? ORDER BY timestamp DESC",
-            [serverId, userId],
-            (err, rows) => {
-              if (err) {
-                reject(err);
-              } else {
-                resolve(rows || []);
+          const history = await new Promise((resolve, reject) => {
+            db.db.all(
+              "SELECT * FROM moderation_logs WHERE guild_id = ? AND user_id = ? ORDER BY timestamp DESC",
+              [serverId, userId],
+              (err, rows) => {
+                if (err) {
+                  reject(err);
+                } else {
+                  resolve(rows || []);
+                }
               }
-            }
-          );
-        });
+            );
+          });
 
-        res.json({ modActions: history, warnings });
-      } catch (error) {
-        res.status(500).json({ error: error.message });
+          const warnings = await new Promise((resolve, reject) => {
+            db.db.all(
+              "SELECT * FROM warnings WHERE guild_id = ? AND user_id = ? ORDER BY timestamp DESC",
+              [serverId, userId],
+              (err, rows) => {
+                if (err) {
+                  reject(err);
+                } else {
+                  resolve(rows || []);
+                }
+              }
+            );
+          });
+
+          res.json({ modActions: history, warnings });
+        } catch (error) {
+          res.status(500).json({ error: error.message });
+        }
       }
-    });
+    );
 
     // 13. POST /api/v1/user/:id/analyze - Deep user analysis
-    this.app.post("/api/v1/user/:id/analyze", this.apiAuth.bind(this), async (req, res) => {
-      try {
-        const { serverId } = req.body;
-        const userId = req.params.id;
+    this.app.post(
+      "/api/v1/user/:id/analyze",
+      this.apiAuth.bind(this),
+      async (req, res) => {
+        try {
+          const { serverId } = req.body;
+          const userId = req.params.id;
 
-        if (!serverId) {
-          return res.status(400).json({ error: "serverId is required" });
+          if (!serverId) {
+            return res.status(400).json({ error: "serverId is required" });
+          }
+
+          const guild = this.client.guilds.cache.get(serverId);
+          if (!guild) {
+            return res.status(404).json({ error: "Server not found" });
+          }
+
+          // SECURITY FIX: Verify user has permission to access this server
+          const permCheck = await this.checkServerPermissions(
+            req,
+            guild,
+            "ViewAuditLog"
+          );
+          if (!permCheck.allowed) {
+            return res.status(403).json({ error: permCheck.error });
+          }
+
+          const member = await guild.members.fetch(userId).catch(() => null);
+          if (!member) {
+            return res.status(404).json({ error: "User not found" });
+          }
+
+          const memberIntelligence = require("../utils/memberIntelligence");
+          const risk = await memberIntelligence.calculateRiskScore(member);
+
+          const retentionPredictor = require("../utils/retentionPredictor");
+          const churnRisk = await retentionPredictor.predictChurn(
+            serverId,
+            userId
+          );
+
+          res.json({
+            risk,
+            churnPrediction: churnRisk,
+            accountAge: Math.floor(
+              (Date.now() - member.user.createdTimestamp) /
+                (24 * 60 * 60 * 1000)
+            ),
+            serverAge: Math.floor(
+              (Date.now() - member.joinedTimestamp) / (24 * 60 * 60 * 1000)
+            ),
+          });
+        } catch (error) {
+          res.status(500).json({ error: error.message });
         }
-
-        const guild = this.client.guilds.cache.get(serverId);
-        if (!guild) {
-          return res.status(404).json({ error: "Server not found" });
-        }
-
-        // SECURITY FIX: Verify user has permission to access this server
-        const permCheck = await this.checkServerPermissions(req, guild, "ViewAuditLog");
-        if (!permCheck.allowed) {
-          return res.status(403).json({ error: permCheck.error });
-        }
-
-        const member = await guild.members.fetch(userId).catch(() => null);
-        if (!member) {
-          return res.status(404).json({ error: "User not found" });
-        }
-
-        const memberIntelligence = require("../utils/memberIntelligence");
-        const risk = await memberIntelligence.calculateRiskScore(member);
-
-        const retentionPredictor = require("../utils/retentionPredictor");
-        const churnRisk = await retentionPredictor.predictChurn(
-          serverId,
-          userId
-        );
-
-        res.json({
-          risk,
-          churnPrediction: churnRisk,
-          accountAge: Math.floor(
-            (Date.now() - member.user.createdTimestamp) / (24 * 60 * 60 * 1000)
-          ),
-          serverAge: Math.floor(
-            (Date.now() - member.joinedTimestamp) / (24 * 60 * 60 * 1000)
-          ),
-        });
-      } catch (error) {
-        res.status(500).json({ error: error.message });
       }
-    });
+    );
 
     // 14. GET /api/v1/users/risky - Get risky users across servers
     this.app.get(
@@ -7663,7 +7818,11 @@ class DashboardServer {
           }
 
           // SECURITY FIX: Verify user has permission to access this server
-          const permCheck = await this.checkServerPermissions(req, guild, "ViewAuditLog");
+          const permCheck = await this.checkServerPermissions(
+            req,
+            guild,
+            "ViewAuditLog"
+          );
           if (!permCheck.allowed) {
             return res.status(403).json({ error: permCheck.error });
           }
@@ -7684,61 +7843,77 @@ class DashboardServer {
     // ==================== AI PREDICTION API (15-18) ====================
 
     // 15. POST /api/v1/predict/threat - Run AI threat prediction
-    this.app.post("/api/v1/predict/threat", this.apiAuth.bind(this), async (req, res) => {
-      try {
-        const { serverId } = req.body;
-        if (!serverId) {
-          return res.status(400).json({ error: "serverId is required" });
+    this.app.post(
+      "/api/v1/predict/threat",
+      this.apiAuth.bind(this),
+      async (req, res) => {
+        try {
+          const { serverId } = req.body;
+          if (!serverId) {
+            return res.status(400).json({ error: "serverId is required" });
+          }
+
+          const guild = this.client.guilds.cache.get(serverId);
+          if (!guild) {
+            return res.status(404).json({ error: "Server not found" });
+          }
+
+          // SECURITY FIX: Verify user has permission to access this server
+          const permCheck = await this.checkServerPermissions(
+            req,
+            guild,
+            "ViewAuditLog"
+          );
+          if (!permCheck.allowed) {
+            return res.status(403).json({ error: permCheck.error });
+          }
+
+          const threatPredictor = require("../utils/threatPredictor");
+          const prediction = await threatPredictor.predictThreat(guild);
+
+          res.json(prediction);
+        } catch (error) {
+          res.status(500).json({ error: error.message });
         }
-
-        const guild = this.client.guilds.cache.get(serverId);
-        if (!guild) {
-          return res.status(404).json({ error: "Server not found" });
-        }
-
-        // SECURITY FIX: Verify user has permission to access this server
-        const permCheck = await this.checkServerPermissions(req, guild, "ViewAuditLog");
-        if (!permCheck.allowed) {
-          return res.status(403).json({ error: permCheck.error });
-        }
-
-        const threatPredictor = require("../utils/threatPredictor");
-        const prediction = await threatPredictor.predictThreat(guild);
-
-        res.json(prediction);
-      } catch (error) {
-        res.status(500).json({ error: error.message });
       }
-    });
+    );
 
     // 16. POST /api/v1/predict/retention - Predict member retention
-    this.app.post("/api/v1/predict/retention", this.apiAuth.bind(this), async (req, res) => {
-      try {
-        const { serverId } = req.body;
+    this.app.post(
+      "/api/v1/predict/retention",
+      this.apiAuth.bind(this),
+      async (req, res) => {
+        try {
+          const { serverId } = req.body;
 
-        if (!serverId) {
-          return res.status(400).json({ error: "serverId is required" });
+          if (!serverId) {
+            return res.status(400).json({ error: "serverId is required" });
+          }
+
+          const guild = this.client.guilds.cache.get(serverId);
+          if (!guild) {
+            return res.status(404).json({ error: "Server not found" });
+          }
+
+          // SECURITY FIX: Verify user has permission to access this server
+          const permCheck = await this.checkServerPermissions(
+            req,
+            guild,
+            "ViewAuditLog"
+          );
+          if (!permCheck.allowed) {
+            return res.status(403).json({ error: permCheck.error });
+          }
+
+          const retentionPredictor = require("../utils/retentionPredictor");
+          const analysis = await retentionPredictor.analyzeRetention(serverId);
+
+          res.json(analysis);
+        } catch (error) {
+          res.status(500).json({ error: error.message });
         }
-
-        const guild = this.client.guilds.cache.get(serverId);
-        if (!guild) {
-          return res.status(404).json({ error: "Server not found" });
-        }
-
-        // SECURITY FIX: Verify user has permission to access this server
-        const permCheck = await this.checkServerPermissions(req, guild, "ViewAuditLog");
-        if (!permCheck.allowed) {
-          return res.status(403).json({ error: permCheck.error });
-        }
-
-        const retentionPredictor = require("../utils/retentionPredictor");
-        const analysis = await retentionPredictor.analyzeRetention(serverId);
-
-        res.json(analysis);
-      } catch (error) {
-        res.status(500).json({ error: error.message });
       }
-    });
+    );
 
     // 17. GET /api/v1/patterns/global - Get global threat patterns
     this.app.get("/api/v1/patterns/global", async (req, res) => {
@@ -7770,141 +7945,171 @@ class DashboardServer {
     });
 
     // 18. POST /api/v1/threat/report - Report threat pattern
-    this.app.post("/api/v1/threat/report", this.apiAuth.bind(this), async (req, res) => {
-      try {
-        const { serverId, pattern, description, severity } = req.body;
+    this.app.post(
+      "/api/v1/threat/report",
+      this.apiAuth.bind(this),
+      async (req, res) => {
+        try {
+          const { serverId, pattern, description, severity } = req.body;
 
-        if (!serverId) {
-          return res.status(400).json({ error: "serverId is required" });
-        }
+          if (!serverId) {
+            return res.status(400).json({ error: "serverId is required" });
+          }
 
-        const guild = this.client.guilds.cache.get(serverId);
-        if (!guild) {
-          return res.status(404).json({ error: "Server not found" });
-        }
+          const guild = this.client.guilds.cache.get(serverId);
+          if (!guild) {
+            return res.status(404).json({ error: "Server not found" });
+          }
 
-        // SECURITY FIX: Verify user has permission to access this server
-        const permCheck = await this.checkServerPermissions(req, guild, "ViewAuditLog");
-        if (!permCheck.allowed) {
-          return res.status(403).json({ error: permCheck.error });
-        }
-
-        // Log threat report
-        await new Promise((resolve, reject) => {
-          db.db.run(
-            "INSERT INTO threat_reports (guild_id, pattern, description, severity, timestamp) VALUES (?, ?, ?, ?, ?)",
-            [serverId, pattern, description, severity || "medium", Date.now()],
-            (err) => {
-              if (err) {
-                reject(err);
-              } else {
-                resolve();
-              }
-            }
+          // SECURITY FIX: Verify user has permission to access this server
+          const permCheck = await this.checkServerPermissions(
+            req,
+            guild,
+            "ViewAuditLog"
           );
-        });
+          if (!permCheck.allowed) {
+            return res.status(403).json({ error: permCheck.error });
+          }
 
-        res.json({ success: true, message: "Threat pattern reported" });
-      } catch (error) {
-        res.status(500).json({ error: error.message });
+          // Log threat report
+          await new Promise((resolve, reject) => {
+            db.db.run(
+              "INSERT INTO threat_reports (guild_id, pattern, description, severity, timestamp) VALUES (?, ?, ?, ?, ?)",
+              [
+                serverId,
+                pattern,
+                description,
+                severity || "medium",
+                Date.now(),
+              ],
+              (err) => {
+                if (err) {
+                  reject(err);
+                } else {
+                  resolve();
+                }
+              }
+            );
+          });
+
+          res.json({ success: true, message: "Threat pattern reported" });
+        } catch (error) {
+          res.status(500).json({ error: error.message });
+        }
       }
-    });
+    );
 
     // ==================== ANALYTICS API (19-20) ====================
 
     // 19. GET /api/v1/analytics/commands - Command analytics
-    this.app.get("/api/v1/analytics/commands", this.apiAuth.bind(this), async (req, res) => {
-      try {
-        const { serverId } = req.query;
+    this.app.get(
+      "/api/v1/analytics/commands",
+      this.apiAuth.bind(this),
+      async (req, res) => {
+        try {
+          const { serverId } = req.query;
 
-        if (!serverId) {
-          return res.status(400).json({ error: "serverId is required" });
-        }
+          if (!serverId) {
+            return res.status(400).json({ error: "serverId is required" });
+          }
 
-        const guild = this.client.guilds.cache.get(serverId);
-        if (!guild) {
-          return res.status(404).json({ error: "Server not found" });
-        }
+          const guild = this.client.guilds.cache.get(serverId);
+          if (!guild) {
+            return res.status(404).json({ error: "Server not found" });
+          }
 
-        // SECURITY FIX: Verify user has permission to access this server
-        const permCheck = await this.checkServerPermissions(req, guild, "ViewAuditLog");
-        if (!permCheck.allowed) {
-          return res.status(403).json({ error: permCheck.error });
-        }
-
-        const stats = await new Promise((resolve, reject) => {
-          db.db.all(
-            "SELECT command_name, COUNT(*) as uses FROM command_usage_log WHERE guild_id = ? GROUP BY command_name ORDER BY uses DESC LIMIT 20",
-            [serverId],
-            (err, rows) => {
-              if (err) {
-                reject(err);
-              } else {
-                resolve(rows || []);
-              }
-            }
+          // SECURITY FIX: Verify user has permission to access this server
+          const permCheck = await this.checkServerPermissions(
+            req,
+            guild,
+            "ViewAuditLog"
           );
-        });
+          if (!permCheck.allowed) {
+            return res.status(403).json({ error: permCheck.error });
+          }
 
-        res.json({ commands: stats });
-      } catch (error) {
-        res.status(500).json({ error: error.message });
+          const stats = await new Promise((resolve, reject) => {
+            db.db.all(
+              "SELECT command_name, COUNT(*) as uses FROM command_usage_log WHERE guild_id = ? GROUP BY command_name ORDER BY uses DESC LIMIT 20",
+              [serverId],
+              (err, rows) => {
+                if (err) {
+                  reject(err);
+                } else {
+                  resolve(rows || []);
+                }
+              }
+            );
+          });
+
+          res.json({ commands: stats });
+        } catch (error) {
+          res.status(500).json({ error: error.message });
+        }
       }
-    });
+    );
 
     // 20. GET /api/v1/analytics/security - Security analytics
-    this.app.get("/api/v1/analytics/security", this.apiAuth.bind(this), async (req, res) => {
-      try {
-        const { serverId } = req.query;
+    this.app.get(
+      "/api/v1/analytics/security",
+      this.apiAuth.bind(this),
+      async (req, res) => {
+        try {
+          const { serverId } = req.query;
 
-        if (!serverId) {
-          return res.status(400).json({ error: "serverId is required" });
-        }
+          if (!serverId) {
+            return res.status(400).json({ error: "serverId is required" });
+          }
 
-        const guild = this.client.guilds.cache.get(serverId);
-        if (!guild) {
-          return res.status(404).json({ error: "Server not found" });
-        }
+          const guild = this.client.guilds.cache.get(serverId);
+          if (!guild) {
+            return res.status(404).json({ error: "Server not found" });
+          }
 
-        // SECURITY FIX: Verify user has permission to access this server
-        const permCheck = await this.checkServerPermissions(req, guild, "ViewAuditLog");
-        if (!permCheck.allowed) {
-          return res.status(403).json({ error: permCheck.error });
-        }
-
-        const threats = await new Promise((resolve, reject) => {
-          db.db.get(
-            "SELECT COUNT(*) as count FROM security_logs WHERE guild_id = ? AND timestamp > ?",
-            [serverId, Date.now() - 7 * 24 * 60 * 60 * 1000],
-            (err, row) => {
-              if (err) {
-                reject(err);
-              } else {
-                resolve(row?.count || 0);
-              }
-            }
+          // SECURITY FIX: Verify user has permission to access this server
+          const permCheck = await this.checkServerPermissions(
+            req,
+            guild,
+            "ViewAuditLog"
           );
-        });
+          if (!permCheck.allowed) {
+            return res.status(403).json({ error: permCheck.error });
+          }
 
-        const raids = await new Promise((resolve, reject) => {
-          db.db.get(
-            "SELECT COUNT(*) as count FROM anti_raid_logs WHERE guild_id = ? AND timestamp > ?",
-            [serverId, Date.now() - 7 * 24 * 60 * 60 * 1000],
-            (err, row) => {
-              if (err) {
-                reject(err);
-              } else {
-                resolve(row?.count || 0);
+          const threats = await new Promise((resolve, reject) => {
+            db.db.get(
+              "SELECT COUNT(*) as count FROM security_logs WHERE guild_id = ? AND timestamp > ?",
+              [serverId, Date.now() - 7 * 24 * 60 * 60 * 1000],
+              (err, row) => {
+                if (err) {
+                  reject(err);
+                } else {
+                  resolve(row?.count || 0);
+                }
               }
-            }
-          );
-        });
+            );
+          });
 
-        res.json({ threatsLast7d: threats, raidsLast7d: raids });
-      } catch (error) {
-        res.status(500).json({ error: error.message });
+          const raids = await new Promise((resolve, reject) => {
+            db.db.get(
+              "SELECT COUNT(*) as count FROM anti_raid_logs WHERE guild_id = ? AND timestamp > ?",
+              [serverId, Date.now() - 7 * 24 * 60 * 60 * 1000],
+              (err, row) => {
+                if (err) {
+                  reject(err);
+                } else {
+                  resolve(row?.count || 0);
+                }
+              }
+            );
+          });
+
+          res.json({ threatsLast7d: threats, raidsLast7d: raids });
+        } catch (error) {
+          res.status(500).json({ error: error.message });
+        }
       }
-    });
+    );
 
     // ==================== EXPORT API (21-22) ====================
 
@@ -7926,7 +8131,11 @@ class DashboardServer {
           }
 
           // SECURITY FIX: Verify user has permission to access this server
-          const permCheck = await this.checkServerPermissions(req, guild, "ViewAuditLog");
+          const permCheck = await this.checkServerPermissions(
+            req,
+            guild,
+            "ViewAuditLog"
+          );
           if (!permCheck.allowed) {
             return res.status(403).json({ error: permCheck.error });
           }
@@ -8007,7 +8216,11 @@ class DashboardServer {
           }
 
           // SECURITY FIX: Verify user has permission to access this server
-          const permCheck = await this.checkServerPermissions(req, guild, "ViewAuditLog");
+          const permCheck = await this.checkServerPermissions(
+            req,
+            guild,
+            "ViewAuditLog"
+          );
           if (!permCheck.allowed) {
             return res.status(403).json({ error: permCheck.error });
           }
@@ -8054,7 +8267,11 @@ class DashboardServer {
           }
 
           // SECURITY FIX: Verify user has permission to access this server
-          const permCheck = await this.checkServerPermissions(req, guild, "ManageWebhooks");
+          const permCheck = await this.checkServerPermissions(
+            req,
+            guild,
+            "ManageWebhooks"
+          );
           if (!permCheck.allowed) {
             return res.status(403).json({ error: permCheck.error });
           }
@@ -8075,67 +8292,78 @@ class DashboardServer {
     );
 
     // 25. POST /api/v1/webhooks/test - Test webhook
-    this.app.post("/api/v1/webhooks/test", this.apiAuth.bind(this), async (req, res) => {
-      try {
-        const { url } = req.body;
-
-        if (!url || typeof url !== "string") {
-          return res.status(400).json({ error: "URL is required" });
-        }
-
-        // SECURITY FIX: Validate webhook URL to prevent SSRF
-        let parsedUrl;
+    this.app.post(
+      "/api/v1/webhooks/test",
+      this.apiAuth.bind(this),
+      async (req, res) => {
         try {
-          parsedUrl = new URL(url);
+          const { url } = req.body;
+
+          if (!url || typeof url !== "string") {
+            return res.status(400).json({ error: "URL is required" });
+          }
+
+          // SECURITY FIX: Validate webhook URL to prevent SSRF
+          let parsedUrl;
+          try {
+            parsedUrl = new URL(url);
+          } catch (error) {
+            return res.status(400).json({ error: "Invalid URL format" });
+          }
+
+          // Only allow HTTPS (prevent SSRF to internal services)
+          if (parsedUrl.protocol !== "https:") {
+            return res
+              .status(400)
+              .json({ error: "URL must use HTTPS protocol" });
+          }
+
+          // Block private/internal IP addresses (SSRF protection)
+          const hostname = parsedUrl.hostname.toLowerCase();
+          const privateIPPatterns = [
+            /^127\./,
+            /^10\./,
+            /^172\.(1[6-9]|2[0-9]|3[0-1])\./,
+            /^192\.168\./,
+            /^169\.254\./,
+            /^::1$/,
+            /^localhost$/,
+            /^0\.0\.0\.0$/,
+          ];
+
+          if (privateIPPatterns.some((pattern) => pattern.test(hostname))) {
+            return res.status(400).json({
+              error: "URL cannot point to private/internal addresses",
+            });
+          }
+
+          // Block metadata endpoints (AWS, GCP, Azure)
+          if (hostname.includes("metadata") || hostname.includes("169.254")) {
+            return res.status(400).json({ error: "Invalid webhook URL" });
+          }
+
+          const axios = require("axios");
+          await axios.post(
+            url,
+            {
+              event: "test",
+              message: "This is a test webhook from Nexus API",
+              timestamp: Date.now(),
+            },
+            { timeout: 5000 }
+          );
+
+          res.json({
+            success: true,
+            message: "Webhook test sent successfully",
+          });
         } catch (error) {
-          return res.status(400).json({ error: "Invalid URL format" });
+          res
+            .status(500)
+            .json({ error: "Webhook test failed: " + error.message });
         }
-
-        // Only allow HTTPS (prevent SSRF to internal services)
-        if (parsedUrl.protocol !== "https:") {
-          return res.status(400).json({ error: "URL must use HTTPS protocol" });
-        }
-
-        // Block private/internal IP addresses (SSRF protection)
-        const hostname = parsedUrl.hostname.toLowerCase();
-        const privateIPPatterns = [
-          /^127\./,
-          /^10\./,
-          /^172\.(1[6-9]|2[0-9]|3[0-1])\./,
-          /^192\.168\./,
-          /^169\.254\./,
-          /^::1$/,
-          /^localhost$/,
-          /^0\.0\.0\.0$/,
-        ];
-
-        if (privateIPPatterns.some(pattern => pattern.test(hostname))) {
-          return res.status(400).json({ error: "URL cannot point to private/internal addresses" });
-        }
-
-        // Block metadata endpoints (AWS, GCP, Azure)
-        if (hostname.includes("metadata") || hostname.includes("169.254")) {
-          return res.status(400).json({ error: "Invalid webhook URL" });
-        }
-
-        const axios = require("axios");
-        await axios.post(
-          url,
-          {
-            event: "test",
-            message: "This is a test webhook from Nexus API",
-            timestamp: Date.now(),
-          },
-          { timeout: 5000 }
-        );
-
-        res.json({ success: true, message: "Webhook test sent successfully" });
-      } catch (error) {
-        res
-          .status(500)
-          .json({ error: "Webhook test failed: " + error.message });
       }
-    });
+    );
 
     // ==================== CUSTOM COMMANDS API (26-28) ====================
 
@@ -8170,33 +8398,41 @@ class DashboardServer {
     );
 
     // 27. GET /api/v1/commands/list - List custom commands
-    this.app.get("/api/v1/commands/list", this.apiAuth.bind(this), async (req, res) => {
-      try {
-        const { serverId } = req.query;
+    this.app.get(
+      "/api/v1/commands/list",
+      this.apiAuth.bind(this),
+      async (req, res) => {
+        try {
+          const { serverId } = req.query;
 
-        if (!serverId) {
-          return res.status(400).json({ error: "serverId is required" });
+          if (!serverId) {
+            return res.status(400).json({ error: "serverId is required" });
+          }
+
+          const guild = this.client.guilds.cache.get(serverId);
+          if (!guild) {
+            return res.status(404).json({ error: "Server not found" });
+          }
+
+          // SECURITY FIX: Verify user has permission to access this server
+          const permCheck = await this.checkServerPermissions(
+            req,
+            guild,
+            "ManageGuild"
+          );
+          if (!permCheck.allowed) {
+            return res.status(403).json({ error: permCheck.error });
+          }
+
+          const customCommands = require("../utils/customCommands");
+          const commands = await customCommands.getCommands(serverId);
+
+          res.json({ commands });
+        } catch (error) {
+          res.status(500).json({ error: error.message });
         }
-
-        const guild = this.client.guilds.cache.get(serverId);
-        if (!guild) {
-          return res.status(404).json({ error: "Server not found" });
-        }
-
-        // SECURITY FIX: Verify user has permission to access this server
-        const permCheck = await this.checkServerPermissions(req, guild, "ManageGuild");
-        if (!permCheck.allowed) {
-          return res.status(403).json({ error: permCheck.error });
-        }
-
-        const customCommands = require("../utils/customCommands");
-        const commands = await customCommands.getCommands(serverId);
-
-        res.json({ commands });
-      } catch (error) {
-        res.status(500).json({ error: error.message });
       }
-    });
+    );
 
     // 28. DELETE /api/v1/commands/:name - Delete custom command
     this.app.delete(
@@ -8217,7 +8453,11 @@ class DashboardServer {
           }
 
           // SECURITY FIX: Verify user has permission to access this server
-          const permCheck = await this.checkServerPermissions(req, guild, "ManageGuild");
+          const permCheck = await this.checkServerPermissions(
+            req,
+            guild,
+            "ManageGuild"
+          );
           if (!permCheck.allowed) {
             return res.status(403).json({ error: permCheck.error });
           }
@@ -8255,7 +8495,11 @@ class DashboardServer {
           }
 
           // SECURITY FIX: Verify user has permission to access this server
-          const permCheck = await this.checkServerPermissions(req, guild, "ManageGuild");
+          const permCheck = await this.checkServerPermissions(
+            req,
+            guild,
+            "ManageGuild"
+          );
           if (!permCheck.allowed) {
             return res.status(403).json({ error: permCheck.error });
           }
@@ -8290,7 +8534,9 @@ class DashboardServer {
           const { workflowId, serverId, data } = req.body;
 
           if (!workflowId || !serverId) {
-            return res.status(400).json({ error: "workflowId and serverId are required" });
+            return res
+              .status(400)
+              .json({ error: "workflowId and serverId are required" });
           }
 
           const guild = this.client.guilds.cache.get(serverId);
@@ -8299,7 +8545,11 @@ class DashboardServer {
           }
 
           // SECURITY FIX: Verify user has permission to access this server
-          const permCheck = await this.checkServerPermissions(req, guild, "ManageGuild");
+          const permCheck = await this.checkServerPermissions(
+            req,
+            guild,
+            "ManageGuild"
+          );
           if (!permCheck.allowed) {
             return res.status(403).json({ error: permCheck.error });
           }
@@ -8319,45 +8569,53 @@ class DashboardServer {
     // ==================== COMMUNITY API (31-35) ====================
 
     // 31. POST /api/v1/appeals/create - Submit ban appeal
-    this.app.post("/api/v1/appeals/create", this.apiAuth.bind(this), async (req, res) => {
-      try {
-        const { serverId, userId, reason, contact } = req.body;
+    this.app.post(
+      "/api/v1/appeals/create",
+      this.apiAuth.bind(this),
+      async (req, res) => {
+        try {
+          const { serverId, userId, reason, contact } = req.body;
 
-        if (!serverId) {
-          return res.status(400).json({ error: "serverId is required" });
-        }
+          if (!serverId) {
+            return res.status(400).json({ error: "serverId is required" });
+          }
 
-        const guild = this.client.guilds.cache.get(serverId);
-        if (!guild) {
-          return res.status(404).json({ error: "Server not found" });
-        }
+          const guild = this.client.guilds.cache.get(serverId);
+          if (!guild) {
+            return res.status(404).json({ error: "Server not found" });
+          }
 
-        // SECURITY FIX: Verify user has permission to access this server
-        // Users can only submit appeals for servers they're a member of
-        const permCheck = await this.checkServerPermissions(req, guild, "ViewAuditLog");
-        if (!permCheck.allowed) {
-          return res.status(403).json({ error: permCheck.error });
-        }
-
-        await new Promise((resolve, reject) => {
-          db.db.run(
-            "INSERT INTO ban_appeals (guild_id, user_id, reason, contact, status, created_at) VALUES (?, ?, ?, ?, 'pending', ?)",
-            [serverId, userId, reason, contact, Date.now()],
-            function (err) {
-              if (err) {
-                reject(err);
-              } else {
-                resolve({ id: this.lastID });
-              }
-            }
+          // SECURITY FIX: Verify user has permission to access this server
+          // Users can only submit appeals for servers they're a member of
+          const permCheck = await this.checkServerPermissions(
+            req,
+            guild,
+            "ViewAuditLog"
           );
-        });
+          if (!permCheck.allowed) {
+            return res.status(403).json({ error: permCheck.error });
+          }
 
-        res.json({ success: true, message: "Appeal submitted" });
-      } catch (error) {
-        res.status(500).json({ error: error.message });
+          await new Promise((resolve, reject) => {
+            db.db.run(
+              "INSERT INTO ban_appeals (guild_id, user_id, reason, contact, status, created_at) VALUES (?, ?, ?, ?, 'pending', ?)",
+              [serverId, userId, reason, contact, Date.now()],
+              function (err) {
+                if (err) {
+                  reject(err);
+                } else {
+                  resolve({ id: this.lastID });
+                }
+              }
+            );
+          });
+
+          res.json({ success: true, message: "Appeal submitted" });
+        } catch (error) {
+          res.status(500).json({ error: error.message });
+        }
       }
-    });
+    );
 
     // 32. GET /api/v1/appeals/list - List appeals
     this.app.get(
@@ -8377,7 +8635,11 @@ class DashboardServer {
           }
 
           // SECURITY FIX: Verify user has permission to access this server
-          const permCheck = await this.checkServerPermissions(req, guild, "ViewAuditLog");
+          const permCheck = await this.checkServerPermissions(
+            req,
+            guild,
+            "ViewAuditLog"
+          );
           if (!permCheck.allowed) {
             return res.status(403).json({ error: permCheck.error });
           }
@@ -8404,44 +8666,55 @@ class DashboardServer {
     );
 
     // 33. POST /api/v1/showcase/nominate - Nominate server for showcase
-    this.app.post("/api/v1/showcase/nominate", this.apiAuth.bind(this), async (req, res) => {
-      try {
-        const { serverId, reason, contactEmail } = req.body;
+    this.app.post(
+      "/api/v1/showcase/nominate",
+      this.apiAuth.bind(this),
+      async (req, res) => {
+        try {
+          const { serverId, reason, contactEmail } = req.body;
 
-        if (!serverId) {
-          return res.status(400).json({ error: "serverId is required" });
-        }
+          if (!serverId) {
+            return res.status(400).json({ error: "serverId is required" });
+          }
 
-        const guild = this.client.guilds.cache.get(serverId);
-        if (!guild) {
-          return res.status(404).json({ error: "Server not found" });
-        }
+          const guild = this.client.guilds.cache.get(serverId);
+          if (!guild) {
+            return res.status(404).json({ error: "Server not found" });
+          }
 
-        // SECURITY FIX: Verify user has permission to access this server
-        const permCheck = await this.checkServerPermissions(req, guild, "ViewAuditLog");
-        if (!permCheck.allowed) {
-          return res.status(403).json({ error: permCheck.error });
-        }
-
-        await new Promise((resolve, reject) => {
-          db.db.run(
-            "INSERT INTO showcase_nominations (guild_id, reason, contact_email, status, created_at) VALUES (?, ?, ?, 'pending', ?)",
-            [serverId, reason, contactEmail, Date.now()],
-            function (err) {
-              if (err) {
-                reject(err);
-              } else {
-                resolve({ id: this.lastID });
-              }
-            }
+          // SECURITY FIX: Verify user has permission to access this server
+          const permCheck = await this.checkServerPermissions(
+            req,
+            guild,
+            "ViewAuditLog"
           );
-        });
+          if (!permCheck.allowed) {
+            return res.status(403).json({ error: permCheck.error });
+          }
 
-        res.json({ success: true, message: "Nomination submitted for review" });
-      } catch (error) {
-        res.status(500).json({ error: error.message });
+          await new Promise((resolve, reject) => {
+            db.db.run(
+              "INSERT INTO showcase_nominations (guild_id, reason, contact_email, status, created_at) VALUES (?, ?, ?, 'pending', ?)",
+              [serverId, reason, contactEmail, Date.now()],
+              function (err) {
+                if (err) {
+                  reject(err);
+                } else {
+                  resolve({ id: this.lastID });
+                }
+              }
+            );
+          });
+
+          res.json({
+            success: true,
+            message: "Nomination submitted for review",
+          });
+        } catch (error) {
+          res.status(500).json({ error: error.message });
+        }
       }
-    });
+    );
 
     // 34. POST /api/v1/testimonial/submit - Submit testimonial
     this.app.post("/api/v1/testimonial/submit", async (req, res) => {
@@ -9456,8 +9729,14 @@ class DashboardServer {
         );
 
         if (!hasAccess) {
-          logger.warn("Dashboard", `Unauthorized migration analyze attempt to guild ${guild} by user ${req.user?.id}`);
-          return res.status(403).json({ error: "Access denied. You don't have permission to access this server." });
+          logger.warn(
+            "Dashboard",
+            `Unauthorized migration analyze attempt to guild ${guild} by user ${req.user?.id}`
+          );
+          return res.status(403).json({
+            error:
+              "Access denied. You don't have permission to access this server.",
+          });
         }
 
         const WickMigration = require("../utils/wickMigration");
@@ -9495,8 +9774,14 @@ class DashboardServer {
           );
 
           if (!hasAccess) {
-            logger.warn("Dashboard", `Unauthorized migration execute attempt to guild ${guild_id} by user ${req.user?.id}`);
-            return res.status(403).json({ error: "Access denied. You don't have permission to access this server." });
+            logger.warn(
+              "Dashboard",
+              `Unauthorized migration execute attempt to guild ${guild_id} by user ${req.user?.id}`
+            );
+            return res.status(403).json({
+              error:
+                "Access denied. You don't have permission to access this server.",
+            });
           }
 
           const WickMigration = require("../utils/wickMigration");

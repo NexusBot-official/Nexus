@@ -37,12 +37,17 @@ module.exports = {
 
     const constants = require("../utils/constants");
     const ErrorMessages = require("../utils/errorMessages");
-    
+
     // Get bot member for security checks
-    const botMember = await interaction.guild.members.fetch(interaction.client.user.id);
+    const botMember = await interaction.guild.members.fetch(
+      interaction.client.user.id
+    );
 
     // Security: Check bot permission
-    const botPermCheck = CommandSecurity.checkBotPermission(botMember, PermissionFlagsBits.ModerateMembers);
+    const botPermCheck = CommandSecurity.checkBotPermission(
+      botMember,
+      PermissionFlagsBits.ModerateMembers
+    );
     if (botPermCheck) return interaction.reply(botPermCheck);
 
     const duration = ms(durationStr);
@@ -76,7 +81,11 @@ module.exports = {
     }
 
     // Security: Check role hierarchy using utility
-    const targetCheck = CommandSecurity.checkCanTarget(interaction.member, member, interaction.guild);
+    const targetCheck = CommandSecurity.checkCanTarget(
+      interaction.member,
+      member,
+      interaction.guild
+    );
     if (targetCheck) return interaction.reply(targetCheck);
 
     // Check if member is manageable

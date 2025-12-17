@@ -1438,20 +1438,23 @@ async function loadDiscordAutoModRules() {
     container.innerHTML = `
       <div class="rules-grid">
         ${rules
-          .map(
-            (rule) => {
-              // SECURITY: Sanitize all user-controlled data
-              const safeRuleId = sanitizeForHtml(String(rule.id || ""), 50);
-              const safeRuleName = sanitizeForHtml(rule.name || "Unnamed Rule", 100);
-              const safeKeywords = rule.triggerMetadata?.keywordFilter
-                ? rule.triggerMetadata.keywordFilter
-                    .slice(0, 5)
-                    .map((k) => sanitizeForHtml(k, 50))
-                    .join(", ")
-                : "";
-              const hasMoreKeywords = rule.triggerMetadata?.keywordFilter?.length > 5;
-              
-              return `
+          .map((rule) => {
+            // SECURITY: Sanitize all user-controlled data
+            const safeRuleId = sanitizeForHtml(String(rule.id || ""), 50);
+            const safeRuleName = sanitizeForHtml(
+              rule.name || "Unnamed Rule",
+              100
+            );
+            const safeKeywords = rule.triggerMetadata?.keywordFilter
+              ? rule.triggerMetadata.keywordFilter
+                  .slice(0, 5)
+                  .map((k) => sanitizeForHtml(k, 50))
+                  .join(", ")
+              : "";
+            const hasMoreKeywords =
+              rule.triggerMetadata?.keywordFilter?.length > 5;
+
+            return `
           <div class="rule-card" style="background:#2c2f33; border:1px solid #40444b; border-radius:12px; padding:20px; margin-bottom:15px;">
             <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:15px;">
               <div>
@@ -1506,20 +1509,21 @@ async function loadDiscordAutoModRules() {
             </div>
           </div>
         `;
-            }
-          )
+          })
           .join("")}
       </div>
     `;
-    
+
     // SECURITY: Use event delegation instead of inline onclick handlers
     container.addEventListener("click", (e) => {
-      const btn = e.target.closest(".discord-automod-toggle, .discord-automod-edit, .discord-automod-delete");
+      const btn = e.target.closest(
+        ".discord-automod-toggle, .discord-automod-edit, .discord-automod-delete"
+      );
       if (!btn) return;
-      
+
       const ruleId = btn.getAttribute("data-rule-id");
       if (!ruleId) return;
-      
+
       if (btn.classList.contains("discord-automod-toggle")) {
         const enabled = btn.getAttribute("data-enabled") === "true";
         toggleDiscordAutoModRule(ruleId, enabled);
@@ -1663,7 +1667,9 @@ async function editDiscordAutoModRule(ruleId) {
     `;
     document.body.appendChild(modal);
   } catch (error) {
-    alert(`❌ Error loading rule: ${sanitizeForHtml(error.message || "Unknown error", 100)}`);
+    alert(
+      `❌ Error loading rule: ${sanitizeForHtml(error.message || "Unknown error", 100)}`
+    );
   }
 }
 
@@ -3343,16 +3349,27 @@ document.addEventListener("DOMContentLoaded", () => {
           </button>
         ` +
           data.workflows
-            .map(
-              (w) => {
-                // SECURITY: Sanitize all user-controlled data
-                const safeWorkflowId = sanitizeForHtml(String(w.id || ""), 50);
-                const safeName = sanitizeForHtml(w.name || "Unnamed Workflow", 100);
-                const safeDescription = sanitizeForHtml(w.description || "No description", 200);
-                const safeTriggerType = sanitizeForHtml(w.trigger_type || "Not configured", 50);
-                const safeActionType = sanitizeForHtml(w.action_type || "Not configured", 50);
-                
-                return `
+            .map((w) => {
+              // SECURITY: Sanitize all user-controlled data
+              const safeWorkflowId = sanitizeForHtml(String(w.id || ""), 50);
+              const safeName = sanitizeForHtml(
+                w.name || "Unnamed Workflow",
+                100
+              );
+              const safeDescription = sanitizeForHtml(
+                w.description || "No description",
+                200
+              );
+              const safeTriggerType = sanitizeForHtml(
+                w.trigger_type || "Not configured",
+                50
+              );
+              const safeActionType = sanitizeForHtml(
+                w.action_type || "Not configured",
+                50
+              );
+
+              return `
           <div class="setting-card" style="margin-bottom: 20px;">
             <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
               <div>
@@ -3388,10 +3405,9 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
           </div>
         `;
-              }
-            )
+            })
             .join("");
-        
+
         // SECURITY: Use event delegation instead of inline onclick handlers
         if (workflowsList) {
           workflowsList.addEventListener("change", (e) => {
@@ -3402,14 +3418,14 @@ document.addEventListener("DOMContentLoaded", () => {
               }
             }
           });
-          
+
           workflowsList.addEventListener("click", (e) => {
             const btn = e.target.closest(".workflow-edit, .workflow-delete");
             if (!btn) return;
-            
+
             const workflowId = btn.getAttribute("data-workflow-id");
             if (!workflowId) return;
-            
+
             if (btn.classList.contains("workflow-edit")) {
               editWorkflow(workflowId);
             } else if (btn.classList.contains("workflow-delete")) {
@@ -3429,9 +3445,9 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
         `;
       }
-  } catch (error) {
-    workflowsList.innerHTML = `<div class="error">Failed to load workflows: ${sanitizeForHtml(error.message || "Unknown error", 200)}</div>`;
-  }
+    } catch (error) {
+      workflowsList.innerHTML = `<div class="error">Failed to load workflows: ${sanitizeForHtml(error.message || "Unknown error", 200)}</div>`;
+    }
   };
 
   window.showCreateWorkflowModal = function () {

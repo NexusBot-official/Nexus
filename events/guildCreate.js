@@ -5,8 +5,7 @@ const growthTracker = require("../utils/growthTracker");
 const contentFilter = require("../utils/contentFilter");
 const { version } = require("../package.json");
 const {
-  BLACKLIST,
-  isBlacklisted,
+  
   isGuildBlacklisted,
 } = require("../utils/guildBlacklist");
 
@@ -150,6 +149,39 @@ module.exports = {
     }).catch(() => {
       // Error already logged
     });
+
+    // COMPETITIVE INTELLIGENCE: Detect Wick and log for analytics
+    // NOTE: We do NOT DM users unprompted - that's spam and gets bots kicked
+    // Instead, we just log it and show the comparison in-server via /migrate
+    try {
+      const WickMigration = require("../utils/wickMigration");
+      const migration = new WickMigration(client);
+      const hasWick = await migration.detectWick(guild);
+
+      if (hasWick) {
+        logger.info(
+          "Competitive",
+          `🎯 Wick detected in ${guild.name} (${guild.id}) - user can run /migrate to see comparison`
+        );
+
+        // Store this info for analytics (optional)
+        await new Promise((resolve) => {
+          db.db.run(
+            `INSERT OR IGNORE INTO competitive_intel (guild_id, competitor_bot, detected_at) 
+             VALUES (?, ?, ?)`,
+            [guild.id, "wick", Date.now()],
+            () => resolve()
+          );
+        }).catch(() => {
+          // Ignore if table doesn't exist
+        });
+      }
+    } catch (wickError) {
+      logger.debug(
+        "Competitive",
+        `Wick detection error in ${guild.name}: ${wickError.message}`
+      );
+    }
 
     // Check for verification milestones
     const serverCount = client.guilds.cache.size;

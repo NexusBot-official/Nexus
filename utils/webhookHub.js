@@ -41,12 +41,12 @@ class WebhookHub {
     // SECURITY FIX: Validate webhook URL to prevent SSRF
     try {
       const url = new URL(webhookUrl);
-      
+
       // Only allow HTTPS (prevent SSRF to internal services)
       if (url.protocol !== "https:") {
         throw new Error("Webhook URL must use HTTPS protocol");
       }
-      
+
       // Block private/internal IP addresses (SSRF protection)
       const hostname = url.hostname.toLowerCase();
       const privateIPPatterns = [
@@ -59,11 +59,13 @@ class WebhookHub {
         /^localhost$/,
         /^0\.0\.0\.0$/,
       ];
-      
-      if (privateIPPatterns.some(pattern => pattern.test(hostname))) {
-        throw new Error("Webhook URL cannot point to private/internal addresses");
+
+      if (privateIPPatterns.some((pattern) => pattern.test(hostname))) {
+        throw new Error(
+          "Webhook URL cannot point to private/internal addresses"
+        );
       }
-      
+
       // Block metadata endpoints (AWS, GCP, Azure)
       if (hostname.includes("metadata") || hostname.includes("169.254")) {
         throw new Error("Invalid webhook URL");
@@ -111,10 +113,13 @@ class WebhookHub {
         let url;
         try {
           url = new URL(webhook.webhook_url);
-          
+
           // Only allow HTTPS
           if (url.protocol !== "https:") {
-            logger.warn("Webhook Hub", `Blocked non-HTTPS webhook: ${webhook.webhook_url}`);
+            logger.warn(
+              "Webhook Hub",
+              `Blocked non-HTTPS webhook: ${webhook.webhook_url}`
+            );
             continue;
           }
 
@@ -130,14 +135,23 @@ class WebhookHub {
             /^localhost$/,
             /^0\.0\.0\.0$/,
           ];
-          
-          if (privateIPPatterns.some(pattern => pattern.test(hostname)) || 
-              hostname.includes("metadata") || hostname.includes("169.254")) {
-            logger.warn("Webhook Hub", `Blocked SSRF attempt: ${webhook.webhook_url}`);
+
+          if (
+            privateIPPatterns.some((pattern) => pattern.test(hostname)) ||
+            hostname.includes("metadata") ||
+            hostname.includes("169.254")
+          ) {
+            logger.warn(
+              "Webhook Hub",
+              `Blocked SSRF attempt: ${webhook.webhook_url}`
+            );
             continue;
           }
         } catch (error) {
-          logger.warn("Webhook Hub", `Blocked invalid webhook URL during send: ${webhook.webhook_url}`);
+          logger.warn(
+            "Webhook Hub",
+            `Blocked invalid webhook URL during send: ${webhook.webhook_url}`
+          );
           continue; // Skip this webhook
         }
 

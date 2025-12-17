@@ -147,11 +147,16 @@ module.exports = {
     const subcommand = interaction.options.getSubcommand();
 
     // Get bot member for security checks
-    const botMember = await interaction.guild.members.fetch(interaction.client.user.id);
+    const botMember = await interaction.guild.members.fetch(
+      interaction.client.user.id
+    );
 
     if (subcommand === "ban") {
       // Security: Check bot permission
-      const botPermCheck = CommandSecurity.checkBotPermission(botMember, PermissionFlagsBits.BanMembers);
+      const botPermCheck = CommandSecurity.checkBotPermission(
+        botMember,
+        PermissionFlagsBits.BanMembers
+      );
       if (botPermCheck) return interaction.reply(botPermCheck);
 
       await interaction.deferReply({ ephemeral: true });
@@ -231,7 +236,10 @@ module.exports = {
       await interaction.editReply({ embeds: [embed] });
     } else if (subcommand === "kick") {
       // Security: Check bot permission
-      const botPermCheck = CommandSecurity.checkBotPermission(botMember, PermissionFlagsBits.KickMembers);
+      const botPermCheck = CommandSecurity.checkBotPermission(
+        botMember,
+        PermissionFlagsBits.KickMembers
+      );
       if (botPermCheck) return interaction.reply(botPermCheck);
 
       await interaction.deferReply({ ephemeral: true });
@@ -296,15 +304,21 @@ module.exports = {
       await interaction.editReply({ embeds: [embed] });
     } else if (subcommand === "role") {
       // Security: Check bot permission
-      const botPermCheck = CommandSecurity.checkBotPermission(botMember, PermissionFlagsBits.ManageRoles);
+      const botPermCheck = CommandSecurity.checkBotPermission(
+        botMember,
+        PermissionFlagsBits.ManageRoles
+      );
       if (botPermCheck) return interaction.reply(botPermCheck);
 
       const role = interaction.options.getRole("role");
 
       // Security: Check if bot can manage the role
-      if (!CommandSecurity.canBotManageRole(role, botMember, interaction.guild)) {
+      if (
+        !CommandSecurity.canBotManageRole(role, botMember, interaction.guild)
+      ) {
         return interaction.reply({
-          content: "❌ I cannot manage that role! It may be above my role or managed by an integration.",
+          content:
+            "❌ I cannot manage that role! It may be above my role or managed by an integration.",
           ephemeral: true,
         });
       }
@@ -338,7 +352,11 @@ module.exports = {
 
           // Security: Skip if executor can't target this member
           const isOwner = interaction.guild.ownerId === interaction.user.id;
-          if (!isOwner && member.roles.highest.position >= interaction.member.roles.highest.position) {
+          if (
+            !isOwner &&
+            member.roles.highest.position >=
+              interaction.member.roles.highest.position
+          ) {
             results.failed++;
             results.errors.push(`<@${userId}>: Higher or equal role`);
             continue;

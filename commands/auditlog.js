@@ -147,7 +147,9 @@ module.exports = {
 
         const embed = new EmbedBuilder()
           .setTitle("🔍 Audit Log Search Results")
-          .setDescription(`Found ${entries.length} matching entries${entries.length < limit ? ` (showing first ${entries.length} of ${limit} requested)` : ""}`)
+          .setDescription(
+            `Found ${entries.length} matching entries${entries.length < limit ? ` (showing first ${entries.length} of ${limit} requested)` : ""}`
+          )
           .setColor(0x0099ff)
           .setTimestamp();
 
@@ -164,7 +166,10 @@ module.exports = {
           ].join("\n");
 
           // SECURITY: Ensure field value doesn't exceed 1024 characters
-          const safeValue = fieldValue.length > 1024 ? fieldValue.substring(0, 1021) + "..." : fieldValue;
+          const safeValue =
+            fieldValue.length > 1024
+              ? fieldValue.substring(0, 1021) + "..."
+              : fieldValue;
 
           embed.addFields({
             name: `${i + 1}. ${entry.action} by ${executor?.tag || "Unknown"}`,
@@ -258,7 +263,9 @@ module.exports = {
       try {
         // SECURITY: Limit to 25 fields (Discord's embed limit)
         const maxFields = Math.min(limit, 25);
-        const auditLogs = await interaction.guild.fetchAuditLogs({ limit: maxFields });
+        const auditLogs = await interaction.guild.fetchAuditLogs({
+          limit: maxFields,
+        });
         const entries = Array.from(auditLogs.entries.values());
 
         if (entries.length === 0) {
@@ -287,7 +294,10 @@ module.exports = {
           ].join("\n");
 
           // SECURITY: Ensure field value doesn't exceed 1024 characters
-          const safeValue = fieldValue.length > 1024 ? fieldValue.substring(0, 1021) + "..." : fieldValue;
+          const safeValue =
+            fieldValue.length > 1024
+              ? fieldValue.substring(0, 1021) + "..."
+              : fieldValue;
 
           embed.addFields({
             name: `${i + 1}. ${entry.action}`,
@@ -317,7 +327,10 @@ module.exports = {
           limit: 100, // Fetch more to ensure we have enough after filtering
           user: user,
         });
-        const entries = Array.from(auditLogs.entries.values()).slice(0, maxFields);
+        const entries = Array.from(auditLogs.entries.values()).slice(
+          0,
+          maxFields
+        );
 
         if (entries.length === 0) {
           return interaction.editReply({
@@ -327,7 +340,9 @@ module.exports = {
 
         const embed = new EmbedBuilder()
           .setTitle(`📋 Audit Log - ${user.tag}`)
-          .setDescription(`Last ${entries.length} actions performed${entries.length < limit ? ` (showing first ${entries.length} of ${limit} requested)` : ""}`)
+          .setDescription(
+            `Last ${entries.length} actions performed${entries.length < limit ? ` (showing first ${entries.length} of ${limit} requested)` : ""}`
+          )
           .setColor(0x0099ff)
           .setThumbnail(user.displayAvatarURL())
           .setTimestamp();
@@ -341,11 +356,12 @@ module.exports = {
         const actionSummaryValue = Object.entries(actionCounts)
           .map(([action, count]) => `${action}: **${count}**`)
           .join("\n");
-        
+
         // SECURITY: Ensure field value doesn't exceed 1024 characters
-        const safeActionSummary = actionSummaryValue.length > 1024 
-          ? actionSummaryValue.substring(0, 1021) + "..." 
-          : actionSummaryValue;
+        const safeActionSummary =
+          actionSummaryValue.length > 1024
+            ? actionSummaryValue.substring(0, 1021) + "..."
+            : actionSummaryValue;
 
         embed.addFields({
           name: "📊 Action Summary",
@@ -366,7 +382,10 @@ module.exports = {
           ].join("\n");
 
           // SECURITY: Ensure field value doesn't exceed 1024 characters
-          const safeValue = fieldValue.length > 1024 ? fieldValue.substring(0, 1021) + "..." : fieldValue;
+          const safeValue =
+            fieldValue.length > 1024
+              ? fieldValue.substring(0, 1021) + "..."
+              : fieldValue;
 
           embed.addFields({
             name: `${i + 1}. ${entry.action}`,

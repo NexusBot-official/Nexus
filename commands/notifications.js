@@ -78,14 +78,14 @@ module.exports = {
     // SECURITY FIX: Validate webhook URL to prevent SSRF
     try {
       const url = new URL(webhookUrl);
-      
+
       // Only allow HTTPS (prevent SSRF to internal services)
       if (url.protocol !== "https:") {
         return interaction.editReply({
           content: "❌ Webhook URL must use HTTPS protocol",
         });
       }
-      
+
       // Block private/internal IP addresses (SSRF protection)
       const hostname = url.hostname.toLowerCase();
       const privateIPPatterns = [
@@ -98,13 +98,13 @@ module.exports = {
         /^localhost$/,
         /^0\.0\.0\.0$/,
       ];
-      
-      if (privateIPPatterns.some(pattern => pattern.test(hostname))) {
+
+      if (privateIPPatterns.some((pattern) => pattern.test(hostname))) {
         return interaction.editReply({
           content: "❌ Webhook URL cannot point to private/internal addresses",
         });
       }
-      
+
       // Block metadata endpoints (AWS, GCP, Azure)
       if (hostname.includes("metadata") || hostname.includes("169.254")) {
         return interaction.editReply({
@@ -279,32 +279,50 @@ module.exports = {
           // Send to webhook
           const https = require("https");
           const ErrorMessages = require("../utils/errorMessages");
-          
+
           // SECURITY FIX: Validate URL again before making request (defense in depth)
           let url;
           try {
             url = new URL(webhook.webhook_url);
-            
+
             // Only allow HTTPS
             if (url.protocol !== "https:") {
-              logger.warn("Notifications", `Blocked non-HTTPS webhook: ${webhook.webhook_url}`);
+              logger.warn(
+                "Notifications",
+                `Blocked non-HTTPS webhook: ${webhook.webhook_url}`
+              );
               continue;
             }
-            
+
             // Block private IPs
             const hostname = url.hostname.toLowerCase();
             const privateIPPatterns = [
-              /^127\./, /^10\./, /^172\.(1[6-9]|2[0-9]|3[0-1])\./, /^192\.168\./,
-              /^169\.254\./, /^::1$/, /^localhost$/, /^0\.0\.0\.0$/,
+              /^127\./,
+              /^10\./,
+              /^172\.(1[6-9]|2[0-9]|3[0-1])\./,
+              /^192\.168\./,
+              /^169\.254\./,
+              /^::1$/,
+              /^localhost$/,
+              /^0\.0\.0\.0$/,
             ];
-            
-            if (privateIPPatterns.some(pattern => pattern.test(hostname)) || 
-                hostname.includes("metadata") || hostname.includes("169.254")) {
-              logger.warn("Notifications", `Blocked SSRF attempt: ${webhook.webhook_url}`);
+
+            if (
+              privateIPPatterns.some((pattern) => pattern.test(hostname)) ||
+              hostname.includes("metadata") ||
+              hostname.includes("169.254")
+            ) {
+              logger.warn(
+                "Notifications",
+                `Blocked SSRF attempt: ${webhook.webhook_url}`
+              );
               continue;
             }
           } catch (error) {
-            logger.warn("Notifications", `Invalid webhook URL: ${webhook.webhook_url}`);
+            logger.warn(
+              "Notifications",
+              `Invalid webhook URL: ${webhook.webhook_url}`
+            );
             continue;
           }
 

@@ -219,8 +219,12 @@ class BackupManager {
       // Old format: { guild_id, timestamp, config, modLogs, ... }
       // New format: { id, guildId, guildName, timestamp, data: { config, roles, channels, ... } }
       const isOldFormat = backupData.guild_id !== undefined && !backupData.data;
-      const backupGuildId = isOldFormat ? backupData.guild_id : backupData.guildId;
-      const backupConfig = isOldFormat ? backupData.config : backupData.data?.config;
+      const backupGuildId = isOldFormat
+        ? backupData.guild_id
+        : backupData.guildId;
+      const backupConfig = isOldFormat
+        ? backupData.config
+        : backupData.data?.config;
       const backupRoles = isOldFormat ? [] : backupData.data?.roles || [];
       const backupChannels = isOldFormat ? [] : backupData.data?.channels || [];
       const backupTimestamp = backupData.timestamp;
@@ -266,10 +270,7 @@ class BackupManager {
 
       // Restore channels (careful with this!)
       if (restoreChannels && backupChannels && backupChannels.length > 0) {
-        restored.channels = await this.restoreChannels(
-          guild,
-          backupChannels
-        );
+        restored.channels = await this.restoreChannels(guild, backupChannels);
       }
 
       return {
@@ -392,10 +393,7 @@ class BackupManager {
       }
 
       // If we can't convert it, return 0n
-      logger.warn(
-        "BackupManager",
-        `Unknown permission format: ${permissions}`
-      );
+      logger.warn("BackupManager", `Unknown permission format: ${permissions}`);
       return 0n;
     }
 

@@ -16,7 +16,9 @@ class CommandSecurity {
   static checkBotPermission(botMember, permission) {
     if (!botMember.permissions.has(permission)) {
       return ErrorMessages.botNoPermission(
-        typeof permission === "string" ? permission : PermissionFlagsBits[permission]
+        typeof permission === "string"
+          ? permission
+          : PermissionFlagsBits[permission]
       );
     }
     return null;
@@ -31,10 +33,10 @@ class CommandSecurity {
    */
   static checkCanTarget(executor, target, guild) {
     const isOwner = guild.ownerId === executor.id;
-    
+
     // Owners can always target anyone
     if (isOwner) return null;
-    
+
     // Check role hierarchy
     if (target.roles.highest.position >= executor.roles.highest.position) {
       return {
@@ -42,7 +44,7 @@ class CommandSecurity {
         flags: MessageFlags.Ephemeral,
       };
     }
-    
+
     return null;
   }
 
@@ -56,14 +58,14 @@ class CommandSecurity {
   static canBotManageRole(role, botMember, guild) {
     // Can't manage @everyone
     if (role.id === guild.id) return false;
-    
+
     // Can't manage roles managed by integrations
     if (role.managed) return false;
-    
+
     // Can't manage roles higher than bot's highest role
     const botHighestRole = botMember.roles.highest;
     if (role.position >= botHighestRole.position) return false;
-    
+
     return true;
   }
 
@@ -88,7 +90,7 @@ class CommandSecurity {
    */
   static sanitizeInput(input, maxLength = 1000) {
     if (!input || typeof input !== "string") return "";
-    
+
     return input
       .trim()
       .replace(/[<>]/g, "") // Remove angle brackets
@@ -105,7 +107,12 @@ class CommandSecurity {
    * @param {number} maxLength - Maximum length (default: 100)
    * @returns {Object|null} Error response if invalid, null if OK
    */
-  static validateInput(input, fieldName = "Input", minLength = 1, maxLength = 100) {
+  static validateInput(
+    input,
+    fieldName = "Input",
+    minLength = 1,
+    maxLength = 100
+  ) {
     if (!input || typeof input !== "string") {
       return {
         content: `❌ ${fieldName} cannot be empty!`,
@@ -114,7 +121,7 @@ class CommandSecurity {
     }
 
     const trimmed = input.trim();
-    
+
     if (trimmed.length < minLength) {
       return {
         content: `❌ ${fieldName} must be at least ${minLength} character(s)!`,
@@ -139,15 +146,25 @@ class CommandSecurity {
    * @param {GuildMember} targetMember - Target member (optional)
    * @returns {Object|null} Error response if check fails, null if OK
    */
-  static async checkRoleManagementSecurity(interaction, requiredPermission, targetMember = null) {
+  static async checkRoleManagementSecurity(
+    interaction,
+    requiredPermission,
+    targetMember = null
+  ) {
     // Check bot permissions
-    const botMember = await interaction.guild.members.fetch(interaction.client.user.id);
+    const botMember = await interaction.guild.members.fetch(
+      interaction.client.user.id
+    );
     const botPermCheck = this.checkBotPermission(botMember, requiredPermission);
     if (botPermCheck) return botPermCheck;
 
     // Check if targeting a member
     if (targetMember) {
-      const targetCheck = this.checkCanTarget(interaction.member, targetMember, interaction.guild);
+      const targetCheck = this.checkCanTarget(
+        interaction.member,
+        targetMember,
+        interaction.guild
+      );
       if (targetCheck) return targetCheck;
     }
 
@@ -183,14 +200,19 @@ class CommandSecurity {
     }
 
     // Filter to only manageable roles
-    const manageableRoles = this.filterManageableRoles(roleIds, guild, botMember);
+    const manageableRoles = this.filterManageableRoles(
+      roleIds,
+      guild,
+      botMember
+    );
 
     if (manageableRoles.length === 0) {
       return {
         valid: false,
         roles: [],
         error: {
-          content: "❌ I cannot manage any of the provided roles! Make sure:\n- Roles are below my highest role\n- Roles are not managed by integrations\n- Roles are not @everyone",
+          content:
+            "❌ I cannot manage any of the provided roles! Make sure:\n- Roles are below my highest role\n- Roles are not managed by integrations\n- Roles are not @everyone",
           flags: MessageFlags.Ephemeral,
         },
       };
@@ -201,12 +223,12 @@ class CommandSecurity {
       roles: manageableRoles,
       roleIds: manageableRoles.map((r) => r.id),
       error: null,
-      warning: manageableRoles.length < roleIds.length
-        ? `⚠️ Some roles were excluded because I cannot manage them. Only ${manageableRoles.length} of ${roleIds.length} roles will be used.`
-        : null,
+      warning:
+        manageableRoles.length < roleIds.length
+          ? `⚠️ Some roles were excluded because I cannot manage them. Only ${manageableRoles.length} of ${roleIds.length} roles will be used.`
+          : null,
     };
   }
 }
 
 module.exports = CommandSecurity;
-

@@ -50,7 +50,9 @@ module.exports = {
     const subcommand = interaction.options.getSubcommand();
 
     // Get bot member for security checks
-    const botMember = await interaction.guild.members.fetch(interaction.client.user.id);
+    const botMember = await interaction.guild.members.fetch(
+      interaction.client.user.id
+    );
 
     if (subcommand === "add") {
       const user = interaction.options.getUser("user");
@@ -58,7 +60,10 @@ module.exports = {
         interaction.options.getString("reason") || "No reason provided";
 
       // Security: Check bot permission
-      const botPermCheck = CommandSecurity.checkBotPermission(botMember, PermissionFlagsBits.ManageRoles);
+      const botPermCheck = CommandSecurity.checkBotPermission(
+        botMember,
+        PermissionFlagsBits.ManageRoles
+      );
       if (botPermCheck) return interaction.reply(botPermCheck);
 
       // Safety checks
@@ -87,7 +92,11 @@ module.exports = {
       }
 
       // Security: Check role hierarchy using utility
-      const targetCheck = CommandSecurity.checkCanTarget(interaction.member, member, interaction.guild);
+      const targetCheck = CommandSecurity.checkCanTarget(
+        interaction.member,
+        member,
+        interaction.guild
+      );
       if (targetCheck) return interaction.reply(targetCheck);
       if (!member.manageable) {
         return interaction.reply({

@@ -785,22 +785,8 @@ class AdvancedAntiNuke {
         // Banned attacker (no console logging)
         actionTaken = true;
 
-        // Wait 3 seconds for Discord to actually remove the attacker from the server
-        // This prevents trying to recover while attack is still in progress
-        await new Promise((resolve) => setTimeout(resolve, 3000));
-
-        // Verify attacker is actually gone before starting recovery
-        const stillPresent = await guild.members
-          .fetch(userId)
-          .catch(() => null);
-        if (stillPresent) {
-          logger.warn(
-            `[Anti-Nuke] Attacker still in server after ban - waiting longer...`
-          );
-          await new Promise((resolve) => setTimeout(resolve, 2000));
-        }
-
-        // Trigger auto-recovery after attacker is removed
+        // INSTANT RECOVERY: Don't wait - trigger recovery immediately in background
+        // The ban is instant, recovery can happen async
         this.attemptRecovery(guild, threatType, counts, userId).catch(
           (error) => {
             logger.error(`[Anti-Nuke] Recovery failed:`, error);
@@ -820,19 +806,7 @@ class AdvancedAntiNuke {
         await member.kick(`Anti-Nuke: ${threatType} detected`);
         actionTaken = true;
 
-        // Wait 2 seconds for Discord to actually remove the attacker from the server
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-
-        // Verify attacker is actually gone before starting recovery
-        const stillPresent = await guild.members
-          .fetch(userId)
-          .catch(() => null);
-        if (stillPresent) {
-          // Attacker still in server after kick - waiting longer (silent)
-          await new Promise((resolve) => setTimeout(resolve, 2000));
-        }
-
-        // Trigger auto-recovery after attacker is removed
+        // INSTANT RECOVERY: Don't wait - trigger recovery immediately in background
         this.attemptRecovery(guild, threatType, counts, userId).catch(
           (error) => {
             logger.error(`[Anti-Nuke] Recovery failed:`, error);

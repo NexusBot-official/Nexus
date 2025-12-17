@@ -486,20 +486,28 @@ class AdvancedAntiRaid {
     ); // Cap multiplier at 2.0
 
     const timeWindow = config.anti_raid_time_window || 10000;
-    const results = {
-      rateBased: this.detectionAlgorithms.rateBased(
+    
+    // PERFORMANCE: Run all algorithms in PARALLEL for instant detection
+    const [rateBased, patternBased, behavioral, networkBased, temporalPattern, graphBased] = await Promise.all([
+      Promise.resolve(this.detectionAlgorithms.rateBased(
         joinData.joins,
         timeWindow,
-        scaledMaxJoins // Scale threshold by server size + sensitivity
-      ),
-      patternBased: this.detectionAlgorithms.patternBased(joinData.joins),
-      behavioral: this.detectionAlgorithms.behavioral(joinData.joins),
-      networkBased: await this.detectionAlgorithms.networkBased(
-        joinData.joins,
-        guild.id
-      ),
-      temporalPattern: this.detectionAlgorithms.temporalPattern(joinData.joins),
-      graphBased: this.detectionAlgorithms.graphBased(joinData.joins),
+        scaledMaxJoins
+      )),
+      Promise.resolve(this.detectionAlgorithms.patternBased(joinData.joins)),
+      Promise.resolve(this.detectionAlgorithms.behavioral(joinData.joins)),
+      this.detectionAlgorithms.networkBased(joinData.joins, guild.id),
+      Promise.resolve(this.detectionAlgorithms.temporalPattern(joinData.joins)),
+      Promise.resolve(this.detectionAlgorithms.graphBased(joinData.joins)),
+    ]);
+
+    const results = {
+      rateBased,
+      patternBased,
+      behavioral,
+      networkBased,
+      temporalPattern,
+      graphBased,
     };
 
     // Calculate threat score (0-100) - adjusted by server size + sensitivity
@@ -818,15 +826,13 @@ class AdvancedAntiRaid {
       `[Anti-Raid] Banning ${recentSuspicious.length} members from raid in ${guild.name} (${suspiciousJoins.length} total joins detected)`
     );
 
-    let successCount = 0;
-    let failedCount = 0;
-    for (const join of recentSuspicious) {
+    // INSTANT RESPONSE: Ban all raiders in PARALLEL, not one-by-one
+    const banPromises = recentSuspicious.map(async (join) => {
       try {
         // Double-check: Only ban if they joined recently
         const member = await guild.members.fetch(join.id).catch(() => null);
         if (!member) {
-          failedCount++;
-          continue;
+          return { success: false, reason: 'member_not_found' };
         }
 
         // Verify member joined recently (within last 5 minutes as safety)
@@ -839,8 +845,7 @@ class AdvancedAntiRaid {
               (Date.now() - memberJoinTime) / 1000
             )}s ago (existing member)`
           );
-          failedCount++;
-          continue;
+          return { success: false, reason: 'existing_member' };
         }
 
         // Check role hierarchy - bot must be able to ban this member
@@ -851,8 +856,7 @@ class AdvancedAntiRaid {
           logger.warn(
             `Cannot ban ${member.user.tag} - bot role hierarchy too low (bot: ${botMember.roles.highest.position}, member: ${member.roles.highest.position})`
           );
-          failedCount++;
-          continue;
+          return { success: false, reason: 'hierarchy' };
         }
 
         if (action === "ban") {
@@ -881,9 +885,7 @@ class AdvancedAntiRaid {
           }
         }
 
-        successCount++;
-
-        // Log to database
+        // Log to database (non-blocking)
         db.db.run(
           "INSERT INTO anti_raid_logs (guild_id, user_id, action_taken, timestamp) VALUES (?, ?, ?, ?)",
           [guild.id, join.id, action, Date.now()],
@@ -895,8 +897,9 @@ class AdvancedAntiRaid {
             }
           }
         );
+
+        return { success: true };
       } catch (error) {
-        failedCount++;
         logger.error(
           `[Anti-Raid] Failed to ${action} ${join.id} in ${guild.name}: ${error.message}`
         );
@@ -910,8 +913,14 @@ class AdvancedAntiRaid {
             `[Anti-Raid] Invalid form body when attempting to ${action} ${join.id}`
           );
         }
+        return { success: false, reason: 'error', error: error.message };
       }
-    }
+    });
+
+    // Wait for all bans to complete (in parallel)
+    const results = await Promise.allSettled(banPromises);
+    const successCount = results.filter(r => r.status === 'fulfilled' && r.value.success).length;
+    const failedCount = results.length - successCount;
 
     logger.info(
       `[Anti-Raid] Action complete in ${guild.name}: ${successCount} successful, ${failedCount} failed out of ${recentSuspicious.length} attempts`

@@ -58,7 +58,9 @@ module.exports = {
     const subcommand = interaction.options.getSubcommand();
 
     // Get bot member for security checks
-    const botMember = await interaction.guild.members.fetch(interaction.client.user.id);
+    const botMember = await interaction.guild.members.fetch(
+      interaction.client.user.id
+    );
 
     if (subcommand === "add") {
       const user = interaction.options.getUser("user");
@@ -67,7 +69,10 @@ module.exports = {
       const deleteDays = interaction.options.getInteger("delete_days") || 0;
 
       // Security: Check bot permission
-      const botPermCheck = CommandSecurity.checkBotPermission(botMember, PermissionFlagsBits.BanMembers);
+      const botPermCheck = CommandSecurity.checkBotPermission(
+        botMember,
+        PermissionFlagsBits.BanMembers
+      );
       if (botPermCheck) return interaction.reply(botPermCheck);
 
       if (user.id === interaction.user.id) {
@@ -89,7 +94,11 @@ module.exports = {
 
       // Security: Check role hierarchy using utility
       if (member) {
-        const targetCheck = CommandSecurity.checkCanTarget(interaction.member, member, interaction.guild);
+        const targetCheck = CommandSecurity.checkCanTarget(
+          interaction.member,
+          member,
+          interaction.guild
+        );
         if (targetCheck) return interaction.reply(targetCheck);
 
         if (!member.manageable) {

@@ -69,25 +69,39 @@ module.exports = {
     const subcommand = interaction.options.getSubcommand();
 
     // Get bot member for security checks
-    const botMember = await interaction.guild.members.fetch(interaction.client.user.id);
+    const botMember = await interaction.guild.members.fetch(
+      interaction.client.user.id
+    );
 
     if (subcommand === "create") {
       const name = interaction.options.getString("name");
       const rolesStr = interaction.options.getString("roles");
 
       // Input validation using security utility
-      const nameValidation = CommandSecurity.validateInput(name, "Template name", 1, 100);
+      const nameValidation = CommandSecurity.validateInput(
+        name,
+        "Template name",
+        1,
+        100
+      );
       if (nameValidation) return interaction.reply(nameValidation);
 
       // Sanitize template name (prevent XSS)
       const sanitizedName = CommandSecurity.sanitizeInput(name, 100);
 
       // Check bot permission
-      const botPermCheck = CommandSecurity.checkBotPermission(botMember, PermissionFlagsBits.ManageRoles);
+      const botPermCheck = CommandSecurity.checkBotPermission(
+        botMember,
+        PermissionFlagsBits.ManageRoles
+      );
       if (botPermCheck) return interaction.reply(botPermCheck);
 
       // Parse and validate roles using security utility
-      const rolesResult = CommandSecurity.parseAndValidateRoles(rolesStr, interaction.guild, botMember);
+      const rolesResult = CommandSecurity.parseAndValidateRoles(
+        rolesStr,
+        interaction.guild,
+        botMember
+      );
       if (!rolesResult.valid) {
         return interaction.reply(rolesResult.error);
       }
@@ -156,17 +170,25 @@ module.exports = {
       await interaction.reply({ embeds: [embed] });
     } else if (subcommand === "apply") {
       const templateName = interaction.options.getString("template");
-      
+
       // Input validation using security utility
-      const templateValidation = CommandSecurity.validateInput(templateName, "Template name", 1, 100);
+      const templateValidation = CommandSecurity.validateInput(
+        templateName,
+        "Template name",
+        1,
+        100
+      );
       if (templateValidation) return interaction.reply(templateValidation);
 
       // Sanitize template name
-      const sanitizedTemplateName = CommandSecurity.sanitizeInput(templateName, 100);
-      
+      const sanitizedTemplateName = CommandSecurity.sanitizeInput(
+        templateName,
+        100
+      );
+
       const user = interaction.options.getUser("user");
       const targetMember = await interaction.guild.members.fetch(user.id);
-      
+
       // Security check using utility
       const securityCheck = await CommandSecurity.checkRoleManagementSecurity(
         interaction,
@@ -201,7 +223,7 @@ module.exports = {
       await interaction.deferReply();
 
       const roleIds = JSON.parse(template.role_ids);
-      
+
       // Filter roles bot can actually manage using security utility
       const manageableRoles = CommandSecurity.filterManageableRoles(
         roleIds,
@@ -211,7 +233,8 @@ module.exports = {
 
       if (manageableRoles.length === 0) {
         return interaction.editReply({
-          content: "❌ I cannot manage any roles in this template! The bot's role may be too low.",
+          content:
+            "❌ I cannot manage any roles in this template! The bot's role may be too low.",
         });
       }
 
@@ -293,11 +316,19 @@ module.exports = {
       const templateName = interaction.options.getString("template");
 
       // Input validation using security utility
-      const templateValidation = CommandSecurity.validateInput(templateName, "Template name", 1, 100);
+      const templateValidation = CommandSecurity.validateInput(
+        templateName,
+        "Template name",
+        1,
+        100
+      );
       if (templateValidation) return interaction.reply(templateValidation);
 
       // Sanitize template name
-      const sanitizedTemplateName = CommandSecurity.sanitizeInput(templateName, 100);
+      const sanitizedTemplateName = CommandSecurity.sanitizeInput(
+        templateName,
+        100
+      );
 
       const result = await new Promise((resolve, reject) => {
         db.db.run(

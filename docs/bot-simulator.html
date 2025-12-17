@@ -527,7 +527,7 @@
 
       // SECURITY: Sanitize user input to prevent XSS - defined at top level
       function escapeHtml(str) {
-        if (typeof str !== 'string') return str;
+        if (typeof str !== "string") return str;
         const div = document.createElement("div");
         div.textContent = str; // This automatically escapes HTML
         return div.innerHTML; // Returns escaped HTML
@@ -543,36 +543,36 @@
         // SECURITY FIX: Use textContent instead of innerHTML to prevent XSS
         const messageDiv = document.createElement("div");
         messageDiv.className = "message";
-        
+
         const img = document.createElement("img");
         img.src = userAvatar;
         img.className = "avatar";
         img.alt = "User";
         messageDiv.appendChild(img);
-        
+
         const contentDiv = document.createElement("div");
         contentDiv.className = "message-content";
-        
+
         const headerDiv = document.createElement("div");
         headerDiv.className = "message-header";
-        
+
         const usernameSpan = document.createElement("span");
         usernameSpan.className = "username";
         usernameSpan.textContent = "You";
         headerDiv.appendChild(usernameSpan);
-        
+
         const timeSpan = document.createElement("span");
         timeSpan.className = "timestamp";
         timeSpan.textContent = time;
         headerDiv.appendChild(timeSpan);
-        
+
         contentDiv.appendChild(headerDiv);
-        
+
         const textDiv = document.createElement("div");
         textDiv.className = "message-text";
         textDiv.textContent = text; // SECURITY: textContent automatically escapes HTML
         contentDiv.appendChild(textDiv);
-        
+
         messageDiv.appendChild(contentDiv);
         chatArea.appendChild(messageDiv);
         chatArea.scrollTop = chatArea.scrollHeight;

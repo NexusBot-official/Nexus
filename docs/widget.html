@@ -275,38 +275,46 @@
 
         // SECURITY FIX: Sanitize preview HTML
         function escapeHtml(str) {
-          if (typeof str !== 'string') return str;
+          if (typeof str !== "string") return str;
           const div = document.createElement("div");
           div.textContent = str;
           return div.innerHTML;
         }
-        
+
         // For widget preview, we need to allow HTML but sanitize user inputs
         const previewDiv = document.getElementById("widgetPreview");
         previewDiv.innerHTML = "";
-        
+
         // Create preview using DOM manipulation for security
         const previewContainer = document.createElement("div");
-        previewContainer.style.cssText = "text-align: center; padding: 20px; background: rgba(0,0,0,0.1); border-radius: 12px;";
-        
+        previewContainer.style.cssText =
+          "text-align: center; padding: 20px; background: rgba(0,0,0,0.1); border-radius: 12px;";
+
         if (type === "invite") {
           const title = document.createElement("h3");
           title.textContent = showName ? "Nexus Bot" : "Discord Bot";
-          title.style.cssText = "color: " + themeColors.text + "; margin-bottom: 10px;";
+          title.style.cssText =
+            "color: " + themeColors.text + "; margin-bottom: 10px;";
           previewContainer.appendChild(title);
-          
+
           const desc = document.createElement("p");
           desc.textContent = "Free security bot that exceeds Wick";
-          desc.style.cssText = "opacity: 0.8; margin: 10px 0; font-size: 0.9rem; color: " + themeColors.text + ";";
+          desc.style.cssText =
+            "opacity: 0.8; margin: 10px 0; font-size: 0.9rem; color: " +
+            themeColors.text +
+            ";";
           previewContainer.appendChild(desc);
-          
+
           const link = document.createElement("a");
           link.href = "https://nexusbot-official.github.io/Nexus/invite.html";
-          link.style.cssText = "display: inline-block; background: " + themeColors.accent + "; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-top: 10px;";
+          link.style.cssText =
+            "display: inline-block; background: " +
+            themeColors.accent +
+            "; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-top: 10px;";
           link.textContent = "Invite Now";
           previewContainer.appendChild(link);
         }
-        
+
         previewDiv.appendChild(previewContainer);
 
         // Generate embed code

@@ -147,7 +147,7 @@
 
       // SECURITY: Sanitize HTML to prevent XSS
       function escapeHtml(str) {
-        if (typeof str !== 'string') return str;
+        if (typeof str !== "string") return str;
         const div = document.createElement("div");
         div.textContent = str;
         return div.innerHTML;
@@ -229,33 +229,35 @@
           // SECURITY FIX: Use textContent instead of innerHTML
           const container = document.querySelector(".redirect-container");
           container.innerHTML = "";
-          
+
           const logo = document.createElement("div");
           logo.className = "logo";
           logo.textContent = "❌";
           container.appendChild(logo);
-          
+
           const h1 = document.createElement("h1");
           h1.textContent = "Invalid Invite Source";
           container.appendChild(h1);
-          
+
           const p1 = document.createElement("p");
           p1.style.cssText = "color: #ff6b6b; font-weight: 600;";
           p1.textContent = `The invite source "${escapeHtml(source)}" is not valid.`;
           container.appendChild(p1);
-          
+
           const p2 = document.createElement("p");
-          p2.style.cssText = "margin-top: 20px; font-size: 0.9rem; opacity: 0.8;";
-          p2.textContent = "Please use a valid invite link or visit the main page.";
+          p2.style.cssText =
+            "margin-top: 20px; font-size: 0.9rem; opacity: 0.8;";
+          p2.textContent =
+            "Please use a valid invite link or visit the main page.";
           container.appendChild(p2);
-          
+
           const link = document.createElement("a");
           link.href = "https://nexusbot-official.github.io/Nexus/index.html";
           link.className = "manual-link";
           link.style.cssText = "margin-top: 30px;";
           link.textContent = "Go to Homepage";
           container.appendChild(link);
-          
+
           return; // Don't redirect or track
         }
 
@@ -268,7 +270,7 @@
           // SECURITY FIX: Use textContent instead of innerHTML
           const sourceInfo = document.getElementById("sourceInfo");
           sourceInfo.innerHTML = "";
-          
+
           const badge = document.createElement("div");
           badge.className = "source-badge";
           badge.innerHTML = `📊 Tracking source: <strong>${escapeHtml(source)}</strong>`;

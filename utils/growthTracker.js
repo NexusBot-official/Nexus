@@ -20,7 +20,10 @@ class GrowthTracker {
   // Start automatic daily snapshot creation
   startDailySnapshots() {
     if (!this.client) {
-      logger.warn("GrowthTracker", "Client not set, cannot start daily snapshots");
+      logger.warn(
+        "GrowthTracker",
+        "Client not set, cannot start daily snapshots"
+      );
       return;
     }
 
@@ -57,7 +60,11 @@ class GrowthTracker {
           logger.info("GrowthTracker", "Initial daily snapshot created");
         }
       } catch (error) {
-        logger.error("GrowthTracker", "Failed to create initial snapshot", error);
+        logger.error(
+          "GrowthTracker",
+          "Failed to create initial snapshot",
+          error
+        );
       }
     }, 30000); // Wait 30 seconds after startup
 

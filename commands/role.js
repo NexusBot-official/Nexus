@@ -70,29 +70,41 @@ module.exports = {
     const subcommand = interaction.options.getSubcommand();
 
     // Get bot member for security checks
-    const botMember = await interaction.guild.members.fetch(interaction.client.user.id);
+    const botMember = await interaction.guild.members.fetch(
+      interaction.client.user.id
+    );
 
     if (subcommand === "add") {
       const user = interaction.options.getUser("user");
       const role = interaction.options.getRole("role");
 
       // Security: Check bot permission
-      const botPermCheck = CommandSecurity.checkBotPermission(botMember, PermissionFlagsBits.ManageRoles);
+      const botPermCheck = CommandSecurity.checkBotPermission(
+        botMember,
+        PermissionFlagsBits.ManageRoles
+      );
       if (botPermCheck) return interaction.reply(botPermCheck);
 
       // Security: Check if bot can manage the role
-      if (!CommandSecurity.canBotManageRole(role, botMember, interaction.guild)) {
+      if (
+        !CommandSecurity.canBotManageRole(role, botMember, interaction.guild)
+      ) {
         return interaction.reply({
-          content: "❌ I cannot manage that role! It may be above my role or managed by an integration.",
+          content:
+            "❌ I cannot manage that role! It may be above my role or managed by an integration.",
           flags: MessageFlags.Ephemeral,
         });
       }
 
       try {
         const member = await interaction.guild.members.fetch(user.id);
-        
+
         // Security: Check if executor can target the user
-        const targetCheck = CommandSecurity.checkCanTarget(interaction.member, member, interaction.guild);
+        const targetCheck = CommandSecurity.checkCanTarget(
+          interaction.member,
+          member,
+          interaction.guild
+        );
         if (targetCheck) return interaction.reply(targetCheck);
 
         await member.roles.add(role);
@@ -114,22 +126,32 @@ module.exports = {
       const role = interaction.options.getRole("role");
 
       // Security: Check bot permission
-      const botPermCheck = CommandSecurity.checkBotPermission(botMember, PermissionFlagsBits.ManageRoles);
+      const botPermCheck = CommandSecurity.checkBotPermission(
+        botMember,
+        PermissionFlagsBits.ManageRoles
+      );
       if (botPermCheck) return interaction.reply(botPermCheck);
 
       // Security: Check if bot can manage the role
-      if (!CommandSecurity.canBotManageRole(role, botMember, interaction.guild)) {
+      if (
+        !CommandSecurity.canBotManageRole(role, botMember, interaction.guild)
+      ) {
         return interaction.reply({
-          content: "❌ I cannot manage that role! It may be above my role or managed by an integration.",
+          content:
+            "❌ I cannot manage that role! It may be above my role or managed by an integration.",
           flags: MessageFlags.Ephemeral,
         });
       }
 
       try {
         const member = await interaction.guild.members.fetch(user.id);
-        
+
         // Security: Check if executor can target the user
-        const targetCheck = CommandSecurity.checkCanTarget(interaction.member, member, interaction.guild);
+        const targetCheck = CommandSecurity.checkCanTarget(
+          interaction.member,
+          member,
+          interaction.guild
+        );
         if (targetCheck) return interaction.reply(targetCheck);
 
         await member.roles.remove(role);
@@ -151,13 +173,19 @@ module.exports = {
       const action = interaction.options.getString("action");
 
       // Security: Check bot permission
-      const botPermCheck = CommandSecurity.checkBotPermission(botMember, PermissionFlagsBits.ManageRoles);
+      const botPermCheck = CommandSecurity.checkBotPermission(
+        botMember,
+        PermissionFlagsBits.ManageRoles
+      );
       if (botPermCheck) return interaction.reply(botPermCheck);
 
       // Security: Check if bot can manage the role
-      if (!CommandSecurity.canBotManageRole(role, botMember, interaction.guild)) {
+      if (
+        !CommandSecurity.canBotManageRole(role, botMember, interaction.guild)
+      ) {
         return interaction.reply({
-          content: "❌ I cannot manage that role! It may be above my role or managed by an integration.",
+          content:
+            "❌ I cannot manage that role! It may be above my role or managed by an integration.",
           flags: MessageFlags.Ephemeral,
         });
       }
@@ -173,10 +201,14 @@ module.exports = {
         try {
           // Skip bots
           if (member.user.bot) continue;
-          
+
           // Security: Only modify roles for members below executor's role
           const isOwner = interaction.guild.ownerId === interaction.user.id;
-          if (!isOwner && member.roles.highest.position >= interaction.member.roles.highest.position) {
+          if (
+            !isOwner &&
+            member.roles.highest.position >=
+              interaction.member.roles.highest.position
+          ) {
             failed++;
             continue;
           }
