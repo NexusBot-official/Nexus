@@ -291,40 +291,49 @@ if (process.env.VOIDBOTS_TOKEN) {
     }
   };
 
-  // Initialize only once when first shard is ready
-  manager.once("shardCreate", async (shard) => {
-    console.log(`[DEBUG] VoidBots: shardCreate event fired`);
-    shard.once("clientReady", async () => {
-      console.log(`[DEBUG] VoidBots: clientReady event fired`);
-      if (voidbotsInitialized) {
-        console.log(`[DEBUG] VoidBots: Already initialized, skipping`);
+  // Initialize when shards are ready
+  const initializeVoidBots = async () => {
+    console.log(`[DEBUG] VoidBots: Initializing...`);
+    if (voidbotsInitialized) {
+      console.log(`[DEBUG] VoidBots: Already initialized, skipping`);
+      return;
+    }
+
+    if (!botId) {
+      try {
+        console.log(`[DEBUG] VoidBots: Fetching bot ID...`);
+        const clientValues = await manager.fetchClientValues("user.id");
+        botId = clientValues[0];
+        console.log(`[DEBUG] VoidBots: Bot ID fetched: ${botId}`);
+      } catch (error) {
+        console.error("❌ [VoidBots] Failed to get bot ID:", error.message);
         return;
       }
+    }
 
-      if (!botId) {
-        try {
-          console.log(`[DEBUG] VoidBots: Fetching bot ID...`);
-          const clientValues = await manager.fetchClientValues("user.id");
-          botId = clientValues[0];
-          console.log(`[DEBUG] VoidBots: Bot ID fetched: ${botId}`);
-        } catch (error) {
-          console.error("❌ [VoidBots] Failed to get bot ID:", error.message);
-          return;
-        }
-      }
+    voidbotsInitialized = true;
 
-      voidbotsInitialized = true;
+    console.log(
+      `✅ [VoidBots] Stats posting initialized (posting immediately)`
+    );
 
-      console.log(
-        `✅ [VoidBots] Stats posting initialized (posting immediately)`
-      );
+    // Post immediately
+    postStats();
+    
+    // Then post every 15 minutes
+    if (!voidbotsInterval) {
+      voidbotsInterval = setInterval(postStats, 15 * 60 * 1000);
+    }
+  };
 
-      // Post immediately
-      postStats();
-      
-      // Then post every 15 minutes
-      if (!voidbotsInterval) {
-        voidbotsInterval = setInterval(postStats, 15 * 60 * 1000);
+  // Wait for manager to spawn all shards, then initialize
+  manager.on("shardCreate", (shard) => {
+    console.log(`[DEBUG] VoidBots: shardCreate event fired for shard ${shard.id}`);
+    shard.once("ready", async () => {
+      console.log(`[DEBUG] VoidBots: Shard ${shard.id} ready event fired`);
+      // Only initialize once when first shard is ready
+      if (!voidbotsInitialized) {
+        await initializeVoidBots();
       }
     });
   });
