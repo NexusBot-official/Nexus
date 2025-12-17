@@ -9,7 +9,7 @@ class TokenProtection {
     this.client = client;
     this.botToken = process.env.DISCORD_TOKEN;
     this.alertChannelId = process.env.TOKEN_ALERT_CHANNEL; // Optional: specific channel for alerts
-    this.ownerIds = process.env.OWNER_IDS?.split(",") || []; // Bot owner IDs
+    this.ownerIds = process.env.OWNER_ID ? [process.env.OWNER_ID] : []; // Bot owner ID
   }
 
   /**
@@ -77,7 +77,7 @@ class TokenProtection {
 
     // 5. EMERGENCY SHUTDOWN (optional - uncomment if you want bot to stop)
     logger.error(`[TOKEN LEAK] EMERGENCY SHUTDOWN - Token compromised`);
-     process.exit(1);
+    process.exit(1);
   }
 
   /**
@@ -176,10 +176,7 @@ Leak Information:
 - Time: ${leakInfo.timestamp}
 - Message ID: ${leakInfo.location.messageId}
 
-This token was automatically detected as leaked and pushed to GitHub to trigger Discord's automatic token invalidation system.
-
-Bot Owner: Please regenerate your token immediately at https://discord.com/developers/applications
-`;
+This token was automatically detected as leaked and pushed to GitHub to trigger Discord's automatic token invalidation system.`;
 
     try {
       // 1. Create the file
@@ -247,4 +244,3 @@ Bot Owner: Please regenerate your token immediately at https://discord.com/devel
 }
 
 module.exports = TokenProtection;
-
