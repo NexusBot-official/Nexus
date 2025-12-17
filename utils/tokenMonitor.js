@@ -329,14 +329,34 @@ class TokenMonitor {
       interaction.guildId &&
       !this.baseline.commonGuilds.has(interaction.guildId)
     ) {
-      this.triggerAlert("command_from_unknown_guild", {
-        message: `Command "${interaction.commandName}" executed in unknown guild: ${interaction.guild?.name || interaction.guildId}`,
-        command: interaction.commandName,
-        guildId: interaction.guildId,
-        guildName: interaction.guild?.name || "Unknown",
-        userId: interaction.user.id,
-        userTag: interaction.user.tag,
-      });
+      // This could indicate unauthorized usage, but be careful - new guilds are normal
+      // Only auto-invalidate if it's a suspicious pattern (e.g., many unknown guilds in short time)
+      const recentUnknownGuilds = this.activityLog
+        .filter(a => a.type === "command" && a.guildId && !this.baseline.commonGuilds.has(a.guildId))
+        .filter(a => Date.now() - a.timestamp < 5 * 60 * 1000) // Last 5 minutes
+        .length;
+      
+      if (recentUnknownGuilds > 10) {
+        // Too many unknown guilds in short time - likely unauthorized usage
+        // AUTO-INVALIDATE IMMEDIATELY
+        await this.handleUnauthorizedUsage("unauthorized_token_usage", {
+          message: `Suspicious activity: ${recentUnknownGuilds} commands from unknown guilds in 5 minutes`,
+          command: interaction.commandName,
+          guildId: interaction.guildId,
+          guildName: interaction.guild?.name || "Unknown",
+          recentUnknownGuildCount: recentUnknownGuilds,
+        });
+      } else {
+        // Normal new guild activity - just log it
+        this.triggerAlert("command_from_unknown_guild", {
+          message: `Command "${interaction.commandName}" executed in unknown guild: ${interaction.guild?.name || interaction.guildId}`,
+          command: interaction.commandName,
+          guildId: interaction.guildId,
+          guildName: interaction.guild?.name || "Unknown",
+          userId: interaction.user.id,
+          userTag: interaction.user.tag,
+        });
+      }
     }
   }
 
