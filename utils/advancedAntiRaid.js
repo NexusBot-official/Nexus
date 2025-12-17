@@ -486,14 +486,23 @@ class AdvancedAntiRaid {
     ); // Cap multiplier at 2.0
 
     const timeWindow = config.anti_raid_time_window || 10000;
-    
+
     // PERFORMANCE: Run all algorithms in PARALLEL for instant detection
-    const [rateBased, patternBased, behavioral, networkBased, temporalPattern, graphBased] = await Promise.all([
-      Promise.resolve(this.detectionAlgorithms.rateBased(
-        joinData.joins,
-        timeWindow,
-        scaledMaxJoins
-      )),
+    const [
+      rateBased,
+      patternBased,
+      behavioral,
+      networkBased,
+      temporalPattern,
+      graphBased,
+    ] = await Promise.all([
+      Promise.resolve(
+        this.detectionAlgorithms.rateBased(
+          joinData.joins,
+          timeWindow,
+          scaledMaxJoins
+        )
+      ),
       Promise.resolve(this.detectionAlgorithms.patternBased(joinData.joins)),
       Promise.resolve(this.detectionAlgorithms.behavioral(joinData.joins)),
       this.detectionAlgorithms.networkBased(joinData.joins, guild.id),
@@ -832,7 +841,7 @@ class AdvancedAntiRaid {
         // Double-check: Only ban if they joined recently
         const member = await guild.members.fetch(join.id).catch(() => null);
         if (!member) {
-          return { success: false, reason: 'member_not_found' };
+          return { success: false, reason: "member_not_found" };
         }
 
         // Verify member joined recently (within last 5 minutes as safety)
@@ -845,7 +854,7 @@ class AdvancedAntiRaid {
               (Date.now() - memberJoinTime) / 1000
             )}s ago (existing member)`
           );
-          return { success: false, reason: 'existing_member' };
+          return { success: false, reason: "existing_member" };
         }
 
         // Check role hierarchy - bot must be able to ban this member
@@ -856,7 +865,7 @@ class AdvancedAntiRaid {
           logger.warn(
             `Cannot ban ${member.user.tag} - bot role hierarchy too low (bot: ${botMember.roles.highest.position}, member: ${member.roles.highest.position})`
           );
-          return { success: false, reason: 'hierarchy' };
+          return { success: false, reason: "hierarchy" };
         }
 
         if (action === "ban") {
@@ -913,13 +922,15 @@ class AdvancedAntiRaid {
             `[Anti-Raid] Invalid form body when attempting to ${action} ${join.id}`
           );
         }
-        return { success: false, reason: 'error', error: error.message };
+        return { success: false, reason: "error", error: error.message };
       }
     });
 
     // Wait for all bans to complete (in parallel)
     const results = await Promise.allSettled(banPromises);
-    const successCount = results.filter(r => r.status === 'fulfilled' && r.value.success).length;
+    const successCount = results.filter(
+      (r) => r.status === "fulfilled" && r.value.success
+    ).length;
     const failedCount = results.length - successCount;
 
     logger.info(

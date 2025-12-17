@@ -41,22 +41,24 @@ module.exports = {
     // INSTANT anti-nuke monitoring - NO WAITING for audit logs
     if (client.advancedAntiNuke) {
       // Fetch audit logs in parallel (non-blocking)
-      const auditLogPromise = channel.guild.fetchAuditLogs({
-        limit: 1,
-        type: 10, // CHANNEL_CREATE
-      }).catch(() => null);
+      const auditLogPromise = channel.guild
+        .fetchAuditLogs({
+          limit: 1,
+          type: 10, // CHANNEL_CREATE
+        })
+        .catch(() => null);
 
       // INSTANT DETECTION: Check if this looks like a raid channel
-      const isRaidChannel = 
-        channel.name.includes('nuked') || 
-        channel.name.includes('raid') ||
-        channel.name.includes('hacked') ||
+      const isRaidChannel =
+        channel.name.includes("nuked") ||
+        channel.name.includes("raid") ||
+        channel.name.includes("hacked") ||
         /^[^a-zA-Z0-9\s-_]{3,}$/.test(channel.name); // Spam characters
 
       // Get audit log result
       const auditLogs = await auditLogPromise;
       const entry = auditLogs?.entries?.first();
-      
+
       if (entry && entry.executor) {
         // Track in event-based tracker (replaces audit log monitor)
         if (client.eventActionTracker) {
@@ -73,20 +75,22 @@ module.exports = {
           logger.warn(
             `[Anti-Nuke] INSTANT DETECTION: Raid channel "${channel.name}" created by ${entry.executor.tag} in ${channel.guild.name}`
           );
-          
+
           // Delete channel immediately
-          await channel.delete("Anti-Nuke: Raid channel detected").catch(() => {});
-          
+          await channel
+            .delete("Anti-Nuke: Raid channel detected")
+            .catch(() => {});
+
           // Trigger anti-nuke with HIGH PRIORITY
           await client.advancedAntiNuke.monitorAction(
             channel.guild,
             "channelCreate",
             entry.executor.id,
-            { 
-              channelId: channel.id, 
+            {
+              channelId: channel.id,
               channelName: channel.name,
               instantTrigger: true, // Force immediate action
-              isRaidChannel: true
+              isRaidChannel: true,
             }
           );
         } else {

@@ -4,10 +4,7 @@ const logger = require("../utils/logger");
 const growthTracker = require("../utils/growthTracker");
 const contentFilter = require("../utils/contentFilter");
 const { version } = require("../package.json");
-const {
-  
-  isGuildBlacklisted,
-} = require("../utils/guildBlacklist");
+const { isGuildBlacklisted } = require("../utils/guildBlacklist");
 
 module.exports = {
   name: "guildCreate",

@@ -311,7 +311,7 @@ class AdvancedAntiNuke {
       logger.warn(
         `[Anti-Nuke] INSTANT TRIGGER: Raid detected by ${userId} in ${guild.name}`
       );
-      
+
       // Immediately trigger threat handling with maximum priority
       await this.handleThreat(guild, userId, "mass_channel_creation", {
         channelsCreated: 10, // Force high count to trigger immediate action
@@ -325,7 +325,7 @@ class AdvancedAntiNuke {
         emojisCreated: 0,
         voiceRaid: 0,
       });
-      
+
       return; // Exit after handling
     }
 
