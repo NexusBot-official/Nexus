@@ -139,7 +139,7 @@ class HealthCheck {
 
       // 6. Disk space (database)
       try {
-        const dbPath = path.join(__dirname, "..", "data", "nexus.db");
+        const dbPath = path.join(__dirname, "..", "data", "Sentinel.db");
         const stats = await fs.stat(dbPath);
         const sizeMB = stats.size / 1024 / 1024;
 

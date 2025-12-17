@@ -156,7 +156,7 @@ module.exports = {
         exportData.config.workflows = workflows;
       }
 
-      const filename = `nexus_config_${
+      const filename = `Sentinel_config_${
         interaction.guild.id
       }_${Date.now()}.json`;
       const exportsDir = path.join(__dirname, "..", "data", "exports");

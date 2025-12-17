@@ -1,36 +1,36 @@
-# Nexus Bot Trademark Policy
+# Sentinel Bot Trademark Policy
 
 **Last Updated:** December 5, 2025
 
 ## Overview
 
-The Nexus Bot software is licensed under the [MIT License](LICENSE), which allows you to freely use, modify, and distribute the code. However, **the Nexus name, branding, and trademarks are not included in this license.**
+The Sentinel Bot software is licensed under the [MIT License](LICENSE), which allows you to freely use, modify, and distribute the code. However, **the Sentinel name, branding, and trademarks are not included in this license.**
 
-This document outlines how you may and may not use the Nexus trademarks.
+This document outlines how you may and may not use the Sentinel trademarks.
 
 ---
 
 ## Our Trademarks
 
-The following are trademarks and service marks of the Nexus Bot project:
+The following are trademarks and service marks of the Sentinel Bot project:
 
 ### Protected Names
 
-- "Nexus"
-- "Nexus Bot"
-- "Nexus Security Bot"
+- "Sentinel"
+- "Sentinel Bot"
+- "Sentinel Security Bot"
 - Any variation that could be confused with the above
 
 ### Protected Branding
 
-- The Nexus logo and visual designs
+- The Sentinel logo and visual designs
 - The tagline "Beyond Wick. Free. Open Source. Powerful."
 - The official website design and layout
 - Official documentation structure and branding
 
 ### Protected URLs and Services
 
-- `nexusbot-official.github.io/Nexus`
+- `Sentinelbot-official.github.io/Sentinel`
 - Official Discord server invite links
 - Official support server
 - Official bot invite URLs
@@ -39,55 +39,55 @@ The following are trademarks and service marks of the Nexus Bot project:
 
 ## ✅ Permitted Uses
 
-You **MAY** use the Nexus trademarks in the following ways:
+You **MAY** use the Sentinel trademarks in the following ways:
 
 ### 1. **Factual References**
 
-- ✅ "Based on Nexus Bot"
-- ✅ "Fork of Nexus Bot"
-- ✅ "Modified from Nexus Bot source code"
-- ✅ "Compatible with Nexus Bot"
+- ✅ "Based on Sentinel Bot"
+- ✅ "Fork of Sentinel Bot"
+- ✅ "Modified from Sentinel Bot source code"
+- ✅ "Compatible with Sentinel Bot"
 
 ### 2. **Educational & Informational**
 
-- ✅ Writing tutorials about Nexus
-- ✅ Creating guides for Nexus
-- ✅ Academic research citing Nexus
-- ✅ News articles about Nexus
+- ✅ Writing tutorials about Sentinel
+- ✅ Creating guides for Sentinel
+- ✅ Academic research citing Sentinel
+- ✅ News articles about Sentinel
 
 ### 3. **Community Discussions**
 
-- ✅ Discussing Nexus in forums
-- ✅ Reviewing Nexus Bot features
-- ✅ Comparing Nexus to other bots
+- ✅ Discussing Sentinel in forums
+- ✅ Reviewing Sentinel Bot features
+- ✅ Comparing Sentinel to other bots
 - ✅ User support discussions
 
 ### 4. **Personal/Non-Commercial Use**
 
-- ✅ Running Nexus for your own Discord servers
+- ✅ Running Sentinel for your own Discord servers
 - ✅ Testing and development
-- ✅ Contributing to the official Nexus project
+- ✅ Contributing to the official Sentinel project
 
 ---
 
 ## ❌ Prohibited Uses
 
-You **MAY NOT** use the Nexus trademarks in the following ways:
+You **MAY NOT** use the Sentinel trademarks in the following ways:
 
 ### 1. **Impersonation**
 
-- ❌ Using "Nexus" as your bot's name
-- ❌ Claiming your fork IS the official Nexus
+- ❌ Using "Sentinel" as your bot's name
+- ❌ Claiming your fork IS the official Sentinel
 - ❌ Using our logo/branding as your own
 - ❌ Implying official endorsement or affiliation
 
 ### 2. **Misleading Names**
 
-- ❌ "Nexus Pro"
-- ❌ "Nexus Premium"
-- ❌ "Nexus Plus"
-- ❌ "Nexus Advanced"
-- ❌ Any name starting with "Nexus"
+- ❌ "Sentinel Pro"
+- ❌ "Sentinel Premium"
+- ❌ "Sentinel Plus"
+- ❌ "Sentinel Advanced"
+- ❌ Any name starting with "Sentinel"
 
 ### 3. **Confusing Branding**
 
@@ -98,53 +98,53 @@ You **MAY NOT** use the Nexus trademarks in the following ways:
 
 ### 4. **Commercial Use Without Permission**
 
-- ❌ Selling "Nexus" branded services
-- ❌ Using "Nexus" in your company name
-- ❌ Using "Nexus" to promote paid services
-- ❌ Trademark "Nexus" yourself
+- ❌ Selling "Sentinel" branded services
+- ❌ Using "Sentinel" in your company name
+- ❌ Using "Sentinel" to promote paid services
+- ❌ Trademark "Sentinel" yourself
 
 ### 5. **Domain Names**
 
-- ❌ Registering domains containing "Nexus"
-- ❌ Using "Nexus" in social media handles
+- ❌ Registering domains containing "Sentinel"
+- ❌ Using "Sentinel" in social media handles
 - ❌ Creating "official-looking" domains
 
 ---
 
 ## 🎯 Proper Fork Naming
 
-If you fork Nexus Bot, you **MUST** give it a unique name. Here are good examples:
+If you fork Sentinel Bot, you **MUST** give it a unique name. Here are good examples:
 
 ### ✅ Good Names
 
-- "Guardian Bot (based on Nexus)"
-- "Sentinel Security Bot (Nexus fork)"
+- "Guardian Bot (based on Sentinel)"
+- "Sentinel Security Bot (Sentinel fork)"
 - "Shield Bot"
 - "Fortress Bot"
 - "[YourName]'s Security Bot"
 
 ### ❌ Bad Names
 
-- "Nexus Pro"
-- "Nexus [YourName]"
-- "Better Nexus"
-- "Nexus v2"
+- "Sentinel Pro"
+- "Sentinel [YourName]"
+- "Better Sentinel"
+- "Sentinel v2"
 
 ---
 
 ## 📝 Attribution Requirements
 
-When forking or modifying Nexus, you **MUST**:
+When forking or modifying Sentinel, you **MUST**:
 
 1. **Keep the MIT License** - Don't remove copyright notices
-2. **Provide Clear Attribution** - State it's based on Nexus
-3. **Use a Different Name** - Don't use "Nexus" in your bot's name
-4. **Update Branding** - Replace all Nexus branding with your own
+2. **Provide Clear Attribution** - State it's based on Sentinel
+3. **Use a Different Name** - Don't use "Sentinel" in your bot's name
+4. **Update Branding** - Replace all Sentinel branding with your own
 
 ### Example Attribution
 
 ```markdown
-This bot is based on Nexus Bot (https://github.com/Azzraya/Nexus)
+This bot is based on Sentinel Bot (https://github.com/Azzraya/Sentinel)
 Original project licensed under MIT License.
 ```
 
@@ -198,7 +198,7 @@ This policy may be updated. Check the "Last Updated" date above.
 
 If you're unsure whether your use is permitted:
 
-- **GitHub Issues**: [Open an issue](https://github.com/Azzraya/Nexus/issues)
+- **GitHub Issues**: [Open an issue](https://github.com/Azzraya/Sentinel/issues)
 - **Support Server**: [Join our Discord](https://discord.gg/BE9jPs7Byd)
 - **Email**: Check our GitHub profile
 

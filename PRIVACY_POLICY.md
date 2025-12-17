@@ -4,7 +4,7 @@
 
 ## Introduction
 
-Nexus Bot ("we", "our", "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and protect information when you use Nexus Bot on Discord.
+Sentinel Bot ("we", "our", "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and protect information when you use Sentinel Bot on Discord.
 
 ## Information We Collect
 
@@ -48,7 +48,7 @@ Nexus Bot ("we", "our", "us") is committed to protecting your privacy. This Priv
 
 ### Dashboard Authentication Information
 
-When you log in to the Nexus Bot dashboard, we collect:
+When you log in to the Sentinel Bot dashboard, we collect:
 
 - **Discord ID** - Your unique Discord identifier
 - **Username** - Your Discord username
@@ -126,7 +126,7 @@ When you log in to the Nexus Bot dashboard, we collect:
 
 ## Auto-Recovery System
 
-Nexus Bot includes an automatic server recovery system that creates snapshots of your server's structure to restore it after attacks.
+Sentinel Bot includes an automatic server recovery system that creates snapshots of your server's structure to restore it after attacks.
 
 ### What Data is Stored in Snapshots:
 
@@ -184,7 +184,7 @@ Nexus Bot includes an automatic server recovery system that creates snapshots of
 
 ## Threat Intelligence Network (Cross-Server Data Sharing) - OPT-IN
 
-**IMPORTANT:** Our Threat Intelligence Network is a security feature that can **share threat data across servers using Nexus Bot**. This feature is **ENABLED BY DEFAULT** but can be **disabled per server** via server configuration.
+**IMPORTANT:** Our Threat Intelligence Network is a security feature that can **share threat data across servers using Sentinel Bot**. This feature is **ENABLED BY DEFAULT** but can be **disabled per server** via server configuration.
 
 **By default, threat intelligence is shared across servers for enhanced security. Server owners can disable this feature if they prefer server-specific threat detection only.**
 
@@ -232,7 +232,7 @@ We process threat intelligence data under **legitimate interest** for the purpos
 
 ### Discord API
 
-Nexus Bot uses Discord's API and services. By using Discord, you are also subject to Discord's Privacy Policy and Terms of Service. We access and process Discord data only as permitted by Discord's API Terms of Service.
+Sentinel Bot uses Discord's API and services. By using Discord, you are also subject to Discord's Privacy Policy and Terms of Service. We access and process Discord data only as permitted by Discord's API Terms of Service.
 
 ### Hosting Services
 
@@ -244,7 +244,7 @@ We do not share your data with any other third-party services, analytics platfor
 
 ## Cookies and Tracking Technologies
 
-Nexus Bot does not use cookies or tracking technologies in the Discord application itself. If you access a web dashboard (if provided), standard session cookies may be used for authentication purposes only.
+Sentinel Bot does not use cookies or tracking technologies in the Discord application itself. If you access a web dashboard (if provided), standard session cookies may be used for authentication purposes only.
 
 ## AI and Machine Learning
 
@@ -408,7 +408,7 @@ If a data breach occurs that may affect your privacy:
 
 ## Open Source
 
-Nexus Bot is open source. You can:
+Sentinel Bot is open source. You can:
 
 - View our code
 - See exactly how data is handled
@@ -417,7 +417,7 @@ Nexus Bot is open source. You can:
 
 ## Children's Privacy (COPPA Compliance)
 
-Nexus Bot is not intended for users under 13 years of age (Discord's minimum age requirement).
+Sentinel Bot is not intended for users under 13 years of age (Discord's minimum age requirement).
 
 ### Our Policy:
 
@@ -458,9 +458,9 @@ We may update this Privacy Policy from time to time. We will:
 For privacy concerns, data requests, or questions:
 
 - **Discord Support Server:** https://discord.gg/BE9jPs7Byd (Preferred method)
-- **Privacy Email:** nexusbot0@proton.me (For formal privacy requests)
+- **Privacy Email:** Sentinelbot0@proton.me (For formal privacy requests)
 - **General Contact:** Open a ticket in our support server
-- **GitHub Issues:** https://github.com/Azzraya/Nexus/issues (For code-related questions)
+- **GitHub Issues:** https://github.com/Azzraya/Sentinel/issues (For code-related questions)
 
 ### Data Protection Officer and ICO
 
@@ -502,4 +502,4 @@ We are compliant with California privacy laws:
 
 ---
 
-**By using Nexus Bot, you agree to this Privacy Policy.**
+**By using Sentinel Bot, you agree to this Privacy Policy.**

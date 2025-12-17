@@ -1,6 +1,6 @@
 /**
- * Nexus Bot - Advanced Discord Security Bot
- * Copyright (c) 2025 Nexus Bot. All rights reserved.
+ * Sentinel Bot - Advanced Discord Security Bot
+ * Copyright (c) 2025 Sentinel Bot. All rights reserved.
  * Licensed under the MIT License.
  *
  * Beyond Wick. Beyond Everything.

@@ -148,7 +148,7 @@ module.exports = {
     ) {
       try {
         const webhook = {
-          username: "Nexus Growth Tracker",
+          username: "Sentinel Growth Tracker",
           avatar_url:
             "https://cdn.discordapp.com/avatars/1444739230679957646/32f2d77d44c2f3989fecd858be53f396.webp",
           embeds: [

@@ -104,7 +104,7 @@ class HoneypotSystem {
               description:
                 "This channel is a security measure. Any access attempts will be logged and flagged.",
               color: 0xff9800,
-              footer: { text: "Nexus Security System" },
+              footer: { text: "Sentinel Security System" },
             },
           ],
         });
@@ -254,7 +254,7 @@ class HoneypotSystem {
             description: `**User:** ${user.tag} (${user.id})\n**Channel:** ${channel.name}\n**Attempt:** ${attemptType}\n**Suspicion Score:** ${score}/100`,
             color: 0xff9800,
             timestamp: new Date(),
-            footer: { text: "Nexus Security System" },
+            footer: { text: "Sentinel Security System" },
           },
         ],
       });

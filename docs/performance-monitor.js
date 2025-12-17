@@ -184,7 +184,7 @@
   };
 
   // Expose metrics globally for debugging
-  window.NexusPerformanceMetrics = metrics;
+  window.SentinelPerformanceMetrics = metrics;
 
   // Function to get performance summary
   window.getPerformanceSummary = function () {

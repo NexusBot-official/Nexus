@@ -15,7 +15,7 @@ const getRedisCache = () => {
 
 class Database {
   constructor() {
-    const dbPath = path.join(__dirname, "..", "data", "nexus.db");
+    const dbPath = path.join(__dirname, "..", "data", "Sentinel.db");
     const dataDir = path.dirname(dbPath);
 
     // Prepared statement cache for performance
@@ -1269,7 +1269,7 @@ class Database {
             },
             {
               name: "Discord Bot List",
-              url: "https://discordbotlist.com/bots/nexus-8245/upvote",
+              url: "https://discordbotlist.com/bots/Sentinel-8245/upvote",
             },
             {
               name: "Void Bots",

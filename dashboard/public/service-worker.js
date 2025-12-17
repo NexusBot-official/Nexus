@@ -1,4 +1,4 @@
-const CACHE_NAME = "nexus-dashboard-v3";
+const CACHE_NAME = "Sentinel-dashboard-v3";
 // Don't cache HTML files - they change frequently and need fresh content
 const urlsToCache = ["/dashboard.css", "/dashboard.js", "/manifest.json"];
 

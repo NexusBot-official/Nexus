@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Redirecting to Discord... | Nexus</title>
+    <title>Redirecting to Discord... | Sentinel</title>
     <link
       rel="icon"
       type="image/png"
@@ -128,7 +128,7 @@
     <div class="redirect-container">
       <div class="logo">🛡️</div>
       <h1>Redirecting to Discord...</h1>
-      <p>You'll be taken to Discord to invite Nexus to your server</p>
+      <p>You'll be taken to Discord to invite Sentinel to your server</p>
       <div class="spinner"></div>
       <div id="sourceInfo"></div>
       <p style="margin-top: 30px; font-size: 0.9rem; opacity: 0.7">
@@ -164,9 +164,9 @@
         }
 
         // Store the invite source
-        localStorage.setItem("nexus_invite_source", sourceParam);
-        localStorage.setItem("nexus_invite_source_timestamp", Date.now());
-        console.log(`[Nexus] Tracked invite source: ${sourceParam}`);
+        localStorage.setItem("Sentinel_invite_source", sourceParam);
+        localStorage.setItem("Sentinel_invite_source_timestamp", Date.now());
+        console.log(`[Sentinel] Tracked invite source: ${sourceParam}`);
 
         // Send to API
         try {
@@ -252,7 +252,7 @@
           container.appendChild(p2);
 
           const link = document.createElement("a");
-          link.href = "https://nexusbot-official.github.io/Nexus/index.html";
+          link.href = "https://Sentinelbot-official.github.io/Sentinel/index.html";
           link.className = "manual-link";
           link.style.cssText = "margin-top: 30px;";
           link.textContent = "Go to Homepage";

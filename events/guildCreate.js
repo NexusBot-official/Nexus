@@ -231,7 +231,7 @@ module.exports = {
               {
                 title: "📢 Getting Close to Verification!",
                 description:
-                  "**Nexus has reached 65 servers!**\n\nYou're **10 servers away** from being able to apply for Discord Bot Verification (75 servers required).\n\n**What to Prepare:**\n- Start gathering information for the verification form\n- Review Discord's verification requirements\n- Ensure your bot meets all criteria\n\n**At 75 servers**, you'll be able to apply for verification to remove the 100-server limit.",
+                  "**Sentinel has reached 65 servers!**\n\nYou're **10 servers away** from being able to apply for Discord Bot Verification (75 servers required).\n\n**What to Prepare:**\n- Start gathering information for the verification form\n- Review Discord's verification requirements\n- Ensure your bot meets all criteria\n\n**At 75 servers**, you'll be able to apply for verification to remove the 100-server limit.",
                 color: 0xfbbf24,
                 fields: [
                   {
@@ -271,7 +271,7 @@ module.exports = {
               {
                 title: "🎉 Verification Milestone Reached!",
                 description:
-                  "**Nexus has reached 75 servers!**\n\nYou can now apply for full Discord Bot Verification to remove the 100-server limit.\n\n**Action Required:**\n1. Go to [Discord Developer Portal](https://discord.com/developers/applications)\n2. Select your Nexus bot\n3. Navigate to the **Bot** tab\n4. Scroll to **Privileged Gateway Intents**\n5. Click **Apply for Verification**\n6. Fill out the verification form\n\n**Important:** You must get verified before hitting 100 servers or your bot will stop being able to join new servers!",
+                  "**Sentinel has reached 75 servers!**\n\nYou can now apply for full Discord Bot Verification to remove the 100-server limit.\n\n**Action Required:**\n1. Go to [Discord Developer Portal](https://discord.com/developers/applications)\n2. Select your Sentinel bot\n3. Navigate to the **Bot** tab\n4. Scroll to **Privileged Gateway Intents**\n5. Click **Apply for Verification**\n6. Fill out the verification form\n\n**Important:** You must get verified before hitting 100 servers or your bot will stop being able to join new servers!",
                 color: 0x5865f2,
                 fields: [
                   {
@@ -313,7 +313,7 @@ module.exports = {
               {
                 title: "⚠️ URGENT: Verification Required!",
                 description:
-                  "**Nexus has reached 95 servers!**\n\n🚨 **ONLY 5 SERVERS LEFT** before hitting the 100-server limit!\n\nIf you're not verified by 100 servers, your bot will **STOP** being able to join new servers.\n\n**Verify NOW:**\n[Discord Developer Portal](https://discord.com/developers/applications) → Your Bot → Bot Tab → Apply for Verification",
+                  "**Sentinel has reached 95 servers!**\n\n🚨 **ONLY 5 SERVERS LEFT** before hitting the 100-server limit!\n\nIf you're not verified by 100 servers, your bot will **STOP** being able to join new servers.\n\n**Verify NOW:**\n[Discord Developer Portal](https://discord.com/developers/applications) → Your Bot → Bot Tab → Apply for Verification",
                 color: 0xed4245,
                 fields: [
                   {
@@ -356,7 +356,7 @@ module.exports = {
               {
                 title: "🚨 CRITICAL: 100-Server Limit Reached!",
                 description:
-                  "**Nexus has reached 99 servers!**\n\n⚠️ **ONLY 1 SERVER LEFT** before hitting the 100-server hard limit!\n\n**If you're not verified, your bot will STOP being able to join new servers at 100 servers.**\n\n**If you ARE verified**, you can continue growing beyond 100 servers.\n\n**Verify NOW (if not already):**\n[Discord Developer Portal](https://discord.com/developers/applications) → Your Bot → Bot Tab → Apply for Verification",
+                  "**Sentinel has reached 99 servers!**\n\n⚠️ **ONLY 1 SERVER LEFT** before hitting the 100-server hard limit!\n\n**If you're not verified, your bot will STOP being able to join new servers at 100 servers.**\n\n**If you ARE verified**, you can continue growing beyond 100 servers.\n\n**Verify NOW (if not already):**\n[Discord Developer Portal](https://discord.com/developers/applications) → Your Bot → Bot Tab → Apply for Verification",
                 color: 0xff0000,
                 fields: [
                   {
@@ -421,7 +421,7 @@ module.exports = {
           const hitMilestone = milestones.includes(totalServers);
 
           const webhook = {
-            username: "Nexus Growth Tracker",
+            username: "Sentinel Growth Tracker",
             avatar_url:
               "https://cdn.discordapp.com/avatars/1444739230679957646/32f2d77d44c2f3989fecd858be53f396.webp",
             embeds: [
@@ -560,19 +560,19 @@ module.exports = {
         const warningEmbed = new EmbedBuilder()
           .setTitle("⚠️ CRITICAL SETUP REQUIRED")
           .setDescription(
-            "**Thank you for adding Nexus!** However, there's a critical setup step needed for full protection."
+            "**Thank you for adding Sentinel!** However, there's a critical setup step needed for full protection."
           )
           .addFields(
             {
               name: "🔴 Current Status",
-              value: `Bot role is at position **${botRoleIndex + 1}/${allRoles.length}**\nThis means Nexus **cannot ban/kick users** whose roles are higher.`,
+              value: `Bot role is at position **${botRoleIndex + 1}/${allRoles.length}**\nThis means Sentinel **cannot ban/kick users** whose roles are higher.`,
               inline: false,
             },
             {
               name: "✅ Required Action",
               value:
                 "**1.** Go to **Server Settings** → **Roles**\n" +
-                "**2.** Find the Nexus bot role\n" +
+                "**2.** Find the Sentinel bot role\n" +
                 "**3.** Drag it to the **TOP** of the role list\n" +
                 "**4.** Save changes",
               inline: false,
@@ -580,7 +580,7 @@ module.exports = {
             {
               name: "🛡️ Why This Matters",
               value:
-                "If a nuke bot joins and gets a role above Nexus, **Nexus cannot stop it**. " +
+                "If a nuke bot joins and gets a role above Sentinel, **Sentinel cannot stop it**. " +
                 "Detection will work, but action will fail with permission errors. " +
                 "Proper role positioning is **essential** for protection.",
               inline: false,
@@ -594,13 +594,13 @@ module.exports = {
             {
               name: "💬 Need Help?",
               value:
-                "Join our support server: https://discord.gg/BE9jPs7Byd\nOr check docs: https://nexusbot-official.github.io/Nexus/docs.html",
+                "Join our support server: https://discord.gg/BE9jPs7Byd\nOr check docs: https://Sentinelbot-official.github.io/Sentinel/docs.html",
               inline: false,
             }
           )
           .setColor(0xff0000)
           .setFooter({
-            text: "This is NOT optional - it's required for Nexus to work",
+            text: "This is NOT optional - it's required for Sentinel to work",
           })
           .setTimestamp();
 

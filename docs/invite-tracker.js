@@ -6,9 +6,9 @@
 
   if (source) {
     // Store the invite source
-    localStorage.setItem("nexus_invite_source", source);
-    localStorage.setItem("nexus_invite_source_timestamp", Date.now());
-    console.log(`[Nexus] Tracked invite source: ${source}`);
+    localStorage.setItem("Sentinel_invite_source", source);
+    localStorage.setItem("Sentinel_invite_source_timestamp", Date.now());
+    console.log(`[Sentinel] Tracked invite source: ${source}`);
 
     // Also send to API immediately if possible
     try {
@@ -33,9 +33,9 @@
 
   // If on dashboard login, send the stored source
   if (window.location.pathname.includes("dashboard")) {
-    const storedSource = localStorage.getItem("nexus_invite_source");
+    const storedSource = localStorage.getItem("Sentinel_invite_source");
     const storedTimestamp = localStorage.getItem(
-      "nexus_invite_source_timestamp"
+      "Sentinel_invite_source_timestamp"
     );
 
     // Only use if less than 7 days old
@@ -45,9 +45,9 @@
       Date.now() - storedTimestamp < 7 * 24 * 60 * 60 * 1000
     ) {
       // Attach to dashboard authentication
-      window.nexusInviteSource = storedSource;
+      window.SentinelInviteSource = storedSource;
       console.log(
-        `[Nexus] Will track dashboard auth with source: ${storedSource}`
+        `[Sentinel] Will track dashboard auth with source: ${storedSource}`
       );
     }
   }

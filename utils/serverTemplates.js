@@ -278,7 +278,7 @@ class ServerTemplates {
             name: "Muted",
             color: "#808080",
             permissions: [],
-            reason: "Nexus template setup",
+            reason: "Sentinel template setup",
           });
 
           // Remove send message permissions in all channels
@@ -304,7 +304,7 @@ class ServerTemplates {
           await guild.roles.create({
             name: "Verified",
             color: "#00FF00",
-            reason: "Nexus template setup",
+            reason: "Sentinel template setup",
           });
           results.roles.verified = true;
         }
@@ -317,13 +317,13 @@ class ServerTemplates {
     if (template.channels.mod_log) {
       try {
         const existing = guild.channels.cache.find(
-          (c) => c.name === "nexus-logs"
+          (c) => c.name === "Sentinel-logs"
         );
         if (!existing) {
           const channel = await guild.channels.create({
-            name: "nexus-logs",
+            name: "Sentinel-logs",
             type: 0,
-            reason: "Nexus template setup",
+            reason: "Sentinel template setup",
             permissionOverwrites: [
               {
                 id: guild.id,
@@ -344,13 +344,13 @@ class ServerTemplates {
     if (template.channels.alert) {
       try {
         const existing = guild.channels.cache.find(
-          (c) => c.name === "nexus-alerts"
+          (c) => c.name === "Sentinel-alerts"
         );
         if (!existing) {
           const channel = await guild.channels.create({
-            name: "nexus-alerts",
+            name: "Sentinel-alerts",
             type: 0,
-            reason: "Nexus template setup",
+            reason: "Sentinel template setup",
             permissionOverwrites: [
               {
                 id: guild.id,

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>For Developers - Nexus Bot API</title>
+    <title>For Developers - Sentinel Bot API</title>
     <link
       rel="icon"
       type="image/webp"
@@ -144,7 +144,7 @@
   <body>
     <nav class="navbar">
       <div class="container">
-        <a href="index.html" class="nav-brand">NEXUS</a>
+        <a href="index.html" class="nav-brand">Sentinel</a>
         <div class="nav-right">
           <div class="dropdown">
             <button class="dropdown-toggle">Menu ▼</button>
@@ -212,7 +212,7 @@
       <div class="container">
         <h1>💻 Developer Resources</h1>
         <p>
-          Build powerful integrations with Nexus API - no authentication
+          Build powerful integrations with Sentinel API - no authentication
           required for public endpoints
         </p>
       </div>
@@ -246,8 +246,8 @@
               <h3>📊 Get Bot Stats</h3>
               <div class="code-block">
                 <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                <pre><code>// Fetch Nexus bot statistics
-async function getNexusStats() {
+                <pre><code>// Fetch Sentinel bot statistics
+async function getSentinelStats() {
   const response = await fetch('YOUR_API_URL/api/v2/stats');
   const stats = await response.json();
   
@@ -259,7 +259,7 @@ async function getNexusStats() {
 }
 
 // Usage
-getNexusStats();</code></pre>
+getSentinelStats();</code></pre>
               </div>
             </div>
 
@@ -288,7 +288,7 @@ getGrowthData();</code></pre>
               <h3>🏥 Monitor Bot Health</h3>
               <div class="code-block">
                 <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                <pre><code>// Check if Nexus is operational
+                <pre><code>// Check if Sentinel is operational
 async function checkHealth() {
   const response = await fetch('YOUR_API_URL/api/v2/health');
   const health = await response.json();
@@ -318,8 +318,8 @@ setInterval(checkHealth, 60000);</code></pre>
                 <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                 <pre><code>import requests
 
-# Fetch Nexus bot statistics
-def get_nexus_stats():
+# Fetch Sentinel bot statistics
+def get_Sentinel_stats():
     response = requests.get('YOUR_API_URL/api/v2/stats')
     stats = response.json()
     
@@ -330,7 +330,7 @@ def get_nexus_stats():
     return stats
 
 # Usage
-stats = get_nexus_stats()</code></pre>
+stats = get_Sentinel_stats()</code></pre>
               </div>
             </div>
 
@@ -354,7 +354,7 @@ def visualize_growth():
     plt.plot(dates, joins, label='Joins', color='green')
     plt.xlabel('Date')
     plt.ylabel('Servers')
-    plt.title('Nexus Growth Trend')
+    plt.title('Sentinel Growth Trend')
     plt.legend()
     plt.show()
 
@@ -448,7 +448,7 @@ monitor_health()</code></pre>
 
             <div class="resource-card">
               <h3>⚡ 5-Min Tutorial</h3>
-              <p>Get up and running with Nexus API in just 5 minutes</p>
+              <p>Get up and running with Sentinel API in just 5 minutes</p>
               <a
                 href="api-quickstart.html"
                 class="btn btn-primary"
@@ -531,7 +531,7 @@ monitor_health()</code></pre>
             <div class="resource-card">
               <h3>🎮 Discord Bot</h3>
               <p>
-                Create bots that fetch Nexus stats and display them in Discord
+                Create bots that fetch Sentinel stats and display them in Discord
                 servers
               </p>
             </div>

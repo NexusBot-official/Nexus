@@ -674,7 +674,7 @@ module.exports = {
               const config = await db.getServerConfig(interaction.guild.id);
 
               const embed = new EmbedBuilder()
-                .setTitle("📊 Nexus Dashboard - Overview")
+                .setTitle("📊 Sentinel Dashboard - Overview")
                 .setDescription("Comprehensive server analytics and insights")
                 .addFields(
                   {
@@ -707,7 +707,7 @@ module.exports = {
                 )
                 .setColor(0x0099ff)
                 .setTimestamp()
-                .setFooter({ text: "Nexus - Beyond Wick" });
+                .setFooter({ text: "Sentinel - Beyond Wick" });
 
               const {
                 ActionRowBuilder,

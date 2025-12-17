@@ -1,6 +1,6 @@
-# Contributing to Nexus Bot
+# Contributing to Sentinel Bot
 
-Thank you for your interest in contributing to Nexus Bot! 🎉
+Thank you for your interest in contributing to Sentinel Bot! 🎉
 
 ## Table of Contents
 
@@ -22,7 +22,7 @@ This project follows a Code of Conduct that all contributors are expected to adh
 
 ## How to Contribute
 
-There are many ways to contribute to Nexus Bot:
+There are many ways to contribute to Sentinel Bot:
 
 ### Reporting Bugs
 
@@ -67,8 +67,8 @@ There are many ways to contribute to Nexus Bot:
 
 ```bash
 # Clone your fork
-git clone https://github.com/YOUR-USERNAME/nexus-bot.git
-cd nexus-bot
+git clone https://github.com/YOUR-USERNAME/Sentinel-bot.git
+cd Sentinel-bot
 
 # Install dependencies
 npm install
@@ -86,7 +86,7 @@ npm run dev
 ### Project Structure
 
 ```
-nexus-bot/
+Sentinel-bot/
 ├── commands/         # Slash commands
 ├── events/           # Discord event handlers
 ├── utils/            # Utility functions & systems
@@ -233,7 +233,7 @@ describe("AutoMod System", () => {
 
 ## Premium/Paid Features Policy
 
-**IMPORTANT**: Nexus Bot is committed to keeping ALL functional features free.
+**IMPORTANT**: Sentinel Bot is committed to keeping ALL functional features free.
 
 ### ✅ Acceptable Premium Features
 
@@ -263,4 +263,4 @@ By contributing, you agree that your contributions will be licensed under the sa
 
 ---
 
-Thank you for making Nexus Bot better! 💙
+Thank you for making Sentinel Bot better! 💙

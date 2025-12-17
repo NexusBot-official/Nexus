@@ -9,7 +9,7 @@ const logger = require("./logger");
  * Discord AutoMod Integration
  *
  * Manages Discord's native AutoModeration rules via Discord.js v14 API
- * This complements Nexus Bot's custom automod system
+ * This complements Sentinel Bot's custom automod system
  */
 class DiscordAutoMod {
   /**

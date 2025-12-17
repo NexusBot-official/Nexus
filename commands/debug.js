@@ -36,7 +36,7 @@ module.exports = {
         const logFile = this.generateLogFile(guild, report);
         const attachment = new AttachmentBuilder(
           Buffer.from(logFile, "utf-8"),
-          { name: `nexus-debug-${guild.id}-${Date.now()}.txt` }
+          { name: `Sentinel-debug-${guild.id}-${Date.now()}.txt` }
         );
 
         const embed = new EmbedBuilder()
@@ -328,7 +328,7 @@ module.exports = {
   generateLogFile(guild, report) {
     let log = "";
     log += "=".repeat(60) + "\n";
-    log += `NEXUS DEBUG REPORT\n`;
+    log += `Sentinel DEBUG REPORT\n`;
     log += `Generated: ${report.timestamp}\n`;
     log += "=".repeat(60) + "\n\n";
 

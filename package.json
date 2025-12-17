@@ -1,7 +1,7 @@
 {
-  "name": "nexus-bot",
-  "version": "4.3.12",
-  "description": "Nexus Bot - Advanced Discord Security Bot",
+  "name": "sentinel-bot",
+  "version": "1.0.0",
+  "description": "Sentinel Bot - Advanced Discord Security Bot",
   "main": "index.js",
   "scripts": {
     "start": "node shard.js",
@@ -16,9 +16,9 @@
     "bot",
     "security",
     "moderation",
-    "nexus"
+    "Sentinel"
   ],
-  "author": "NexusBot-official",
+  "author": "SentinelBot-official",
   "license": "MIT",
   "dependencies": {
     "axios": "^1.13.2",

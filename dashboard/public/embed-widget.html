@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Nexus Bot - Embed Widget Generator</title>
+    <title>Sentinel Bot - Embed Widget Generator</title>
     <style>
       * {
         margin: 0;
@@ -121,7 +121,7 @@
       }
 
       /* Widget Styles */
-      .nexus-widget {
+      .Sentinel-widget {
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         background: white;
         border-radius: 12px;
@@ -131,75 +131,75 @@
         margin: 0 auto;
       }
 
-      .nexus-widget.dark {
+      .Sentinel-widget.dark {
         background: #2d2d2d;
         color: #f8f8f2;
       }
 
-      .nexus-widget-header {
+      .Sentinel-widget-header {
         display: flex;
         align-items: center;
         margin-bottom: 15px;
       }
 
-      .nexus-widget-avatar {
+      .Sentinel-widget-avatar {
         width: 50px;
         height: 50px;
         border-radius: 50%;
         margin-right: 12px;
       }
 
-      .nexus-widget-title {
+      .Sentinel-widget-title {
         font-size: 18px;
         font-weight: 600;
         margin-bottom: 4px;
       }
 
-      .nexus-widget-status {
+      .Sentinel-widget-status {
         font-size: 13px;
         color: #52c41a;
       }
 
-      .nexus-widget.dark .nexus-widget-status {
+      .Sentinel-widget.dark .Sentinel-widget-status {
         color: #73d13d;
       }
 
-      .nexus-widget-stats {
+      .Sentinel-widget-stats {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 12px;
         margin: 15px 0;
       }
 
-      .nexus-widget-stat {
+      .Sentinel-widget-stat {
         text-align: center;
         padding: 12px;
         background: #f8f9fa;
         border-radius: 8px;
       }
 
-      .nexus-widget.dark .nexus-widget-stat {
+      .Sentinel-widget.dark .Sentinel-widget-stat {
         background: #3a3a3a;
       }
 
-      .nexus-widget-stat-value {
+      .Sentinel-widget-stat-value {
         font-size: 24px;
         font-weight: 700;
         color: #667eea;
       }
 
-      .nexus-widget-stat-label {
+      .Sentinel-widget-stat-label {
         font-size: 12px;
         color: #666;
         text-transform: uppercase;
         margin-top: 4px;
       }
 
-      .nexus-widget.dark .nexus-widget-stat-label {
+      .Sentinel-widget.dark .Sentinel-widget-stat-label {
         color: #aaa;
       }
 
-      .nexus-widget-button {
+      .Sentinel-widget-button {
         display: block;
         width: 100%;
         padding: 12px;
@@ -213,16 +213,16 @@
         transition: background 0.3s;
       }
 
-      .nexus-widget-button:hover {
+      .Sentinel-widget-button:hover {
         background: #5568d3;
       }
     </style>
   </head>
   <body>
     <div class="container">
-      <h1>🎨 Nexus Bot - Embed Widget Generator</h1>
+      <h1>🎨 Sentinel Bot - Embed Widget Generator</h1>
       <p class="subtitle">
-        Create a beautiful widget for your website to showcase Nexus Bot stats!
+        Create a beautiful widget for your website to showcase Sentinel Bot stats!
       </p>
 
       <div class="widget-config">
@@ -286,28 +286,28 @@
         const previewArea = document.getElementById("previewArea");
 
         let html = `
-        <div class="nexus-widget ${theme}">
-          <div class="nexus-widget-header">
+        <div class="Sentinel-widget ${theme}">
+          <div class="Sentinel-widget-header">
             <img src="https://cdn.discordapp.com/avatars/1444739230679957646/32f2d77d44c2f3989fecd858be53f396.webp?size=256" 
-                 alt="Nexus Bot" 
-                 class="nexus-widget-avatar">
+                 alt="Sentinel Bot" 
+                 class="Sentinel-widget-avatar">
             <div>
-              <div class="nexus-widget-title">Nexus Bot</div>
-              <div class="nexus-widget-status">● Online</div>
+              <div class="Sentinel-widget-title">Sentinel Bot</div>
+              <div class="Sentinel-widget-status">● Online</div>
             </div>
           </div>
       `;
 
         if (layout !== "minimal") {
           html += `
-          <div class="nexus-widget-stats">
-            <div class="nexus-widget-stat">
-              <div class="nexus-widget-stat-value" id="serverCount">...</div>
-              <div class="nexus-widget-stat-label">Servers</div>
+          <div class="Sentinel-widget-stats">
+            <div class="Sentinel-widget-stat">
+              <div class="Sentinel-widget-stat-value" id="serverCount">...</div>
+              <div class="Sentinel-widget-stat-label">Servers</div>
             </div>
-            <div class="nexus-widget-stat">
-              <div class="nexus-widget-stat-value">100+</div>
-              <div class="nexus-widget-stat-label">Commands</div>
+            <div class="Sentinel-widget-stat">
+              <div class="Sentinel-widget-stat-value">100+</div>
+              <div class="Sentinel-widget-stat-label">Commands</div>
             </div>
           </div>
         `;
@@ -315,14 +315,14 @@
 
         if (layout === "full") {
           html += `
-          <div class="nexus-widget-stats">
-            <div class="nexus-widget-stat">
-              <div class="nexus-widget-stat-value">99.9%</div>
-              <div class="nexus-widget-stat-label">Uptime</div>
+          <div class="Sentinel-widget-stats">
+            <div class="Sentinel-widget-stat">
+              <div class="Sentinel-widget-stat-value">99.9%</div>
+              <div class="Sentinel-widget-stat-label">Uptime</div>
             </div>
-            <div class="nexus-widget-stat">
-              <div class="nexus-widget-stat-value">24/7</div>
-              <div class="nexus-widget-stat-label">Support</div>
+            <div class="Sentinel-widget-stat">
+              <div class="Sentinel-widget-stat-value">24/7</div>
+              <div class="Sentinel-widget-stat-label">Support</div>
             </div>
           </div>
         `;
@@ -332,7 +332,7 @@
           html += `
           <a href="https://discord.com/oauth2/authorize?client_id=1444739230679957646&permissions=8&scope=bot%20applications.commands" 
              target="_blank" 
-             class="nexus-widget-button">
+             class="Sentinel-widget-button">
             Invite to Server
           </a>
         `;
@@ -359,8 +359,8 @@
       }
 
       function generateEmbedCode(theme, layout, showButton) {
-        const code = `<!-- Nexus Bot Widget -->
-<div id="nexus-widget"></div>
+        const code = `<!-- Sentinel Bot Widget -->
+<div id="Sentinel-widget"></div>
 <script>
   (function() {
     var script = document.createElement('script');

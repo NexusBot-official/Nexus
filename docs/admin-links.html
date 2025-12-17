@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Invite Link Manager - Nexus Admin</title>
+    <title>Invite Link Manager - Sentinel Admin</title>
     <script src="admin-auth.js"></script>
     <link
       rel="icon"
@@ -356,7 +356,7 @@
 
     <script>
       const API_URL = "https://regular-puma-clearly.ngrok-free.app";
-      const BASE_INVITE_URL = `https://nexusbot-official.github.io/Nexus/invite.html`;
+      const BASE_INVITE_URL = `https://Sentinelbot-official.github.io/Sentinel/invite.html`;
 
       let authToken = sessionStorage.getItem("adminToken");
       let adminPassword = null;
@@ -367,18 +367,18 @@
         sessionStorage.getItem("adminAuthenticated") !== "true"
       ) {
         // Fallback to password-based auth for this page (uses different API)
-        adminPassword = localStorage.getItem("nexus_admin_password");
+        adminPassword = localStorage.getItem("Sentinel_admin_password");
         if (!adminPassword) {
           const password = prompt("Enter admin password:");
           if (!password) {
             window.location.href = "admin.html";
           }
           adminPassword = password;
-          localStorage.setItem("nexus_admin_password", password);
+          localStorage.setItem("Sentinel_admin_password", password);
         }
       } else {
         // If we have a session token, use it for consistency
-        adminPassword = localStorage.getItem("nexus_admin_password");
+        adminPassword = localStorage.getItem("Sentinel_admin_password");
       }
 
       // Load links on page load
@@ -441,7 +441,7 @@
             );
 
             if (response.status === 401) {
-              localStorage.removeItem("nexus_admin_password");
+              localStorage.removeItem("Sentinel_admin_password");
               alert("Invalid password");
               window.location.reload();
               return;
@@ -477,7 +477,7 @@
           });
 
           if (response.status === 401) {
-            localStorage.removeItem("nexus_admin_password");
+            localStorage.removeItem("Sentinel_admin_password");
             alert("Invalid password");
             window.location.reload();
             return;

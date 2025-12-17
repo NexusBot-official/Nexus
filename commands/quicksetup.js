@@ -13,7 +13,7 @@ const db = require("../utils/database");
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("quicksetup")
-    .setDescription("Interactive setup wizard to configure Nexus in minutes")
+    .setDescription("Interactive setup wizard to configure Sentinel in minutes")
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
   async execute(interaction, client) {
@@ -21,9 +21,9 @@ module.exports = {
 
     // Initial setup embed
     const setupEmbed = new EmbedBuilder()
-      .setTitle("🚀 Nexus Quick Setup Wizard")
+      .setTitle("🚀 Sentinel Quick Setup Wizard")
       .setDescription(
-        "Let's get Nexus configured for your server! This wizard will help you:\n\n" +
+        "Let's get Sentinel configured for your server! This wizard will help you:\n\n" +
           "✅ Enable core security features\n" +
           "✅ Configure logging channels\n" +
           "✅ Set up moderation roles\n" +
@@ -108,14 +108,14 @@ module.exports = {
       } else if (i.customId === "setup_logging") {
         // Suggest creating a logs channel
         let logChannel = guild.channels.cache.find(
-          (ch) => ch.name === "nexus-logs"
+          (ch) => ch.name === "Sentinel-logs"
         );
 
         if (!logChannel) {
           // Ask if they want to create it
           await i.reply({
             content:
-              "Would you like me to create a **#nexus-logs** channel for moderation logs?",
+              "Would you like me to create a **#Sentinel-logs** channel for moderation logs?",
             components: [
               new ActionRowBuilder().addComponents(
                 new ButtonBuilder()
@@ -139,9 +139,9 @@ module.exports = {
             if (btnInt.customId === "create_log_channel") {
               try {
                 logChannel = await guild.channels.create({
-                  name: "nexus-logs",
+                  name: "Sentinel-logs",
                   type: ChannelType.GuildText,
-                  topic: "Nexus Bot moderation logs and security alerts",
+                  topic: "Sentinel Bot moderation logs and security alerts",
                   permissionOverwrites: [
                     {
                       id: guild.roles.everyone.id,
@@ -182,7 +182,7 @@ module.exports = {
                 }
 
                 errorMsg +=
-                  "\n\n💡 **Manual Setup**: Create a channel called `#nexus-logs` and use `/config logchannel #nexus-logs` to configure it.";
+                  "\n\n💡 **Manual Setup**: Create a channel called `#Sentinel-logs` and use `/config logchannel #Sentinel-logs` to configure it.";
 
                 await btnInt.update({
                   content: errorMsg,
@@ -249,7 +249,7 @@ module.exports = {
             new EmbedBuilder()
               .setTitle("✅ Setup Complete!")
               .setDescription(
-                "Nexus is now configured and protecting your server!\n\n" +
+                "Sentinel is now configured and protecting your server!\n\n" +
                   "**Next Steps:**\n" +
                   "• Use `/help` to see all commands\n" +
                   "• Configure advanced features with specific commands\n" +
@@ -278,7 +278,7 @@ module.exports = {
               )
               .setColor(0x00ff88)
               .setFooter({
-                text: "Need help? discord.gg/BE9jPs7Byd | Thank you for choosing Nexus!",
+                text: "Need help? discord.gg/BE9jPs7Byd | Thank you for choosing Sentinel!",
               }),
           ],
           components: [],

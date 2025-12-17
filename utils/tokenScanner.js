@@ -299,7 +299,7 @@ class TokenScanner {
       ],
       timestamp: leakInfo.timestamp,
       footer: {
-        text: "Token Scanner | Nexus Security",
+        text: "Token Scanner | Sentinel Security",
       },
     };
 

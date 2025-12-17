@@ -28,7 +28,7 @@ class SmartStatus {
       },
       {
         type: "PLAYING",
-        name: `nexusbot-official.github.io/Nexus | v${version}`,
+        name: `Sentinelbot-official.github.io/Sentinel | v${version}`,
       },
       {
         type: "WATCHING",
@@ -49,7 +49,7 @@ class SmartStatus {
       {
         type: "STREAMING",
         name: `${serverCount} servers | Join us!`,
-        url: "https://nexusbot-official.github.io/Nexus",
+        url: "https://Sentinelbot-official.github.io/Sentinel",
       },
     ];
   }

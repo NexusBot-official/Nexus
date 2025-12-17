@@ -617,7 +617,7 @@ class AuditLogMonitor {
         const member = await guild.members.fetch(userId).catch(() => null);
         if (member && member.bannable) {
           await member.ban({
-            reason: `[Nexus] Detected ${patternType} pattern in audit logs`,
+            reason: `[Sentinel] Detected ${patternType} pattern in audit logs`,
             deleteMessageDays: 0,
           });
 

@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document explains how Nexus Bot handles, stores, and protects data.
+This document explains how Sentinel Bot handles, stores, and protects data.
 
 ## Data Collection
 
@@ -224,7 +224,7 @@ We share threat intelligence data across servers to protect communities:
 
 ## Open Source Transparency
 
-Since Nexus Bot is open source:
+Since Sentinel Bot is open source:
 
 - Code is publicly available
 - Data handling is transparent
@@ -275,9 +275,9 @@ Since Nexus Bot is open source:
 For data-related questions, data requests, or concerns:
 
 - **Discord Support Server:** https://discord.gg/BE9jPs7Byd (Preferred method)
-- **Privacy Email:** nexusbot0@proton.me (For formal data requests)
+- **Privacy Email:** Sentinelbot0@proton.me (For formal data requests)
 - **General Contact:** Open a ticket in our support server
-- **GitHub:** https://github.com/Azzraya/Nexus (For code-related questions)
+- **GitHub:** https://github.com/Azzraya/Sentinel (For code-related questions)
 
 **UK Data Protection Authority:**
 

@@ -11,13 +11,13 @@ const DEV_TIMEZONE_HINT = "Dev is usually online 2PM-4AM GMT";
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("support")
-    .setDescription("Get support and help with Nexus Bot"),
+    .setDescription("Get support and help with Sentinel Bot"),
 
   async execute(interaction) {
-    const devStatusMessage = `⏰ ${DEV_TIMEZONE_HINT}\n\n💬 Join the support server for help with Nexus Bot!`;
+    const devStatusMessage = `⏰ ${DEV_TIMEZONE_HINT}\n\n💬 Join the support server for help with Sentinel Bot!`;
 
     const embed = new EmbedBuilder()
-      .setTitle("🆘 Nexus Bot Support")
+      .setTitle("🆘 Sentinel Bot Support")
       .setDescription("Need help? We're here for you!")
       .addFields(
         {
@@ -30,7 +30,7 @@ module.exports = {
           value: [
             "• **Website** - View features, docs, and live stats",
             "• **Support Server** - Get help from our community",
-            "• **Documentation** - Learn how to use Nexus",
+            "• **Documentation** - Learn how to use Sentinel",
             "• **GitHub** - View source code and report issues",
             "• **Commands** - Use `/help` to see all commands",
           ].join("\n"),
@@ -39,33 +39,33 @@ module.exports = {
         {
           name: "🔗 Quick Links",
           value: [
-            "• [Official Website](https://nexusbot-official.github.io/Nexus/)",
+            "• [Official Website](https://Sentinelbot-official.github.io/Sentinel/)",
             "• [Support Server](https://discord.gg/BE9jPs7Byd)",
-            "• [GitHub Repository](https://github.com/NexusBot-official/Nexus)",
-            "• [Privacy Policy](https://github.com/NexusBot-official/Nexus/blob/main/PRIVACY_POLICY.md)",
-            "• [Terms of Service](https://github.com/NexusBot-official/Nexus/blob/main/TERMS_OF_SERVICE.md)",
+            "• [GitHub Repository](https://github.com/SentinelBot-official/Sentinel)",
+            "• [Privacy Policy](https://github.com/SentinelBot-official/Sentinel/blob/main/PRIVACY_POLICY.md)",
+            "• [Terms of Service](https://github.com/SentinelBot-official/Sentinel/blob/main/TERMS_OF_SERVICE.md)",
           ].join("\n"),
           inline: false,
         },
         {
           name: "❓ Common Questions",
           value: [
-            "**Q: Is Nexus free?**\nA: Yes, 100% free with all features included.",
+            "**Q: Is Sentinel free?**\nA: Yes, 100% free with all features included.",
             "**Q: Is it open source?**\nA: Yes, view our code on GitHub.",
-            "**Q: How is it different from Wick?**\nA: Nexus has AI features, better UX, and is open source.",
+            "**Q: How is it different from Wick?**\nA: Sentinel has AI features, better UX, and is open source.",
           ].join("\n\n"),
           inline: false,
         }
       )
       .setColor(0x0099ff)
       .setFooter({
-        text: "Nexus - Beyond Wick. Free. Open Source. Powerful.",
+        text: "Sentinel - Beyond Wick. Free. Open Source. Powerful.",
       })
       .setTimestamp();
 
     const websiteButton = new ButtonBuilder()
       .setLabel("Visit Website")
-      .setURL("https://nexusbot-official.github.io/Nexus/")
+      .setURL("https://Sentinelbot-official.github.io/Sentinel/")
       .setStyle(ButtonStyle.Link);
 
     const supportButton = new ButtonBuilder()
@@ -75,13 +75,13 @@ module.exports = {
 
     const githubButton = new ButtonBuilder()
       .setLabel("GitHub")
-      .setURL("https://github.com/NexusBot-official/Nexus")
+      .setURL("https://github.com/SentinelBot-official/Sentinel")
       .setStyle(ButtonStyle.Link);
 
     const inviteButton = new ButtonBuilder()
       .setLabel("Invite Bot")
       .setURL(
-        `https://nexusbot-official.github.io/Nexus/invite.html?source=discord-bot`
+        `https://Sentinelbot-official.github.io/Sentinel/invite.html?source=discord-bot`
       )
       .setStyle(ButtonStyle.Link);
 

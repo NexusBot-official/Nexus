@@ -13,7 +13,7 @@ const db = require("./database");
 class AutomaticBackup {
   constructor() {
     this.backupDir = path.join(__dirname, "..", "data", "backups");
-    this.dbPath = path.join(__dirname, "..", "data", "nexus.db");
+    this.dbPath = path.join(__dirname, "..", "data", "Sentinel.db");
     this.running = false;
 
     // Retention policies

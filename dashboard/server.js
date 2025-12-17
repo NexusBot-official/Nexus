@@ -211,7 +211,7 @@ class DashboardServer {
         "Content-Security-Policy",
         "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdn.ngrok.com; style-src 'self' 'unsafe-inline' https://cdn.ngrok.com; img-src 'self' data: https:; font-src 'self' data: https://assets.ngrok.com; connect-src 'self' https://cdn.jsdelivr.net https://cdn.discordapp.com https://assets.ngrok.com https://cdn.ngrok.com " +
           (process.env.DASHBOARD_URL || "") +
-          " https://nexusbot-official.github.io;"
+          " https://Sentinelbot-official.github.io;"
       );
 
       // Cache static assets for 1 day
@@ -306,7 +306,7 @@ class DashboardServer {
     this.app.use((req, res, next) => {
       const origin = req.headers.origin;
       const allowedOrigins = [
-        "https://nexusbot-official.github.io",
+        "https://Sentinelbot-official.github.io",
         "http://localhost:5500",
         "http://127.0.0.1:5500",
         "null", // For local file:// protocol
@@ -329,7 +329,7 @@ class DashboardServer {
       } else {
         res.header(
           "Access-Control-Allow-Origin",
-          "https://nexusbot-official.github.io"
+          "https://Sentinelbot-official.github.io"
         );
       }
 
@@ -1365,7 +1365,7 @@ class DashboardServer {
 
           // Create default channels if they don't exist
           const modLogChannel = guild.channels.cache.find(
-            (c) => c.name === "mod-logs" || c.name === "nexus-logs"
+            (c) => c.name === "mod-logs" || c.name === "Sentinel-logs"
           );
           if (
             !modLogChannel &&
@@ -1373,9 +1373,9 @@ class DashboardServer {
           ) {
             try {
               const newChannel = await guild.channels.create({
-                name: "nexus-logs",
+                name: "Sentinel-logs",
                 type: 0, // Text channel
-                topic: "Nexus Bot security and moderation logs",
+                topic: "Sentinel Bot security and moderation logs",
                 permissionOverwrites: [
                   {
                     id: guild.id,
@@ -4019,12 +4019,12 @@ class DashboardServer {
     this.app.get("/api/v1/docs", (req, res) => {
       res.json({
         version: "2.0.0",
-        name: "Nexus Public API",
-        description: "Access Nexus bot data programmatically",
+        name: "Sentinel Public API",
+        description: "Access Sentinel bot data programmatically",
         authentication:
           "API Key required (X-API-Key header or api_key query parameter)",
         rateLimit: "100 requests per day per key",
-        requestKey: "Contact nexusbot0@proton.me to request an API key",
+        requestKey: "Contact Sentinelbot0@proton.me to request an API key",
         endpoints: {
           "/api/v1/server/:id": {
             method: "GET",
@@ -4744,12 +4744,12 @@ class DashboardServer {
       }
     });
 
-    // GET /api/v2/benchmark - Performance benchmark comparison (Nexus vs Wick)
+    // GET /api/v2/benchmark - Performance benchmark comparison (Sentinel vs Wick)
     this.app.get("/api/v2/benchmark", async (req, res) => {
       try {
         addRateLimitHeaders(req, res);
 
-        // Get REAL Nexus performance metrics
+        // Get REAL Sentinel performance metrics
         const memoryUsage = process.memoryUsage();
         const wsPing = this.client.ws.ping;
 
@@ -4794,7 +4794,7 @@ class DashboardServer {
           );
         }).catch(() => 0);
 
-        const nexusMetrics = {
+        const SentinelMetrics = {
           responseTime: wsPing || 50,
           detectionSpeed: 25, // Measured average raid detection time
           memory: Math.round(memoryUsage.heapUsed / 1024 / 1024),
@@ -4825,7 +4825,7 @@ class DashboardServer {
           "uptime",
           "commandsPerSecond",
         ];
-        let nexusWins = 0;
+        let SentinelWins = 0;
         const improvements = [];
 
         metrics.forEach((metric) => {
@@ -4836,20 +4836,20 @@ class DashboardServer {
             metric === "detectionSpeed"
           ) {
             // Lower is better
-            if (nexusMetrics[metric] < wickMetrics[metric]) {
-              nexusWins++;
+            if (SentinelMetrics[metric] < wickMetrics[metric]) {
+              SentinelWins++;
               const improvement =
-                ((wickMetrics[metric] - nexusMetrics[metric]) /
+                ((wickMetrics[metric] - SentinelMetrics[metric]) /
                   wickMetrics[metric]) *
                 100;
               improvements.push(improvement);
             }
           } else {
             // Higher is better (uptime, commandsPerSecond)
-            if (nexusMetrics[metric] > wickMetrics[metric]) {
-              nexusWins++;
+            if (SentinelMetrics[metric] > wickMetrics[metric]) {
+              SentinelWins++;
               const improvement =
-                ((nexusMetrics[metric] - wickMetrics[metric]) /
+                ((SentinelMetrics[metric] - wickMetrics[metric]) /
                   wickMetrics[metric]) *
                 100;
               improvements.push(improvement);
@@ -4867,10 +4867,10 @@ class DashboardServer {
         res.json({
           success: true,
           data: {
-            nexus: nexusMetrics,
+            Sentinel: SentinelMetrics,
             wick: wickMetrics,
             summary: {
-              nexusWins,
+              SentinelWins,
               totalMetrics: metrics.length,
               avgImprovement,
             },
@@ -4897,7 +4897,7 @@ class DashboardServer {
         data: {
           botVersion: packageJson.version,
           apiVersion: "2.0.0",
-          botName: "Nexus",
+          botName: "Sentinel",
           uptime: Math.floor(process.uptime()),
           endpoints: {
             v2: {
@@ -4957,7 +4957,7 @@ class DashboardServer {
       res.json({
         botVersion: packageJson.version,
         apiVersion: "2.0.0",
-        botName: "Nexus",
+        botName: "Sentinel",
         uptime: Math.floor(process.uptime()),
         endpoints: {
           server: "/api/v1/server/:id",
@@ -8187,7 +8187,7 @@ class DashboardServer {
             res.setHeader("Content-Type", "text/csv");
             res.setHeader(
               "Content-Disposition",
-              `attachment; filename=nexus-logs-${Date.now()}.csv`
+              `attachment; filename=Sentinel-logs-${Date.now()}.csv`
             );
             res.send(csv);
           } else {
@@ -8347,7 +8347,7 @@ class DashboardServer {
             url,
             {
               event: "test",
-              message: "This is a test webhook from Nexus API",
+              message: "This is a test webhook from Sentinel API",
               timestamp: Date.now(),
             },
             { timeout: 5000 }
@@ -9050,7 +9050,7 @@ class DashboardServer {
           res.setHeader("Content-Type", "text/csv");
           res.setHeader(
             "Content-Disposition",
-            `attachment; filename=nexus-${guild.name}-${Date.now()}.csv`
+            `attachment; filename=Sentinel-${guild.name}-${Date.now()}.csv`
           );
           res.send("timestamp,action,user,moderator,reason\n" + csv);
         } else {

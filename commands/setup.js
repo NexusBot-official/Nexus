@@ -64,9 +64,9 @@ module.exports = {
     await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     const embed = new EmbedBuilder()
-      .setTitle("🎯 Nexus Setup Wizard")
+      .setTitle("🎯 Sentinel Setup Wizard")
       .setDescription(
-        "Welcome! I'll guide you through setting up Nexus Bot for your server.\n\n" +
+        "Welcome! I'll guide you through setting up Sentinel Bot for your server.\n\n" +
           "**This wizard will:**\n" +
           "• Configure optimal security settings\n" +
           "• Set up moderation tools\n" +
