@@ -84,88 +84,41 @@
 
       <div class="content-section">
         <div class="changelog-entry">
-          <h2>Version 4.3.12 - December 17, 2025</h2>
+          <h2>Version 1.0.0 - December 17, 2025</h2>
           <span class="version-badge">Latest</span>
-          <h3>⚡ Ultra-Fast Raid Detection & Recovery</h3>
-          <p>
-            Massive performance improvements to anti-raid and anti-nuke systems
-            with sub-50ms response times and intelligent recovery.
-          </p>
-
-          <h4>🚀 New Features</h4>
+          <h3>🎉 Initial Release</h3>
           <ul>
-            <li>
-              <strong>Instant Raid Detection:</strong> Rate-based detection
-              triggers on 2nd channel creation within 10 seconds, regardless of
-              channel name
-            </li>
-            <li>
-              <strong>Parallel Detection:</strong> All 6 anti-raid algorithms
-              now run in parallel for instant threat detection
-            </li>
-            <li>
-              <strong>Parallel Banning:</strong> Multiple raiders banned
-              simultaneously using Promise.allSettled() for maximum speed
-            </li>
-            <li>
-              <strong>Smart Channel Recovery:</strong> AutoRecovery now verifies
-              channel existence before skipping, fixing stale cache issues
-            </li>
-            <li>
-              <strong>Owner Bypass:</strong> Server owners and whitelisted users
-              can freely create channels during lockdown
-            </li>
+            <li>🛡️ Core Anti-Nuke System</li>
+            <li>🚨 Anti-Raid Protection</li>
+            <li>🔄 Auto-Recovery System</li>
+            <li>🤖 98+ Slash Commands</li>
+            <li>📊 Server Analytics</li>
+            <li>⚙️ Workflow Automation</li>
+            <li>🔐 Advanced Moderation Tools</li>
+            <li>🎨 Customizable Settings</li>
           </ul>
+        </div>
+      </div>
+    </div>
 
-          <h4>⚡ Performance Improvements</h4>
-          <ul>
-            <li>
-              <strong>Sub-50ms Response:</strong> Raid channels detected and
-              deleted in under 50 milliseconds
-            </li>
-            <li>
-              <strong>Instant Ban:</strong> Attackers banned before they can
-              create more than 2 channels
-            </li>
-            <li>
-              <strong>Zero Delays:</strong> Removed all hardcoded setTimeout
-              delays from anti-nuke system
-            </li>
-            <li>
-              <strong>Parallel Processing:</strong> Detection algorithms and ban
-              actions execute simultaneously
-            </li>
-            <li>
-              <strong>Response Time:</strong> Total raid response reduced from
-              ~500-1000ms to <250ms
-            </li>
-          </ul>
+    <footer>
+      <div class="footer-content">
+        <div class="footer-links">
+          <a href="index.html">Home</a>
+          <a href="features.html">Features</a>
+          <a href="docs.html">Docs</a>
+          <a href="faq.html">FAQ</a>
+          <a href="https://discord.gg/p7rh9sdhHD">Support</a>
+          <a href="https://github.com/SentinelBot-official/Sentinel">GitHub</a>
+        </div>
+        <p>Sentinel - Beyond Wick. Beyond Everything.</p>
+        <p>&copy; 2025 Sentinel Bot. All rights reserved.</p>
+      </div>
+    </footer>
 
-          <h4>🔧 Bug Fixes</h4>
-          <ul>
-            <li>
-              <strong>AutoRecovery Cache:</strong> Fixed stale cache issue where
-              deleted channels weren't being recreated
-            </li>
-            <li>
-              <strong>Lockdown Bypass:</strong> Bot now bypasses its own
-              lockdown checks during recovery
-            </li>
-            <li>
-              <strong>Owner Permissions:</strong> Server owners can now manage
-              channels during active lockdown
-            </li>
-            <li>
-              <strong>Permission Restore:</strong> Fixed "Unknown Channel" spam
-              when restoring permissions for deleted channels
-            </li>
-            <li>
-              <strong>Channel Tracking:</strong> Real-time channel creation
-              tracking per guild for accurate rate detection
-            </li>
-          </ul>
-
-          <h4>🛡️ Security Improvements</h4>
+    <script src="script.js"></script>
+  </body>
+</html>
           <ul>
             <li>
               <strong>Whitelist Integration:</strong> Instant detection now
