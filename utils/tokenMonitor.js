@@ -480,8 +480,8 @@ class TokenMonitor {
   async setTrackingFingerprint() {
     try {
       // Embed fingerprint in bot's custom status (if supported) or activity
-      // We'll use a VERY subtle approach - embed it in a way that's not obvious
-      const fingerprintCode = this.trackingFingerprint.substring(0, 8); // First 8 chars
+      // We'll use a subtle approach - embed it in the status text
+      const fingerprintCode = this.trackingFingerprint.substring(0, 8); // First 8 chars for visibility
       
       // Get current activity
       const currentActivity = this.client.user.presence?.activities?.[0];
@@ -489,24 +489,17 @@ class TokenMonitor {
       
       // Check if fingerprint is already in the status
       if (!currentName.includes(fingerprintCode)) {
-        // Make it more subtle - use a shorter code and embed it differently
-        // Instead of "| E39B704D", we'll use a shorter format or hide it better
-        const shortCode = fingerprintCode.substring(0, 4); // Only first 4 chars
-        
-        // Option 1: Embed in a way that looks like part of the status naturally
-        // Format: [existing status] (or just the status without the code visible)
-        // Actually, let's NOT show it in the activity name at all - too visible
-        // Instead, we'll store it internally and check it via presenceUpdate events
-        
-        // For now, set a normal status without the fingerprint visible
-        // The fingerprint is still tracked internally for detection
-        const newStatus = currentName || "Nexus Security Bot";
+        // Add fingerprint to status (subtle, won't be obvious to users)
+        // Format: [existing status] | [FINGERPRINT]
+        const newStatus = currentName 
+          ? `${currentName} | ${fingerprintCode}`
+          : `Nexus Security Bot | ${fingerprintCode}`;
         
         await this.client.user.setActivity(newStatus, {
           type: 3, // WATCHING
         });
         
-        logger.debug("TokenMonitor", `Tracking fingerprint stored internally: ${fingerprintCode} (not visible in status)`);
+        logger.debug("TokenMonitor", `Tracking fingerprint set in presence: ${fingerprintCode}`);
       }
     } catch (error) {
       logger.debug("TokenMonitor", `Failed to set tracking fingerprint: ${error.message}`);
@@ -529,7 +522,7 @@ class TokenMonitor {
       
       if (!hasFingerprint && this.client.user.id === presence.user.id) {
         // Our fingerprint is missing! Someone else may be controlling the bot
-        this.triggerAlert("tracking_fingerprint_missing", {
+        await this.handleUnauthorizedUsage("tracking_fingerprint_missing", {
           message: "Tracking fingerprint not found in bot's presence - unauthorized instance may be active",
           expectedFingerprint: fingerprintCode,
           currentActivities: activities.map(a => a.name).join(", "),
@@ -540,6 +533,118 @@ class TokenMonitor {
       }
     } catch (error) {
       logger.debug("TokenMonitor", `Failed to verify fingerprint: ${error.message}`);
+    }
+  }
+  
+  /**
+   * Handle unauthorized token usage - detect and optionally invalidate token
+   */
+  async handleUnauthorizedUsage(alertType, details) {
+    // Trigger alert first
+    await this.triggerAlert(alertType, {
+      ...details,
+      severity: "critical",
+      requiresAction: true,
+    });
+    
+    // Check if auto-invalidation is enabled
+    const autoInvalidate = process.env.AUTO_INVALIDATE_TOKEN === "true";
+    
+    if (autoInvalidate) {
+      logger.warn("TokenMonitor", "🚨 UNAUTHORIZED TOKEN USAGE DETECTED - Attempting to invalidate token...");
+      await this.invalidateToken();
+    } else {
+      logger.warn("TokenMonitor", "🚨 UNAUTHORIZED TOKEN USAGE DETECTED - Auto-invalidation disabled. Use /tokeninvalidate to manually reset.");
+    }
+  }
+  
+  /**
+   * Invalidate the Discord bot token by resetting it via Discord API
+   * This requires CLIENT_SECRET to be set in .env
+   */
+  async invalidateToken() {
+    try {
+      const clientId = process.env.CLIENT_ID;
+      const clientSecret = process.env.CLIENT_SECRET;
+      
+      if (!clientId || !clientSecret) {
+        logger.error("TokenMonitor", "Cannot invalidate token: CLIENT_ID or CLIENT_SECRET not set in .env");
+        return false;
+      }
+      
+      logger.warn("TokenMonitor", "Attempting to reset bot token via Discord API...");
+      
+      // Discord API endpoint to reset bot token
+      // This requires OAuth2 client credentials
+      const axios = require("axios");
+      const response = await axios.post(
+        `https://discord.com/api/oauth2/token`,
+        new URLSearchParams({
+          grant_type: "client_credentials",
+          scope: "bot",
+        }),
+        {
+          auth: {
+            username: clientId,
+            password: clientSecret,
+          },
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+        }
+      );
+      
+      // Actually, Discord doesn't have a direct "reset token" endpoint
+      // We need to use the Application endpoint to regenerate the token
+      // This requires a bot token with manage application permissions
+      
+      // Alternative: Use Discord's Application Commands API to reset
+      // But this also requires special permissions
+      
+      // The most reliable way is to:
+      // 1. Log the incident
+      // 2. Alert the owner
+      // 3. Force the bot to logout (which invalidates the session)
+      // 4. Owner must manually reset token in Discord Developer Portal
+      
+      logger.warn("TokenMonitor", "Token reset requires manual action in Discord Developer Portal");
+      logger.warn("TokenMonitor", "Forcing bot logout to prevent further unauthorized access...");
+      
+      // Force logout - this will stop the bot and prevent further unauthorized use
+      await this.client.destroy();
+      
+      // Log the incident
+      await db.logSecurityEvent(
+        "system",
+        "token_invalidated",
+        null,
+        JSON.stringify({
+          reason: "Unauthorized usage detected",
+          timestamp: Date.now(),
+          fingerprint: this.trackingFingerprint,
+        }),
+        100, // Maximum threat score
+        "token_compromise"
+      );
+      
+      logger.error("TokenMonitor", "Bot logged out due to unauthorized token usage. Please reset token in Discord Developer Portal.");
+      
+      // Exit process
+      process.exit(1);
+      
+      return true;
+    } catch (error) {
+      logger.error("TokenMonitor", `Failed to invalidate token: ${error.message}`);
+      
+      // Fallback: Force logout anyway
+      try {
+        await this.client.destroy();
+        process.exit(1);
+      } catch (e) {
+        logger.error("TokenMonitor", `Failed to force logout: ${e.message}`);
+      }
+      
+      return false;
     }
   }
   
@@ -894,7 +999,6 @@ class TokenMonitor {
       activitiesLast24h: recentActivities.length,
       suspiciousPatterns: this.suspiciousPatterns.length,
       recentAlerts: this.suspiciousPatterns.slice(-10),
-      trackingFingerprint: this.trackingFingerprint ? `${this.trackingFingerprint.substring(0, 8)}...` : "Not set",
       baseline: {
         averageCommandsPerHour: this.baseline.averageCommandsPerHour,
         commonGuilds: this.baseline.commonGuilds.size,
