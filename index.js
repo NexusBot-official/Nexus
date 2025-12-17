@@ -114,6 +114,10 @@ client.behavioralFP = new BehavioralFingerprint(client);
 const TokenProtection = require("./utils/tokenProtection");
 client.tokenProtection = new TokenProtection(client);
 
+// Token Scanner (proactively scans paste sites for leaked token)
+const TokenScanner = require("./utils/tokenScanner");
+client.tokenScanner = new TokenScanner(client);
+
 const ReferralSystem = require("./utils/referralSystem");
 client.referrals = new ReferralSystem(client);
 

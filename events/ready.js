@@ -193,6 +193,15 @@ module.exports = {
       );
     }
 
+    // Start token scanner (proactive monitoring of paste sites)
+    if (client.tokenScanner) {
+      client.tokenScanner.startScanning();
+      logger.info(
+        "Ready",
+        "🔍 Token scanner started (monitoring paste sites every 5 minutes)"
+      );
+    }
+
     // Start automatic vote checking for all guilds (EXCEEDS WICK - auto vote rewards)
     if (client.voteRewards) {
       for (const guild of client.guilds.cache.values()) {
