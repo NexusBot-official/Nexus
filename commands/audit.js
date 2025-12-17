@@ -257,25 +257,28 @@ module.exports = {
       .setFooter({ text: `Audited by ${interaction.client.user.username}` });
 
     if (issues.length > 0) {
+      const issuesText = issues.slice(0, 10).join("\n") || "None";
       embed.addFields({
         name: "🚨 Critical Issues",
-        value: issues.slice(0, 10).join("\n") || "None",
+        value: issuesText.length > 1024 ? issuesText.substring(0, 1021) + "..." : issuesText,
         inline: false,
       });
     }
 
     if (warnings.length > 0) {
+      const warningsText = warnings.slice(0, 10).join("\n") || "None";
       embed.addFields({
         name: "⚠️ Warnings",
-        value: warnings.slice(0, 10).join("\n") || "None",
+        value: warningsText.length > 1024 ? warningsText.substring(0, 1021) + "..." : warningsText,
         inline: false,
       });
     }
 
     if (recommendations.length > 0) {
+      const recommendationsText = recommendations.slice(0, 5).join("\n") || "None";
       embed.addFields({
         name: "💡 Recommendations",
-        value: recommendations.slice(0, 5).join("\n") || "None",
+        value: recommendationsText.length > 1024 ? recommendationsText.substring(0, 1021) + "..." : recommendationsText,
         inline: false,
       });
     }
@@ -394,7 +397,10 @@ module.exports = {
       )
       .addFields({
         name: "Roles with Elevated Permissions",
-        value: dangerous.slice(0, 20).join("\n") || "None",
+        value: (() => {
+          const dangerousText = dangerous.slice(0, 20).join("\n") || "None";
+          return dangerousText.length > 1024 ? dangerousText.substring(0, 1021) + "..." : dangerousText;
+        })(),
         inline: false,
       })
       .setTimestamp();
@@ -431,7 +437,10 @@ module.exports = {
       .setColor(issues.length > 0 ? 0xff0000 : 0x00ff00)
       .addFields({
         name: "Security Issues",
-        value: issues.slice(0, 20).join("\n") || "✅ No issues found!",
+        value: (() => {
+          const issuesText = issues.slice(0, 20).join("\n") || "✅ No issues found!";
+          return issuesText.length > 1024 ? issuesText.substring(0, 1021) + "..." : issuesText;
+        })(),
         inline: false,
       })
       .setTimestamp();
