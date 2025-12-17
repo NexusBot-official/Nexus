@@ -12,7 +12,7 @@ const logger = require("./utils/logger");
 const manager = new ShardingManager(path.join(__dirname, "index.js"), {
   token: process.env.DISCORD_TOKEN,
   totalShards: "auto", // Auto-calculate shard count
-  respawn: true, // Auto-respawn shards if they crash
+  respawn: true, // Auto-respawn shards if they crash (unless token leak flag exists)
   execArgv: process.execArgv,
   env: {
     ...process.env,
@@ -477,6 +477,20 @@ manager.on("shardCreate", (shard) => {
   });
 
   shard.on("death", () => {
+    // Check if token leak shutdown flag exists
+    const fs = require('fs');
+    if (fs.existsSync('./.TOKEN_LEAK_SHUTDOWN')) {
+      console.log(`💀 ${shardName} died due to TOKEN LEAK - NOT RESPAWNING`);
+      console.log(`🚨 MANUAL ACTION REQUIRED:`);
+      console.log(`   1. Regenerate bot token at https://discord.com/developers/applications`);
+      console.log(`   2. Update .env with new token`);
+      console.log(`   3. Delete .TOKEN_LEAK_SHUTDOWN file`);
+      console.log(`   4. Restart bot manually`);
+      
+      // Don't respawn - exit the entire shard manager
+      process.exit(1);
+    }
+    
     console.log(`💀 ${shardName} died, respawning...`);
   });
 
