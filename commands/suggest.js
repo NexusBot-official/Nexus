@@ -203,6 +203,12 @@ module.exports = {
         req.end();
       }
     } catch (error) {
+      // Don't log timeout errors as they're expected when users don't complete the modal
+      if (error.name === "InteractionCollectorError" && error.reason === "time") {
+        // User didn't submit the modal within 5 minutes - this is expected behavior
+        return;
+      }
+      // Only log actual errors
       logger.error("suggest", "Error handling suggestion", error);
     }
   },
