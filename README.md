@@ -4,7 +4,7 @@
 
 ### The Free Discord Security Bot That Exceeds Wick
 
-[![Discord](https://img.shields.io/badge/Discord-Join%20Support-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/BE9jPs7Byd)
+[![Discord](https://img.shields.io/badge/Discord-Join%20Support-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/p7rh9sdhHD)
 [![Top.gg](https://img.shields.io/badge/Top.gg-Vote-FF3366?style=for-the-badge&logo=))](https://top.gg/bot/1444739230679957646)
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 [![Version](https://img.shields.io/badge/Version-4.3.10-blue?style=for-the-badge)](https://github.com/SentinelBot-official/Sentinel)
@@ -145,7 +145,7 @@ Sentinel is **open source** and **community-driven**.
 - 🐛 Found a bug? [Open an issue](https://github.com/SentinelBot-official/Sentinel/issues)
 - 💡 Have a feature idea? [Request it](https://github.com/SentinelBot-official/Sentinel/issues)
 - 🔧 Want to contribute? PRs welcome!
-- 💬 Need help? [Join support server](https://discord.gg/BE9jPs7Byd)
+- 💬 Need help? [Join support server](https://discord.gg/p7rh9sdhHD)
 
 **Star ⭐ this repo if you find it useful!**
 
@@ -155,7 +155,7 @@ Sentinel is **open source** and **community-driven**.
 - 📚 **Full Documentation:** https://Sentinelbot-official.github.io/Sentinel/docs.html
 - ⚔️ **Sentinel vs Wick Comparison:** https://Sentinelbot-official.github.io/Sentinel/comparison.html
 - 📊 **API Documentation:** https://Sentinelbot-official.github.io/Sentinel/api.html
-- 💬 **Support Server:** https://discord.gg/BE9jPs7Byd
+- 💬 **Support Server:** https://discord.gg/p7rh9sdhHD
 - 🗳️ **Vote on Top.gg:** https://top.gg/bot/1444739230679957646
 
 ---

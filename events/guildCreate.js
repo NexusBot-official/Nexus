@@ -594,7 +594,7 @@ module.exports = {
             {
               name: "💬 Need Help?",
               value:
-                "Join our support server: https://discord.gg/BE9jPs7Byd\nOr check docs: https://Sentinelbot-official.github.io/Sentinel/docs.html",
+                "Join our support server: https://discord.gg/p7rh9sdhHD\nOr check docs: https://Sentinelbot-official.github.io/Sentinel/docs.html",
               inline: false,
             }
           )

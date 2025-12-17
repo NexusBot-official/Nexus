@@ -199,7 +199,7 @@ This policy may be updated. Check the "Last Updated" date above.
 If you're unsure whether your use is permitted:
 
 - **GitHub Issues**: [Open an issue](https://github.com/Azzraya/Sentinel/issues)
-- **Support Server**: [Join our Discord](https://discord.gg/BE9jPs7Byd)
+- **Support Server**: [Join our Discord](https://discord.gg/p7rh9sdhHD)
 - **Email**: Check our GitHub profile
 
 ---

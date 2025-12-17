@@ -122,7 +122,7 @@ module.exports = {
       )
       .setColor(0x0099ff)
       .setFooter({
-        text: "Need help? Join discord.gg/BE9jPs7Byd | Sentinel - Beyond Wick.",
+        text: "Need help? Join discord.gg/p7rh9sdhHD | Sentinel - Beyond Wick.",
       })
       .setTimestamp();
 
