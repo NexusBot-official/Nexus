@@ -38,9 +38,9 @@ module.exports = {
       }
     }
 
-    // INSTANT anti-nuke monitoring - NO WAITING for audit logs
+    // ULTRA-FAST anti-nuke monitoring - ZERO LATENCY
     if (client.advancedAntiNuke) {
-      // Fetch audit logs in parallel (non-blocking)
+      // Start audit log fetch in background (non-blocking)
       const auditLogPromise = channel.guild
         .fetchAuditLogs({
           limit: 1,
@@ -48,7 +48,31 @@ module.exports = {
         })
         .catch(() => null);
 
-      // INSTANT DETECTION: Check if this looks like a raid channel
+      // INSTANT DETECTION: Check recent channel creation rate
+      // Track channel creation timestamps per guild
+      if (!client.channelCreationTracker) {
+        client.channelCreationTracker = new Map();
+      }
+      
+      const guildId = channel.guild.id;
+      if (!client.channelCreationTracker.has(guildId)) {
+        client.channelCreationTracker.set(guildId, []);
+      }
+      
+      const creationHistory = client.channelCreationTracker.get(guildId);
+      const now = Date.now();
+      
+      // Add current creation
+      creationHistory.push({ timestamp: now, channelId: channel.id });
+      
+      // Clean old entries (older than 10 seconds)
+      const recentCreations = creationHistory.filter(c => now - c.timestamp < 10000);
+      client.channelCreationTracker.set(guildId, recentCreations);
+      
+      // INSTANT TRIGGER: If 2+ channels created in 10 seconds = RAID
+      const isRapidCreation = recentCreations.length >= 2;
+      
+      // Also check for obvious raid channel names
       const isRaidChannel =
         channel.name.includes("nuked") ||
         channel.name.includes("raid") ||
@@ -60,7 +84,7 @@ module.exports = {
       const entry = auditLogs?.entries?.first();
 
       if (entry && entry.executor) {
-        // Track in event-based tracker (replaces audit log monitor)
+        // Track in event-based tracker
         if (client.eventActionTracker) {
           client.eventActionTracker.trackAction(
             channel.guild.id,
@@ -70,15 +94,15 @@ module.exports = {
           );
         }
 
-        // INSTANT RESPONSE: If raid channel detected, delete immediately and trigger anti-nuke
-        if (isRaidChannel) {
+        // INSTANT RESPONSE: If rapid creation OR raid channel detected
+        if (isRapidCreation || isRaidChannel) {
           logger.warn(
-            `[Anti-Nuke] INSTANT DETECTION: Raid channel "${channel.name}" created by ${entry.executor.tag} in ${channel.guild.name}`
+            `[Anti-Nuke] INSTANT DETECTION: ${isRapidCreation ? `Rapid channel creation (${recentCreations.length} in 10s)` : 'Raid channel'} "${channel.name}" by ${entry.executor.tag} in ${channel.guild.name}`
           );
 
           // Delete channel immediately
           await channel
-            .delete("Anti-Nuke: Raid channel detected")
+            .delete("Anti-Nuke: Raid detected")
             .catch(() => {});
 
           // Trigger anti-nuke with HIGH PRIORITY
@@ -91,6 +115,8 @@ module.exports = {
               channelName: channel.name,
               instantTrigger: true, // Force immediate action
               isRaidChannel: true,
+              rapidCreation: isRapidCreation,
+              creationCount: recentCreations.length,
             }
           );
         } else {

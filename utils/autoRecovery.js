@@ -311,6 +311,20 @@ class AutoRecovery {
                   channelData.permissions &&
                   channelData.permissions.length > 0
                 ) {
+                  // Verify channel still exists before restoring permissions
+                  try {
+                    await newChannel.fetch();
+                  } catch (error) {
+                    if (error.code === 10003) {
+                      // Channel was deleted (likely by anti-nuke during raid)
+                      logger.debug(
+                        `[AutoRecovery] Skipping permission restore for deleted channel ${channelData.id}`
+                      );
+                      continue; // Skip to next channel
+                    }
+                    throw error; // Re-throw other errors
+                  }
+
                   // Process permissions in smaller batches to avoid rate limits
                   const permBatches = [];
                   for (let i = 0; i < channelData.permissions.length; i += 5) {
@@ -325,12 +339,15 @@ class AutoRecovery {
                             allow: perm.allow,
                             deny: perm.deny,
                           })
-                          .catch(
-                            ErrorHandler.createSafeCatch(
-                              `autoRecovery [${guild.id}]`,
-                              `Restore permission overwrite for ${perm.id}`
-                            )
-                          )
+                          .catch((err) => {
+                            // Silently skip if channel was deleted
+                            if (err.code !== 10003) {
+                              ErrorHandler.createSafeCatch(
+                                `autoRecovery [${guild.id}]`,
+                                `Restore permission overwrite for ${perm.id}`
+                              )(err);
+                            }
+                          })
                       )
                     );
                   }
