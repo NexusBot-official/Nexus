@@ -79,34 +79,63 @@ class TokenMonitor {
       const MAX_FINGERPRINT_LENGTH = 64; // Reasonable max for fingerprint
       
       // Try from longest to shortest fingerprint (more likely to be correct)
+      // But prioritize tokens that start with base64-like patterns (Discord tokens usually start with alphanumeric)
+      let bestMatch = null;
+      let bestScore = 0;
+      
       for (let fpLength = Math.min(MAX_FINGERPRINT_LENGTH, afterPrefix.length - MIN_TOKEN_LENGTH); fpLength >= 8; fpLength--) {
         if (afterPrefix.length > fpLength) {
           const possibleFingerprint = afterPrefix.substring(0, fpLength);
           const possibleToken = afterPrefix.substring(fpLength);
           
-          logger.debug("TokenMonitor", `Trying fingerprint length ${fpLength}: token length=${possibleToken.length}`);
+          logger.debug("TokenMonitor", `Trying fingerprint length ${fpLength}: token length=${possibleToken.length}, starts with=${possibleToken.substring(0, 10)}...`);
           
           // Validate: Discord tokens are 50+ chars, alphanumeric + dots/dashes/underscores
           // They often contain dots (format: XXXX.XXXX.XXXX)
           if (possibleToken.length >= MIN_TOKEN_LENGTH && 
               possibleToken.length <= 100 && // Max reasonable token length
               /^[A-Za-z0-9._-]+$/.test(possibleToken)) {
-            // Additional check: Discord tokens often have dots
-            // If it has dots, it's more likely a real token
-            // But also accept tokens without dots (some formats)
-            if (possibleToken.includes('.') || possibleToken.length >= 59) {
-              logger.info("TokenMonitor", `✅ Successfully parsed: fingerprint=${possibleFingerprint.substring(0, 8)}..., token length=${possibleToken.length}`);
-              return { 
-                trackingFingerprint: possibleFingerprint, 
-                realToken: possibleToken 
+            
+            // Score this match based on how "token-like" it is
+            let score = 0;
+            
+            // Discord tokens typically:
+            // 1. Start with base64-like alphanumeric (not dots/dashes)
+            if (/^[A-Za-z0-9]/.test(possibleToken)) score += 10;
+            
+            // 2. Have dots (format: XXXX.XXXX.XXXX)
+            if (possibleToken.includes('.')) score += 5;
+            
+            // 3. Are 59-70 chars (most common range)
+            if (possibleToken.length >= 59 && possibleToken.length <= 70) score += 10;
+            
+            // 4. Have exactly 2 dots (typical Discord token format)
+            const dotCount = (possibleToken.match(/\./g) || []).length;
+            if (dotCount === 2) score += 5;
+            
+            // 5. Longer tokens are more likely to be complete
+            if (possibleToken.length > 60) score += 3;
+            
+            logger.debug("TokenMonitor", `Match score: ${score} for length ${fpLength}`);
+            
+            // Only accept if it has a good score (at least starts with alphanumeric)
+            if (score >= 10 && score > bestScore) {
+              bestMatch = {
+                trackingFingerprint: possibleFingerprint,
+                realToken: possibleToken
               };
-            } else {
-              logger.debug("TokenMonitor", `Token length OK but no dots and < 59 chars, trying next length...`);
+              bestScore = score;
             }
           } else {
             logger.debug("TokenMonitor", `Token validation failed: length=${possibleToken.length}, valid chars=${/^[A-Za-z0-9._-]+$/.test(possibleToken)}`);
           }
         }
+      }
+      
+      // Return the best match if found
+      if (bestMatch) {
+        logger.info("TokenMonitor", `✅ Successfully parsed: fingerprint=${bestMatch.trackingFingerprint.substring(0, 8)}..., token length=${bestMatch.realToken.length}`);
+        return bestMatch;
       }
       
       // Fallback: If no valid token found, try splitting at common lengths
