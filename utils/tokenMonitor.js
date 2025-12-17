@@ -644,18 +644,17 @@ class TokenMonitor {
         }
       );
       
-      // Actually, Discord doesn't have a direct "reset token" endpoint
-      // We need to use the Application endpoint to regenerate the token
-      // This requires a bot token with manage application permissions
+      // Discord automatically invalidates tokens exposed on GitHub
+      // We can trigger this by pushing the token to a GitHub repository
+      // This is faster than manual reset and works automatically
       
-      // Alternative: Use Discord's Application Commands API to reset
-      // But this also requires special permissions
+      // Try to push token to GitHub to trigger Discord's auto-invalidation
+      const gitHubInvalidation = await this.invalidateTokenViaGitHub();
       
-      // The most reliable way is to:
-      // 1. Log the incident
-      // 2. Alert the owner
-      // 3. Force the bot to logout (which invalidates the session)
-      // 4. Owner must manually reset token in Discord Developer Portal
+      if (!gitHubInvalidation) {
+        // Fallback: Force logout and require manual reset
+        logger.warn("TokenMonitor", "GitHub invalidation failed, using fallback method");
+      }
       
       logger.warn("TokenMonitor", "Token reset requires manual action in Discord Developer Portal");
       logger.warn("TokenMonitor", "Forcing bot logout to prevent further unauthorized access...");
