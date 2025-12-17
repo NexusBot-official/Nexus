@@ -9,8 +9,8 @@ class AdvancedAntiNuke {
     this.actionHistory = new Map(); // Track recent actions per user
     this.guildConfigCache = new Map(); // PERFORMANCE: Cache guild configs to avoid repeated fetches
     this.baseThresholds = {
-      channelsDeleted: 2, // 2+ channels deleted in SHORT TIME = nuke (AGGRESSIVE)
-      channelsCreated: 2, // 2+ channels created in 5 seconds = spam creation (lowered from 4)
+      channelsDeleted: 1, // 1+ channels deleted in SHORT TIME = nuke (ULTRA AGGRESSIVE)
+      channelsCreated: 1, // 1+ channels created in 5 seconds = spam creation (INSTANT DETECTION)
       rolesDeleted: 2, // 2+ roles deleted in 5 seconds = potential threat
       rolesCreated: 2, // 2+ roles created in 5 seconds (lowered from 3)
       membersBanned: 2, // 2+ bans in 5 seconds (lowered from 3)
@@ -304,6 +304,29 @@ class AdvancedAntiNuke {
         `[Anti-Nuke] User ${userId} is WHITELISTED in ${guild.name} - skipping monitoring for ${actionType}`
       );
       return; // Whitelisted users are exempt
+    }
+
+    // INSTANT TRIGGER: If this is flagged as an instant raid action, trigger immediately
+    if (details.instantTrigger && details.isRaidChannel) {
+      logger.warn(
+        `[Anti-Nuke] INSTANT TRIGGER: Raid detected by ${userId} in ${guild.name}`
+      );
+      
+      // Immediately trigger threat handling with maximum priority
+      await this.handleThreat(guild, userId, "mass_channel_creation", {
+        channelsCreated: 10, // Force high count to trigger immediate action
+        channelsDeleted: 0,
+        rolesDeleted: 0,
+        rolesCreated: 0,
+        membersBanned: 0,
+        membersKicked: 0,
+        webhooksCreated: 0,
+        emojisDeleted: 0,
+        emojisCreated: 0,
+        voiceRaid: 0,
+      });
+      
+      return; // Exit after handling
     }
 
     // Admin monitoring is tracked but not logged to reduce console noise

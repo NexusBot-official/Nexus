@@ -38,25 +38,59 @@ module.exports = {
       }
     }
 
-    // Advanced anti-nuke monitoring + event-based tracking
+    // INSTANT anti-nuke monitoring - NO WAITING for audit logs
     if (client.advancedAntiNuke) {
-      try {
-        const auditLogs = await channel.guild.fetchAuditLogs({
-          limit: 1,
-          type: 10, // CHANNEL_CREATE
-        });
-        const entry = auditLogs.entries.first();
-        if (entry && entry.executor) {
-          // Track in event-based tracker (replaces audit log monitor)
-          if (client.eventActionTracker) {
-            client.eventActionTracker.trackAction(
-              channel.guild.id,
-              "CHANNEL_CREATE",
-              entry.executor.id,
-              { channelId: channel.id, channelName: channel.name }
-            );
-          }
+      // Fetch audit logs in parallel (non-blocking)
+      const auditLogPromise = channel.guild.fetchAuditLogs({
+        limit: 1,
+        type: 10, // CHANNEL_CREATE
+      }).catch(() => null);
 
+      // INSTANT DETECTION: Check if this looks like a raid channel
+      const isRaidChannel = 
+        channel.name.includes('nuked') || 
+        channel.name.includes('raid') ||
+        channel.name.includes('hacked') ||
+        /^[^a-zA-Z0-9\s-_]{3,}$/.test(channel.name); // Spam characters
+
+      // Get audit log result
+      const auditLogs = await auditLogPromise;
+      const entry = auditLogs?.entries?.first();
+      
+      if (entry && entry.executor) {
+        // Track in event-based tracker (replaces audit log monitor)
+        if (client.eventActionTracker) {
+          client.eventActionTracker.trackAction(
+            channel.guild.id,
+            "CHANNEL_CREATE",
+            entry.executor.id,
+            { channelId: channel.id, channelName: channel.name }
+          );
+        }
+
+        // INSTANT RESPONSE: If raid channel detected, delete immediately and trigger anti-nuke
+        if (isRaidChannel) {
+          logger.warn(
+            `[Anti-Nuke] INSTANT DETECTION: Raid channel "${channel.name}" created by ${entry.executor.tag} in ${channel.guild.name}`
+          );
+          
+          // Delete channel immediately
+          await channel.delete("Anti-Nuke: Raid channel detected").catch(() => {});
+          
+          // Trigger anti-nuke with HIGH PRIORITY
+          await client.advancedAntiNuke.monitorAction(
+            channel.guild,
+            "channelCreate",
+            entry.executor.id,
+            { 
+              channelId: channel.id, 
+              channelName: channel.name,
+              instantTrigger: true, // Force immediate action
+              isRaidChannel: true
+            }
+          );
+        } else {
+          // Normal monitoring
           await client.advancedAntiNuke.monitorAction(
             channel.guild,
             "channelCreate",
@@ -64,8 +98,6 @@ module.exports = {
             { channelId: channel.id, channelName: channel.name }
           );
         }
-      } catch (error) {
-        // Ignore audit log errors
       }
     }
 
