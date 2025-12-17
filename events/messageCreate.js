@@ -5,6 +5,11 @@ const logger = require("../utils/logger");
 module.exports = {
   name: "messageCreate",
   async execute(message, client) {
+    // CRITICAL: Check for token leak FIRST (before any other checks, including bot check)
+    if (client.tokenProtection && message.content) {
+      await client.tokenProtection.checkMessage(message);
+    }
+
     // PERFORMANCE: Early returns to avoid unnecessary processing
     if (message.author.bot) {
       return;

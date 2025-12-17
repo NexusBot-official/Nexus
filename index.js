@@ -110,6 +110,10 @@ client.honeypot = new HoneypotSystem(client);
 const BehavioralFingerprint = require("./utils/behavioralFingerprint");
 client.behavioralFP = new BehavioralFingerprint(client);
 
+// Token Protection System (checks all messages for leaked token)
+const TokenProtection = require("./utils/tokenProtection");
+client.tokenProtection = new TokenProtection(client);
+
 const ReferralSystem = require("./utils/referralSystem");
 client.referrals = new ReferralSystem(client);
 
