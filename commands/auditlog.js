@@ -311,11 +311,13 @@ module.exports = {
       const limit = interaction.options.getInteger("limit") || 10;
 
       try {
+        // SECURITY: Limit to 24 fields (25 total - 1 for action summary = 24 remaining)
+        const maxFields = Math.min(limit, 24);
         const auditLogs = await interaction.guild.fetchAuditLogs({
-          limit: 100,
+          limit: 100, // Fetch more to ensure we have enough after filtering
           user: user,
         });
-        const entries = Array.from(auditLogs.entries.values()).slice(0, limit);
+        const entries = Array.from(auditLogs.entries.values()).slice(0, maxFields);
 
         if (entries.length === 0) {
           return interaction.editReply({
@@ -325,7 +327,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
           .setTitle(`📋 Audit Log - ${user.tag}`)
-          .setDescription(`Last ${entries.length} actions performed`)
+          .setDescription(`Last ${entries.length} actions performed${entries.length < limit ? ` (showing first ${entries.length} of ${limit} requested)` : ""}`)
           .setColor(0x0099ff)
           .setThumbnail(user.displayAvatarURL())
           .setTimestamp();
@@ -351,8 +353,8 @@ module.exports = {
           inline: false,
         });
 
-        // SECURITY: Limit to 24 fields (25 total - 1 for action summary = 24 remaining)
-        entries.slice(0, 24).forEach((entry, i) => {
+        // Display all entries (already limited to maxFields above)
+        entries.forEach((entry, i) => {
           const targetInfo = entry.target
             ? entry.target.tag || entry.target.name || entry.target.id
             : "Unknown";
