@@ -6,6 +6,7 @@
 
 const logger = require("./logger");
 const db = require("./database");
+const crypto = require("crypto");
 
 class TokenMonitor {
   constructor(client) {
@@ -16,6 +17,10 @@ class TokenMonitor {
     this.knownIPs = new Set(); // Track known connection IPs (if available)
     this.connectionHistory = [];
     this.maxHistorySize = 1000;
+    
+    // Token tracking fingerprint
+    this.trackingFingerprint = null;
+    this.realToken = null;
 
     // Baseline patterns (learned from normal usage)
     this.baseline = {
@@ -88,9 +93,12 @@ class TokenMonitor {
 
     this.logActivity(activity);
     this.updateBaseline(activity);
-    
+
     // Check if command is from an unknown guild
-    if (interaction.guildId && !this.baseline.commonGuilds.has(interaction.guildId)) {
+    if (
+      interaction.guildId &&
+      !this.baseline.commonGuilds.has(interaction.guildId)
+    ) {
       this.triggerAlert("command_from_unknown_guild", {
         message: `Command "${interaction.commandName}" executed in unknown guild: ${interaction.guild?.name || interaction.guildId}`,
         command: interaction.commandName,
@@ -118,7 +126,7 @@ class TokenMonitor {
 
     this.logActivity(activity);
     this.checkSuspiciousGuildActivity(activity);
-    
+
     // Check if this is a guild we've never seen before
     if (!this.baseline.commonGuilds.has(guild.id)) {
       this.triggerAlert("unknown_guild_activity", {
@@ -210,13 +218,14 @@ class TokenMonitor {
   /**
    * Handle bot ready event
    */
-  onBotReady() {
+  async onBotReady() {
     const connection = {
       type: "ready",
       timestamp: Date.now(),
       shardId: "all",
       guildCount: this.client.guilds.cache.size,
       userCount: this.client.users.cache.size,
+      trackingFingerprint: this.trackingFingerprint,
     };
 
     this.connectionHistory.push(connection);
@@ -228,7 +237,89 @@ class TokenMonitor {
       type: "connection",
       event: "ready",
       timestamp: Date.now(),
+      trackingFingerprint: this.trackingFingerprint,
     });
+    
+    // Set tracking fingerprint in bot's presence
+    await this.setTrackingFingerprint();
+  }
+  
+  /**
+   * Set tracking fingerprint in bot's presence/status
+   */
+  async setTrackingFingerprint() {
+    try {
+      // Embed fingerprint in bot's custom status (if supported) or activity
+      // We'll use a subtle approach - embed it in the status text
+      const fingerprintCode = this.trackingFingerprint.substring(0, 8); // First 8 chars for visibility
+      
+      // Get current activity
+      const currentActivity = this.client.user.presence?.activities?.[0];
+      const currentName = currentActivity?.name || "";
+      
+      // Check if fingerprint is already in the status
+      if (!currentName.includes(fingerprintCode)) {
+        // Add fingerprint to status (subtle, won't be obvious to users)
+        // Format: [existing status] | [FINGERPRINT]
+        const newStatus = currentName 
+          ? `${currentName} | ${fingerprintCode}`
+          : `Nexus Security Bot | ${fingerprintCode}`;
+        
+        await this.client.user.setActivity(newStatus, {
+          type: 3, // WATCHING
+        });
+        
+        logger.debug("TokenMonitor", `Tracking fingerprint set in presence: ${fingerprintCode}`);
+      }
+    } catch (error) {
+      logger.debug("TokenMonitor", `Failed to set tracking fingerprint: ${error.message}`);
+    }
+  }
+  
+  /**
+   * Verify that our tracking fingerprint is still in the bot's presence
+   * If missing, it means someone else is controlling the bot
+   */
+  async verifyTrackingFingerprint(presence) {
+    try {
+      const fingerprintCode = this.trackingFingerprint.substring(0, 8);
+      const activities = presence?.activities || [];
+      
+      // Check if fingerprint exists in any activity
+      const hasFingerprint = activities.some(activity => 
+        activity.name?.includes(fingerprintCode)
+      );
+      
+      if (!hasFingerprint && this.client.user.id === presence.user.id) {
+        // Our fingerprint is missing! Someone else may be controlling the bot
+        this.triggerAlert("tracking_fingerprint_missing", {
+          message: "Tracking fingerprint not found in bot's presence - unauthorized instance may be active",
+          expectedFingerprint: fingerprintCode,
+          currentActivities: activities.map(a => a.name).join(", "),
+        });
+        
+        // Try to restore our fingerprint
+        await this.setTrackingFingerprint();
+      }
+    } catch (error) {
+      logger.debug("TokenMonitor", `Failed to verify fingerprint: ${error.message}`);
+    }
+  }
+  
+  /**
+   * Periodically verify and set tracking fingerprint
+   */
+  async verifyAndSetTrackingFingerprint() {
+    try {
+      // Check bot's current presence
+      const presence = this.client.user.presence;
+      await this.verifyTrackingFingerprint(presence);
+      
+      // Also ensure it's set
+      await this.setTrackingFingerprint();
+    } catch (error) {
+      logger.debug("TokenMonitor", `Fingerprint verification failed: ${error.message}`);
+    }
   }
 
   /**
@@ -296,8 +387,7 @@ class TokenMonitor {
     // Check for suspicious rate limit patterns
     const recentRateLimits = this.activityLog.filter(
       (a) =>
-        a.type === "rate_limit" &&
-        Date.now() - a.timestamp < 60 * 60 * 1000 // Last hour
+        a.type === "rate_limit" && Date.now() - a.timestamp < 60 * 60 * 1000 // Last hour
     );
 
     if (recentRateLimits.length >= this.thresholds.rateLimitViolations) {
@@ -350,7 +440,8 @@ class TokenMonitor {
         expected: expectedShards,
         detected: uniqueShards.size,
         shards: Array.from(uniqueShards),
-        message: "Multiple bot instances may be running simultaneously - token may be compromised",
+        message:
+          "Multiple bot instances may be running simultaneously - token may be compromised",
       });
     }
 
@@ -359,7 +450,7 @@ class TokenMonitor {
     for (let i = 0; i < recentConnections.length - 1; i++) {
       const current = recentConnections[i];
       const next = recentConnections[i + 1];
-      
+
       if (
         (current.type === "shard_ready" || current.type === "ready") &&
         (next.type === "shard_disconnect" || next.event === "shard_disconnect")
@@ -378,7 +469,8 @@ class TokenMonitor {
 
     if (connectDisconnectPairs.length >= 3) {
       this.triggerAlert("token_conflict_detected", {
-        message: "Rapid connect/disconnect cycles detected - another instance may be using your token",
+        message:
+          "Rapid connect/disconnect cycles detected - another instance may be using your token",
         cycles: connectDisconnectPairs.length,
         pairs: connectDisconnectPairs.slice(0, 5), // First 5 pairs
       });
@@ -410,7 +502,9 @@ class TokenMonitor {
         this.triggerAlert("command_spike", {
           normal: this.baseline.averageCommandsPerHour,
           detected: commandCount,
-          multiplier: (commandCount / this.baseline.averageCommandsPerHour).toFixed(2),
+          multiplier: (
+            commandCount / this.baseline.averageCommandsPerHour
+          ).toFixed(2),
         });
       }
     } else {
@@ -426,8 +520,7 @@ class TokenMonitor {
 
     // Alert if a rarely-used command suddenly spikes
     for (const [cmd, count] of commandDist.entries()) {
-      const baselineCount =
-        this.baseline.commandDistribution.get(cmd) || 0;
+      const baselineCount = this.baseline.commandDistribution.get(cmd) || 0;
       const baselineTotal = Array.from(
         this.baseline.commandDistribution.values()
       ).reduce((a, b) => a + b, 1);
@@ -435,11 +528,7 @@ class TokenMonitor {
       const baselineRatio = baselineCount / baselineTotal;
       const currentRatio = count / commandCount;
 
-      if (
-        baselineRatio > 0 &&
-        currentRatio > baselineRatio * 5 &&
-        count > 10
-      ) {
+      if (baselineRatio > 0 && currentRatio > baselineRatio * 5 && count > 10) {
         this.triggerAlert("unusual_command_pattern", {
           command: cmd,
           baselineRatio: (baselineRatio * 100).toFixed(2) + "%",
@@ -483,14 +572,16 @@ class TokenMonitor {
     }
 
     // Log to database
-    await db.logSecurityEvent(
-      "system",
-      "token_monitor",
-      null,
-      JSON.stringify(alert),
-      70, // Threat score
-      alertType
-    ).catch(() => {});
+    await db
+      .logSecurityEvent(
+        "system",
+        "token_monitor",
+        null,
+        JSON.stringify(alert),
+        70, // Threat score
+        alertType
+      )
+      .catch(() => {});
 
     // Send webhook alert if configured
     if (this.alertWebhook) {
@@ -535,7 +626,12 @@ class TokenMonitor {
         value: String(value),
         inline: true,
       })),
-      color: alert.severity === "high" ? 0xff0000 : alert.severity === "medium" ? 0xffa500 : 0xffff00,
+      color:
+        alert.severity === "high"
+          ? 0xff0000
+          : alert.severity === "medium"
+            ? 0xffa500
+            : 0xffff00,
       timestamp: new Date(alert.timestamp).toISOString(),
     };
 
@@ -587,7 +683,10 @@ class TokenMonitor {
       [dbCutoff],
       (err) => {
         if (err) {
-          logger.debug("TokenMonitor", `Failed to cleanup DB logs: ${err.message}`);
+          logger.debug(
+            "TokenMonitor",
+            `Failed to cleanup DB logs: ${err.message}`
+          );
         }
       }
     );
@@ -595,4 +694,3 @@ class TokenMonitor {
 }
 
 module.exports = TokenMonitor;
-

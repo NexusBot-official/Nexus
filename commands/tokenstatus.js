@@ -38,6 +38,15 @@ module.exports = {
         .setTimestamp()
         .addFields(
           {
+            name: "🔑 Tracking Fingerprint",
+            value: [
+              `**Fingerprint:** \`${stats.trackingFingerprint}\``,
+              `**Status:** ${stats.trackingFingerprint !== "Not set" ? "✅ Active" : "⚠️ Not set"}`,
+              `**Purpose:** Identifies this bot instance`,
+            ].join("\n"),
+            inline: false,
+          },
+          {
             name: "📊 Activity Statistics",
             value: [
               `**Total Activities Logged:** ${stats.totalActivities.toLocaleString()}`,
