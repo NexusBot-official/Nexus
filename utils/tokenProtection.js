@@ -75,8 +75,22 @@ class TokenProtection {
     // 4. LOG TO SECURITY LOGS
     await this.logToDatabase(leakInfo);
 
-    // 5. EMERGENCY SHUTDOWN (optional - uncomment if you want bot to stop)
+    // 5. EMERGENCY SHUTDOWN - Create flag file to prevent restart
     logger.error(`[TOKEN LEAK] EMERGENCY SHUTDOWN - Token compromised`);
+    
+    // Create flag file to tell cluster manager NOT to restart
+    try {
+      fs.writeFileSync('./.TOKEN_LEAK_SHUTDOWN', JSON.stringify({
+        timestamp: Date.now(),
+        reason: 'Token leak detected - manual restart required',
+        leakedBy: leakInfo.leakedBy.tag,
+      }));
+      logger.error(`[TOKEN LEAK] Created shutdown flag - bot will NOT restart automatically`);
+    } catch (error) {
+      logger.error(`[TOKEN LEAK] Failed to create shutdown flag:`, error.message);
+    }
+    
+    // Exit with specific code (1 = error, should not restart)
     process.exit(1);
   }
 
