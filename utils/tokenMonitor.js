@@ -154,22 +154,45 @@ class TokenMonitor {
   init() {
     // Extract tracking fingerprint and real token from combined token if present
     const rawToken = process.env.DISCORD_TOKEN || "";
-    const parsed = TokenMonitor.parseToken(rawToken);
     
-    this.trackingFingerprint = parsed.trackingFingerprint || this.generateTrackingFingerprint();
-    this.realToken = parsed.realToken || rawToken;
-    
-    // Log what we found
-    if (parsed.trackingFingerprint) {
-      logger.info("TokenMonitor", `✅ Tracking fingerprint extracted: ${parsed.trackingFingerprint.substring(0, 8)}...`);
-      logger.info("TokenMonitor", `✅ Real token extracted (${this.realToken.length} chars)`);
-    } else {
-      logger.info("TokenMonitor", `⚠️ No tracking fingerprint in token, generated new one: ${this.trackingFingerprint.substring(0, 8)}...`);
+    if (!rawToken) {
+      logger.error("TokenMonitor", "No DISCORD_TOKEN found in environment");
+      this.trackingFingerprint = this.generateTrackingFingerprint();
+      this.realToken = "";
+      return;
     }
     
-    // Store the real token back in process.env for Discord.js to use
-    // This ensures Discord.js gets the clean token
-    process.env.DISCORD_TOKEN = this.realToken;
+    try {
+      const parsed = TokenMonitor.parseToken(rawToken);
+      
+      this.trackingFingerprint = parsed.trackingFingerprint || this.generateTrackingFingerprint();
+      this.realToken = parsed.realToken || rawToken;
+      
+      // Log what we found
+      if (parsed.trackingFingerprint) {
+        logger.info("TokenMonitor", `✅ Tracking fingerprint extracted: ${parsed.trackingFingerprint.substring(0, 8)}...`);
+        logger.info("TokenMonitor", `✅ Real token extracted (${this.realToken.length} chars)`);
+      } else {
+        logger.info("TokenMonitor", `⚠️ No tracking fingerprint in token, generated new one: ${this.trackingFingerprint.substring(0, 8)}...`);
+        logger.info("TokenMonitor", `Using original token (${this.realToken.length} chars)`);
+      }
+      
+      // Validate real token looks valid
+      if (this.realToken.length < 50 || !/^[A-Za-z0-9._-]+$/.test(this.realToken)) {
+        logger.error("TokenMonitor", `⚠️ Extracted token may be invalid (length: ${this.realToken.length})`);
+        logger.error("TokenMonitor", `Token preview: ${this.realToken.substring(0, 20)}...`);
+      }
+      
+      // Store the real token back in process.env for Discord.js to use
+      // This ensures Discord.js gets the clean token
+      process.env.DISCORD_TOKEN = this.realToken;
+    } catch (error) {
+      logger.error("TokenMonitor", `Error parsing token: ${error.message}`);
+      // Fall back to original token
+      this.trackingFingerprint = this.generateTrackingFingerprint();
+      this.realToken = rawToken;
+      process.env.DISCORD_TOKEN = rawToken;
+    }
     
     // Monitor client events
     this.client.on("ready", () => this.onBotReady());
