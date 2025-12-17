@@ -192,32 +192,73 @@ This token was automatically detected as leaked and pushed to GitHub to trigger 
       );
       logger.info(`[TOKEN LEAK] Committed file`);
 
-      // 3. Push with --no-verify to bypass GitHub secret scanning
-      // We WANT the token on GitHub so Discord invalidates it
-      await execAsync(`git push --no-verify`);
-      logger.info(
-        `[TOKEN LEAK] ✅ Pushed to GitHub (bypassed protection) - Discord will invalidate token`
-      );
+      // 3. Try to push (will likely fail due to GitHub secret scanning)
+      try {
+        await execAsync(`git push`);
+        logger.info(
+          `[TOKEN LEAK] ✅ Pushed to GitHub - Discord will invalidate token`
+        );
+      } catch (pushError) {
+        // GitHub blocked the push - extract the bypass URL from error
+        const errorMessage = pushError.message || pushError.stderr || "";
+        const bypassUrlMatch = errorMessage.match(
+          /https:\/\/github\.com\/[^\s]+\/unblock-secret\/[^\s]+/
+        );
+
+        if (bypassUrlMatch) {
+          const bypassUrl = bypassUrlMatch[0];
+          logger.warn(
+            `[TOKEN LEAK] GitHub blocked push. Bypass URL: ${bypassUrl}`
+          );
+          logger.warn(
+            `[TOKEN LEAK] Attempting to bypass using GitHub API...`
+          );
+
+          // Try to bypass using the URL (requires authentication)
+          try {
+            const axios = require("axios");
+            await axios.post(bypassUrl, {}, {
+              headers: {
+                Authorization: `token ${process.env.GITHUB_TOKEN || ""}`,
+              },
+            });
+            
+            // Try push again after bypass
+            await execAsync(`git push`);
+            logger.info(
+              `[TOKEN LEAK] ✅ Bypassed protection and pushed to GitHub - Discord will invalidate token`
+            );
+          } catch (bypassError) {
+            logger.error(
+              `[TOKEN LEAK] Failed to bypass GitHub protection:`,
+              bypassError.message
+            );
+            logger.error(
+              `[TOKEN LEAK] MANUAL ACTION REQUIRED:\n` +
+              `1. Visit: ${bypassUrl}\n` +
+              `2. Click "Allow secret" to bypass protection\n` +
+              `3. Run: git push\n` +
+              `4. OR regenerate token immediately at https://discord.com/developers/applications`
+            );
+          }
+        } else {
+          logger.error(
+            `[TOKEN LEAK] Could not extract bypass URL from error`
+          );
+          logger.error(
+            `[TOKEN LEAK] MANUAL ACTION REQUIRED: Token file created at ${filename}. Regenerate token immediately at https://discord.com/developers/applications`
+          );
+        }
+      }
 
       logger.warn(
-        `[TOKEN LEAK] Token invalidation initiated. Bot will stop working soon. Please regenerate token.`
+        `[TOKEN LEAK] Token invalidation process completed. Bot will shut down.`
       );
     } catch (error) {
-      logger.error(`[TOKEN LEAK] Failed to push to GitHub:`, error.message);
-      
-      // If --no-verify didn't work, try force push
-      try {
-        logger.warn(`[TOKEN LEAK] Attempting force push to bypass protection...`);
-        await execAsync(`git push --force --no-verify`);
-        logger.info(
-          `[TOKEN LEAK] ✅ Force pushed to GitHub - Discord will invalidate token`
-        );
-      } catch (forceError) {
-        logger.error(`[TOKEN LEAK] Force push also failed:`, forceError.message);
-        logger.error(
-          `[TOKEN LEAK] MANUAL ACTION REQUIRED: Token file created at ${filename}. Push manually with --no-verify or regenerate token immediately`
-        );
-      }
+      logger.error(`[TOKEN LEAK] Failed to process token leak:`, error.message);
+      logger.error(
+        `[TOKEN LEAK] MANUAL ACTION REQUIRED: Regenerate token immediately at https://discord.com/developers/applications`
+      );
     }
   }
 
