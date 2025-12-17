@@ -59,37 +59,65 @@ class TokenMonitor {
       // Extract everything after "NEXUS_TRACKING_"
       const afterPrefix = combinedToken.substring("NEXUS_TRACKING_".length);
       
-      // Tracking fingerprint length (can be variable, but we'll detect it)
-      // Real Discord tokens are typically 59-70 characters
-      // We'll try to find where the real token starts by checking token format
+      if (afterPrefix.length < 10) {
+        // Too short to contain both fingerprint and token
+        logger.warn("TokenMonitor", "Combined token too short after prefix");
+        return { trackingFingerprint: null, realToken: combinedToken };
+      }
       
-      // Discord bot tokens are base64-like and typically start with letters/numbers
-      // Try different fingerprint lengths (8, 16, 24, 32 characters)
-      const possibleLengths = [8, 16, 24, 32, 40];
+      // Discord bot tokens are typically 59-70 characters
+      // They usually have format: XXXX.XXXX.XXXX or base64-like strings
+      // Strategy: Try to find where a valid Discord token starts
+      // We'll try different fingerprint lengths, starting from the end
       
-      for (const length of possibleLengths) {
-        if (afterPrefix.length > length) {
-          const possibleFingerprint = afterPrefix.substring(0, length);
-          const possibleToken = afterPrefix.substring(length);
+      const MIN_TOKEN_LENGTH = 50; // Minimum valid Discord token length
+      const MAX_FINGERPRINT_LENGTH = 64; // Reasonable max for fingerprint
+      
+      // Try from longest to shortest fingerprint (more likely to be correct)
+      for (let fpLength = Math.min(MAX_FINGERPRINT_LENGTH, afterPrefix.length - MIN_TOKEN_LENGTH); fpLength >= 8; fpLength--) {
+        if (afterPrefix.length > fpLength) {
+          const possibleFingerprint = afterPrefix.substring(0, fpLength);
+          const possibleToken = afterPrefix.substring(fpLength);
           
-          // Basic validation: Discord tokens are usually 50+ characters and contain alphanumeric + dots
-          // Real tokens typically have format like: XXXX.XXXX.XXXX or base64-like strings
-          if (possibleToken.length >= 50 && /^[A-Za-z0-9._-]+$/.test(possibleToken)) {
-            return { 
-              trackingFingerprint: possibleFingerprint, 
-              realToken: possibleToken 
-            };
+          // Validate: Discord tokens are 50+ chars, alphanumeric + dots/dashes/underscores
+          // They often contain dots (format: XXXX.XXXX.XXXX)
+          if (possibleToken.length >= MIN_TOKEN_LENGTH && 
+              possibleToken.length <= 100 && // Max reasonable token length
+              /^[A-Za-z0-9._-]+$/.test(possibleToken)) {
+            // Additional check: Discord tokens often have dots
+            // If it has dots, it's more likely a real token
+            // But also accept tokens without dots (some formats)
+            if (possibleToken.includes('.') || possibleToken.length >= 59) {
+              logger.debug("TokenMonitor", `Parsed token: fingerprint=${possibleFingerprint.substring(0, 8)}..., token length=${possibleToken.length}`);
+              return { 
+                trackingFingerprint: possibleFingerprint, 
+                realToken: possibleToken 
+              };
+            }
           }
         }
       }
       
-      // Fallback: if we can't parse, assume first 32 chars are fingerprint
+      // Fallback: If no valid token found, try splitting at common lengths
+      // Try 32 chars (most common fingerprint length)
       if (afterPrefix.length > 32) {
-        return {
-          trackingFingerprint: afterPrefix.substring(0, 32),
-          realToken: afterPrefix.substring(32),
-        };
+        const fallbackFingerprint = afterPrefix.substring(0, 32);
+        const fallbackToken = afterPrefix.substring(32);
+        
+        // Basic validation
+        if (fallbackToken.length >= MIN_TOKEN_LENGTH && /^[A-Za-z0-9._-]+$/.test(fallbackToken)) {
+          logger.warn("TokenMonitor", "Using fallback parsing (32-char fingerprint)");
+          return {
+            trackingFingerprint: fallbackFingerprint,
+            realToken: fallbackToken,
+          };
+        }
       }
+      
+      // If we still can't parse, log warning and return original
+      logger.error("TokenMonitor", "Failed to parse combined token - could not extract valid Discord token");
+      logger.error("TokenMonitor", `Token length: ${afterPrefix.length}, after prefix: ${afterPrefix.substring(0, 20)}...`);
+      return { trackingFingerprint: null, realToken: combinedToken };
     }
 
     // No tracking fingerprint found, return token as-is

@@ -9,12 +9,27 @@ if (!process.env.DISCORD_TOKEN) {
 
 // Parse token to extract real token if it contains tracking fingerprint
 const TokenMonitor = require("./utils/tokenMonitor");
-const parsed = TokenMonitor.parseToken(process.env.DISCORD_TOKEN);
-const realToken = parsed.realToken || process.env.DISCORD_TOKEN;
+const logger = require("./utils/logger");
 
-// Log if tracking fingerprint was found
-if (parsed.trackingFingerprint) {
-  console.log(`✅ [ShardManager] Tracking fingerprint extracted: ${parsed.trackingFingerprint.substring(0, 8)}...`);
+let realToken = process.env.DISCORD_TOKEN;
+let trackingFingerprint = null;
+
+try {
+  const parsed = TokenMonitor.parseToken(process.env.DISCORD_TOKEN);
+  realToken = parsed.realToken || process.env.DISCORD_TOKEN;
+  trackingFingerprint = parsed.trackingFingerprint;
+  
+  // Log if tracking fingerprint was found
+  if (parsed.trackingFingerprint) {
+    console.log(`✅ [ShardManager] Tracking fingerprint extracted: ${parsed.trackingFingerprint.substring(0, 8)}...`);
+    console.log(`✅ [ShardManager] Real token length: ${realToken.length} chars`);
+  } else {
+    console.log(`⚠️ [ShardManager] No tracking fingerprint found in token`);
+  }
+} catch (error) {
+  console.error(`❌ [ShardManager] Error parsing token: ${error.message}`);
+  // Fall back to original token
+  realToken = process.env.DISCORD_TOKEN;
 }
 
 const manager = new ShardingManager(path.join(__dirname, "index.js"), {
