@@ -40,8 +40,8 @@ module.exports = {
           {
             name: "🔑 Tracking Fingerprint",
             value: [
-              `**Fingerprint:** \`${stats.trackingFingerprint}\``,
-              `**Status:** ${stats.trackingFingerprint !== "Not set" ? "✅ Active" : "⚠️ Not set"}`,
+              `**Fingerprint:** \`${stats.trackingFingerprint || "Not set"}\``,
+              `**Status:** ${stats.trackingFingerprint && stats.trackingFingerprint !== "Not set" ? "✅ Active" : "⚠️ Not set"}`,
               `**Purpose:** Identifies this bot instance`,
             ].join("\n"),
             inline: false,
