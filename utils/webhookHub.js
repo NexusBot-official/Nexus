@@ -38,6 +38,43 @@ class WebhookHub {
    * Register a new webhook integration
    */
   async registerWebhook(guildId, webhookUrl, events, name) {
+    // SECURITY FIX: Validate webhook URL to prevent SSRF
+    try {
+      const url = new URL(webhookUrl);
+      
+      // Only allow HTTPS (prevent SSRF to internal services)
+      if (url.protocol !== "https:") {
+        throw new Error("Webhook URL must use HTTPS protocol");
+      }
+      
+      // Block private/internal IP addresses (SSRF protection)
+      const hostname = url.hostname.toLowerCase();
+      const privateIPPatterns = [
+        /^127\./,
+        /^10\./,
+        /^172\.(1[6-9]|2[0-9]|3[0-1])\./,
+        /^192\.168\./,
+        /^169\.254\./,
+        /^::1$/,
+        /^localhost$/,
+        /^0\.0\.0\.0$/,
+      ];
+      
+      if (privateIPPatterns.some(pattern => pattern.test(hostname))) {
+        throw new Error("Webhook URL cannot point to private/internal addresses");
+      }
+      
+      // Block metadata endpoints (AWS, GCP, Azure)
+      if (hostname.includes("metadata") || hostname.includes("169.254")) {
+        throw new Error("Invalid webhook URL");
+      }
+    } catch (error) {
+      if (error instanceof TypeError) {
+        throw new Error("Invalid webhook URL format");
+      }
+      throw error;
+    }
+
     return new Promise((resolve, reject) => {
       db.db.run(
         `INSERT INTO webhook_integrations (guild_id, webhook_url, events, name) VALUES (?, ?, ?, ?)`,
@@ -68,6 +105,40 @@ class WebhookHub {
         const events = JSON.parse(webhook.events);
         if (!events.includes(eventType)) {
           continue;
+        }
+
+        // SECURITY FIX: Validate URL again before making request (defense in depth)
+        let url;
+        try {
+          url = new URL(webhook.webhook_url);
+          
+          // Only allow HTTPS
+          if (url.protocol !== "https:") {
+            logger.warn("Webhook Hub", `Blocked non-HTTPS webhook: ${webhook.webhook_url}`);
+            continue;
+          }
+
+          // Block private/internal IP addresses (SSRF protection)
+          const hostname = url.hostname.toLowerCase();
+          const privateIPPatterns = [
+            /^127\./,
+            /^10\./,
+            /^172\.(1[6-9]|2[0-9]|3[0-1])\./,
+            /^192\.168\./,
+            /^169\.254\./,
+            /^::1$/,
+            /^localhost$/,
+            /^0\.0\.0\.0$/,
+          ];
+          
+          if (privateIPPatterns.some(pattern => pattern.test(hostname)) || 
+              hostname.includes("metadata") || hostname.includes("169.254")) {
+            logger.warn("Webhook Hub", `Blocked SSRF attempt: ${webhook.webhook_url}`);
+            continue;
+          }
+        } catch (error) {
+          logger.warn("Webhook Hub", `Blocked invalid webhook URL during send: ${webhook.webhook_url}`);
+          continue; // Skip this webhook
         }
 
         // Send webhook
