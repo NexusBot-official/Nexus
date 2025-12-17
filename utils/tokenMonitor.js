@@ -78,11 +78,18 @@ class TokenMonitor {
       const MIN_TOKEN_LENGTH = 50; // Minimum valid Discord token length
       const MAX_FINGERPRINT_LENGTH = 64; // Reasonable max for fingerprint
       
-      // Try from longest to shortest fingerprint (more likely to be correct)
-      // But prioritize tokens that start with base64-like patterns (Discord tokens usually start with alphanumeric)
+      // Discord tokens are typically 59-72 characters
+      // Strategy: Try to find the fingerprint length that leaves us with a valid Discord token
+      // We know the token should be around 59-72 chars, so work backwards from that
+      
       let bestMatch = null;
       let bestScore = 0;
       
+      // Calculate expected token length range
+      const expectedTokenLength = 72; // Most Discord tokens are around this length
+      const tokenLengthTolerance = 15; // Allow 59-87 chars
+      
+      // Try fingerprint lengths, but prioritize ones that result in token lengths close to 72
       for (let fpLength = Math.min(MAX_FINGERPRINT_LENGTH, afterPrefix.length - MIN_TOKEN_LENGTH); fpLength >= 8; fpLength--) {
         if (afterPrefix.length > fpLength) {
           const possibleFingerprint = afterPrefix.substring(0, fpLength);
@@ -115,8 +122,12 @@ class TokenMonitor {
             if (possibleToken.includes('.')) score += 5;
             
             // 3. Are 59-75 chars (most common range, but can be up to 72)
-            if (possibleToken.length >= 59 && possibleToken.length <= 75) score += 15;
+            // Prefer tokens that are exactly 72 chars (most common Discord token length)
+            if (possibleToken.length === 72) score += 25; // Perfect match!
+            else if (possibleToken.length >= 70 && possibleToken.length <= 74) score += 20; // Very close
+            else if (possibleToken.length >= 59 && possibleToken.length <= 75) score += 15;
             else if (possibleToken.length >= 50 && possibleToken.length < 59) score += 5;
+            else if (possibleToken.length < 50) score -= 10; // Too short
             
             // 4. Have exactly 2 dots (typical Discord token format)
             const dotCount = (possibleToken.match(/\./g) || []).length;
@@ -133,10 +144,11 @@ class TokenMonitor {
               score += 10; // Bonus for proper base64-like first part
             }
             
-            logger.debug("TokenMonitor", `Match score: ${score} for fpLength=${fpLength}, token starts="${possibleToken.substring(0, 15)}...", length=${possibleToken.length}`);
+            logger.debug("TokenMonitor", `Match score: ${score} for fpLength=${fpLength}, token starts="${possibleToken.substring(0, 20)}...", length=${possibleToken.length}, fingerprint="${possibleFingerprint.substring(0, 10)}..."`);
             
             // Only accept if it has a good score (must start with alphanumeric and be reasonable length)
-            if (score >= 15 && score > bestScore) {
+            // Prefer scores >= 20 (which means it's likely a 70-72 char token starting with alphanumeric)
+            if (score >= 20 && score > bestScore) {
               bestMatch = {
                 trackingFingerprint: possibleFingerprint,
                 realToken: possibleToken
