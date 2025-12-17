@@ -311,7 +311,7 @@ class TokenMonitor {
   /**
    * Track a command execution
    */
-  trackCommand(interaction) {
+  async trackCommand(interaction) {
     const activity = {
       type: "command",
       command: interaction.commandName,
