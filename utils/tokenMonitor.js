@@ -537,7 +537,7 @@ class TokenMonitor {
   }
   
   /**
-   * Handle unauthorized token usage - detect and optionally invalidate token
+   * Handle unauthorized token usage - detect and automatically invalidate token
    */
   async handleUnauthorizedUsage(alertType, details) {
     // Trigger alert first
@@ -547,15 +547,45 @@ class TokenMonitor {
       requiresAction: true,
     });
     
-    // Check if auto-invalidation is enabled
-    const autoInvalidate = process.env.AUTO_INVALIDATE_TOKEN === "true";
+    // Check if auto-invalidation is disabled (default: enabled)
+    const autoInvalidateDisabled = process.env.AUTO_INVALIDATE_TOKEN === "false";
     
-    if (autoInvalidate) {
-      logger.warn("TokenMonitor", "🚨 UNAUTHORIZED TOKEN USAGE DETECTED - Attempting to invalidate token...");
-      await this.invalidateToken();
-    } else {
-      logger.warn("TokenMonitor", "🚨 UNAUTHORIZED TOKEN USAGE DETECTED - Auto-invalidation disabled. Use /tokeninvalidate to manually reset.");
+    if (autoInvalidateDisabled) {
+      logger.warn("TokenMonitor", "🚨 UNAUTHORIZED TOKEN USAGE DETECTED - Auto-invalidation disabled. Set AUTO_INVALIDATE_TOKEN=false to disable.");
+      logger.warn("TokenMonitor", "⚠️ WARNING: Token is still active and may be compromised!");
+      return;
     }
+    
+    // AUTO-INVALIDATE BY DEFAULT (for security)
+    logger.error("TokenMonitor", "🚨🚨🚨 UNAUTHORIZED TOKEN USAGE DETECTED - AUTOMATICALLY INVALIDATING TOKEN 🚨🚨🚨");
+    logger.error("TokenMonitor", `Alert Type: ${alertType}`);
+    logger.error("TokenMonitor", `Details: ${JSON.stringify(details)}`);
+    
+    // Send critical webhook alert if configured
+    if (this.alertWebhook || process.env.ADMIN_WEBHOOK_URL) {
+      const webhookUrl = this.alertWebhook || process.env.ADMIN_WEBHOOK_URL;
+      try {
+        const axios = require("axios");
+        await axios.post(webhookUrl, {
+          embeds: [{
+            title: "🚨 CRITICAL: Unauthorized Token Usage Detected",
+            description: "Bot token has been automatically invalidated due to unauthorized usage detection.",
+            color: 0xff0000,
+            fields: [
+              { name: "Alert Type", value: alertType, inline: true },
+              { name: "Timestamp", value: `<t:${Math.floor(Date.now() / 1000)}:F>`, inline: true },
+              { name: "Details", value: JSON.stringify(details, null, 2).substring(0, 1000), inline: false },
+            ],
+            timestamp: new Date().toISOString(),
+          }],
+        }, { timeout: 5000 });
+      } catch (error) {
+        logger.debug("TokenMonitor", `Failed to send webhook alert: ${error.message}`);
+      }
+    }
+    
+    // Invalidate token immediately
+    await this.invalidateToken();
   }
   
   /**
@@ -613,24 +643,43 @@ class TokenMonitor {
       // Force logout - this will stop the bot and prevent further unauthorized use
       await this.client.destroy();
       
-      // Log the incident
-      await db.logSecurityEvent(
-        "system",
-        "token_invalidated",
-        null,
-        JSON.stringify({
-          reason: "Unauthorized usage detected",
-          timestamp: Date.now(),
-          fingerprint: this.trackingFingerprint,
-        }),
-        100, // Maximum threat score
-        "token_compromise"
-      );
+      // Log the incident to database
+      try {
+        await db.logSecurityEvent(
+          "system",
+          "token_invalidated",
+          null,
+          JSON.stringify({
+            reason: "Unauthorized usage detected - automatic invalidation",
+            timestamp: Date.now(),
+            fingerprint: this.trackingFingerprint,
+            action: "forced_logout",
+          }),
+          100, // Maximum threat score
+          "token_compromise"
+        );
+      } catch (error) {
+        logger.error("TokenMonitor", `Failed to log security event: ${error.message}`);
+      }
       
-      logger.error("TokenMonitor", "Bot logged out due to unauthorized token usage. Please reset token in Discord Developer Portal.");
+      logger.error("TokenMonitor", "═══════════════════════════════════════════════════════");
+      logger.error("TokenMonitor", "🚨 TOKEN AUTOMATICALLY INVALIDATED - BOT LOGGED OUT 🚨");
+      logger.error("TokenMonitor", "═══════════════════════════════════════════════════════");
+      logger.error("TokenMonitor", "Unauthorized token usage was detected and the bot has been");
+      logger.error("TokenMonitor", "automatically logged out to prevent further damage.");
+      logger.error("TokenMonitor", "");
+      logger.error("TokenMonitor", "IMMEDIATE ACTION REQUIRED:");
+      logger.error("TokenMonitor", "1. Go to: https://discord.com/developers/applications");
+      logger.error("TokenMonitor", "2. Select your application");
+      logger.error("TokenMonitor", "3. Go to 'Bot' → Click 'Reset Token'");
+      logger.error("TokenMonitor", "4. Update .env file with new token");
+      logger.error("TokenMonitor", "5. Restart the bot");
+      logger.error("TokenMonitor", "═══════════════════════════════════════════════════════");
       
-      // Exit process
-      process.exit(1);
+      // Give a moment for logs to be written, then exit
+      setTimeout(() => {
+        process.exit(1);
+      }, 2000);
       
       return true;
     } catch (error) {
