@@ -44,10 +44,10 @@ class TokenScanner {
   startScanning() {
     logger.info(`[TokenScanner] Starting token monitoring (every 5 minutes)`);
 
-    // Initial scan after 1 minute
+    // Initial scan immediately (after 5 seconds to let bot fully initialize)
     setTimeout(() => {
       this.scanAllSites();
-    }, 60000);
+    }, 5000);
 
     // Then scan every 5 minutes
     setInterval(() => {
