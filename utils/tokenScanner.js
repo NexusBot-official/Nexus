@@ -70,16 +70,18 @@ class TokenScanner {
     }
 
     this.isScanning = true;
-    logger.debug(`[TokenScanner] Starting scan cycle...`);
+    logger.info(`[TokenScanner] 🔍 Starting scan cycle...`);
 
     try {
       // Scan paste sites
       for (const site of this.pasteSites) {
         try {
+          logger.info(`[TokenScanner] 📡 Scanning ${site.name}...`);
           await this.scanSite(site);
+          logger.info(`[TokenScanner] ✅ ${site.name} - Clean`);
         } catch (error) {
-          logger.debug(
-            `[TokenScanner] Failed to scan ${site.name}:`,
+          logger.warn(
+            `[TokenScanner] ⚠️ Failed to scan ${site.name}:`,
             error.message
           );
         }
@@ -89,17 +91,19 @@ class TokenScanner {
       if (process.env.SCAN_DOX_SITES === "true") {
         for (const site of this.doxSites) {
           try {
+            logger.info(`[TokenScanner] 📡 Scanning ${site.name}...`);
             await this.scanSite(site);
+            logger.info(`[TokenScanner] ✅ ${site.name} - Clean`);
           } catch (error) {
-            logger.debug(
-              `[TokenScanner] Failed to scan ${site.name}:`,
+            logger.warn(
+              `[TokenScanner] ⚠️ Failed to scan ${site.name}:`,
               error.message
             );
           }
         }
       }
 
-      logger.debug(`[TokenScanner] Scan cycle completed`);
+      logger.info(`[TokenScanner] ✅ Scan cycle completed - All sites clean`);
     } catch (error) {
       logger.error(`[TokenScanner] Scan error:`, error.message);
     } finally {
@@ -136,6 +140,9 @@ class TokenScanner {
       } else if (site.type === "paginated") {
         // Paginated scraping (for sites like Doxbin)
         const pages = site.pages || 5;
+        logger.info(
+          `[TokenScanner]   └─ Scanning ${pages} pages...`
+        );
         for (let page = 1; page <= pages; page++) {
           try {
             // Doxbin uses ?page=X format
@@ -147,12 +154,15 @@ class TokenScanner {
               },
             });
             content += response.data + "\n";
+            logger.info(
+              `[TokenScanner]      ├─ Page ${page}/${pages} scanned`
+            );
 
             // Small delay between pages to avoid rate limiting
             await new Promise((resolve) => setTimeout(resolve, 500));
           } catch (pageError) {
-            logger.debug(
-              `[TokenScanner] Failed to scan ${site.name} page ${page}:`,
+            logger.warn(
+              `[TokenScanner]      ├─ Page ${page} failed:`,
               pageError.message
             );
           }
@@ -190,9 +200,7 @@ class TokenScanner {
       detectedBy: "TokenScanner",
     };
 
-    logger.error(
-      `[TokenScanner] 🚨 CRITICAL: Token detected on ${site.name}`
-    );
+    logger.error(`[TokenScanner] 🚨 CRITICAL: Token detected on ${site.name}`);
     logger.error(
       `[TokenScanner] URL: ${site.url || site.searchUrl || site.baseUrl}`
     );
@@ -282,10 +290,7 @@ class TokenScanner {
         await owner.send({ embeds: [alertEmbed] });
         logger.info(`[TokenScanner] Alert sent to owner ${owner.tag}`);
       } catch (error) {
-        logger.error(
-          `[TokenScanner] Failed to DM owner:`,
-          error.message
-        );
+        logger.error(`[TokenScanner] Failed to DM owner:`, error.message);
       }
     }
 
@@ -358,10 +363,7 @@ This token was automatically detected on a public website and posted here to tri
           `[TokenScanner] ✅ Discord will scan and invalidate token automatically`
         );
       } catch (error) {
-        logger.error(
-          `[TokenScanner] Failed to create gist:`,
-          error.message
-        );
+        logger.error(`[TokenScanner] Failed to create gist:`, error.message);
         logger.error(
           `[TokenScanner] MANUAL ACTION REQUIRED: Regenerate token immediately!`
         );
@@ -405,13 +407,9 @@ This token was automatically detected on a public website and posted here to tri
       });
       logger.info(`[TokenScanner] Logged to security database`);
     } catch (error) {
-      logger.error(
-        `[TokenScanner] Failed to log to database:`,
-        error.message
-      );
+      logger.error(`[TokenScanner] Failed to log to database:`, error.message);
     }
   }
 }
 
 module.exports = TokenScanner;
-

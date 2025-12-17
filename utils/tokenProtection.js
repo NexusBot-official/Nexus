@@ -77,19 +77,27 @@ class TokenProtection {
 
     // 5. EMERGENCY SHUTDOWN - Create flag file to prevent restart
     logger.error(`[TOKEN LEAK] EMERGENCY SHUTDOWN - Token compromised`);
-    
+
     // Create flag file to tell cluster manager NOT to restart
     try {
-      fs.writeFileSync('./.TOKEN_LEAK_SHUTDOWN', JSON.stringify({
-        timestamp: Date.now(),
-        reason: 'Token leak detected - manual restart required',
-        leakedBy: leakInfo.leakedBy.tag,
-      }));
-      logger.error(`[TOKEN LEAK] Created shutdown flag - bot will NOT restart automatically`);
+      fs.writeFileSync(
+        "./.TOKEN_LEAK_SHUTDOWN",
+        JSON.stringify({
+          timestamp: Date.now(),
+          reason: "Token leak detected - manual restart required",
+          leakedBy: leakInfo.leakedBy.tag,
+        })
+      );
+      logger.error(
+        `[TOKEN LEAK] Created shutdown flag - bot will NOT restart automatically`
+      );
     } catch (error) {
-      logger.error(`[TOKEN LEAK] Failed to create shutdown flag:`, error.message);
+      logger.error(
+        `[TOKEN LEAK] Failed to create shutdown flag:`,
+        error.message
+      );
     }
-    
+
     // Exit with specific code (1 = error, should not restart)
     process.exit(1);
   }
@@ -194,12 +202,12 @@ This token was automatically detected as leaked and posted publicly to trigger D
     try {
       // METHOD 1: Create PUBLIC GitHub Gist (bypasses repository protection)
       const githubToken = process.env.GITHUB_TOKEN;
-      
+
       if (githubToken) {
         try {
           const axios = require("axios");
           logger.info(`[TOKEN LEAK] Creating public GitHub Gist with token...`);
-          
+
           const gistResponse = await axios.post(
             "https://api.github.com/gists",
             {
@@ -220,9 +228,7 @@ This token was automatically detected as leaked and posted publicly to trigger D
           );
 
           const gistUrl = gistResponse.data.html_url;
-          logger.info(
-            `[TOKEN LEAK] ✅ Created public gist: ${gistUrl}`
-          );
+          logger.info(`[TOKEN LEAK] ✅ Created public gist: ${gistUrl}`);
           logger.info(
             `[TOKEN LEAK] ✅ Discord will scan and invalidate token automatically`
           );
@@ -247,12 +253,12 @@ This token was automatically detected as leaked and posted publicly to trigger D
       logger.info(`[TOKEN LEAK] Attempting repository push as fallback...`);
       const filepath = `./${filename}`;
       fs.writeFileSync(filepath, fileContent);
-      
+
       await execAsync(`git add ${filename}`);
       await execAsync(
         `git commit -m "🚨 SECURITY: Leaked token detected - auto-invalidation"`
       );
-      
+
       try {
         await execAsync(`git push`);
         logger.info(
@@ -267,10 +273,10 @@ This token was automatically detected as leaked and posted publicly to trigger D
         );
         logger.error(
           `[TOKEN LEAK] MANUAL ACTION REQUIRED:\n` +
-          `1. Regenerate token IMMEDIATELY at https://discord.com/developers/applications\n` +
-          `2. Update .env with new token\n` +
-          `3. Restart bot\n` +
-          `4. Add GITHUB_TOKEN to .env for automatic gist creation next time`
+            `1. Regenerate token IMMEDIATELY at https://discord.com/developers/applications\n` +
+            `2. Update .env with new token\n` +
+            `3. Restart bot\n` +
+            `4. Add GITHUB_TOKEN to .env for automatic gist creation next time`
         );
       }
     } catch (error) {

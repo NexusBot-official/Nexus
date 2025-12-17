@@ -88,79 +88,100 @@
           <span class="version-badge">Latest</span>
           <h3>⚡ Ultra-Fast Raid Detection & Recovery</h3>
           <p>
-            Massive performance improvements to anti-raid and anti-nuke systems with sub-50ms response times and intelligent recovery.
+            Massive performance improvements to anti-raid and anti-nuke systems
+            with sub-50ms response times and intelligent recovery.
           </p>
 
           <h4>🚀 New Features</h4>
           <ul>
             <li>
-              <strong>Instant Raid Detection:</strong> Rate-based detection triggers on 2nd channel creation within 10 seconds, regardless of channel name
+              <strong>Instant Raid Detection:</strong> Rate-based detection
+              triggers on 2nd channel creation within 10 seconds, regardless of
+              channel name
             </li>
             <li>
-              <strong>Parallel Detection:</strong> All 6 anti-raid algorithms now run in parallel for instant threat detection
+              <strong>Parallel Detection:</strong> All 6 anti-raid algorithms
+              now run in parallel for instant threat detection
             </li>
             <li>
-              <strong>Parallel Banning:</strong> Multiple raiders banned simultaneously using Promise.allSettled() for maximum speed
+              <strong>Parallel Banning:</strong> Multiple raiders banned
+              simultaneously using Promise.allSettled() for maximum speed
             </li>
             <li>
-              <strong>Smart Channel Recovery:</strong> AutoRecovery now verifies channel existence before skipping, fixing stale cache issues
+              <strong>Smart Channel Recovery:</strong> AutoRecovery now verifies
+              channel existence before skipping, fixing stale cache issues
             </li>
             <li>
-              <strong>Owner Bypass:</strong> Server owners and whitelisted users can freely create channels during lockdown
+              <strong>Owner Bypass:</strong> Server owners and whitelisted users
+              can freely create channels during lockdown
             </li>
           </ul>
 
           <h4>⚡ Performance Improvements</h4>
           <ul>
             <li>
-              <strong>Sub-50ms Response:</strong> Raid channels detected and deleted in under 50 milliseconds
+              <strong>Sub-50ms Response:</strong> Raid channels detected and
+              deleted in under 50 milliseconds
             </li>
             <li>
-              <strong>Instant Ban:</strong> Attackers banned before they can create more than 2 channels
+              <strong>Instant Ban:</strong> Attackers banned before they can
+              create more than 2 channels
             </li>
             <li>
-              <strong>Zero Delays:</strong> Removed all hardcoded setTimeout delays from anti-nuke system
+              <strong>Zero Delays:</strong> Removed all hardcoded setTimeout
+              delays from anti-nuke system
             </li>
             <li>
-              <strong>Parallel Processing:</strong> Detection algorithms and ban actions execute simultaneously
+              <strong>Parallel Processing:</strong> Detection algorithms and ban
+              actions execute simultaneously
             </li>
             <li>
-              <strong>Response Time:</strong> Total raid response reduced from ~500-1000ms to <250ms
+              <strong>Response Time:</strong> Total raid response reduced from
+              ~500-1000ms to <250ms
             </li>
           </ul>
 
           <h4>🔧 Bug Fixes</h4>
           <ul>
             <li>
-              <strong>AutoRecovery Cache:</strong> Fixed stale cache issue where deleted channels weren't being recreated
+              <strong>AutoRecovery Cache:</strong> Fixed stale cache issue where
+              deleted channels weren't being recreated
             </li>
             <li>
-              <strong>Lockdown Bypass:</strong> Bot now bypasses its own lockdown checks during recovery
+              <strong>Lockdown Bypass:</strong> Bot now bypasses its own
+              lockdown checks during recovery
             </li>
             <li>
-              <strong>Owner Permissions:</strong> Server owners can now manage channels during active lockdown
+              <strong>Owner Permissions:</strong> Server owners can now manage
+              channels during active lockdown
             </li>
             <li>
-              <strong>Permission Restore:</strong> Fixed "Unknown Channel" spam when restoring permissions for deleted channels
+              <strong>Permission Restore:</strong> Fixed "Unknown Channel" spam
+              when restoring permissions for deleted channels
             </li>
             <li>
-              <strong>Channel Tracking:</strong> Real-time channel creation tracking per guild for accurate rate detection
+              <strong>Channel Tracking:</strong> Real-time channel creation
+              tracking per guild for accurate rate detection
             </li>
           </ul>
 
           <h4>🛡️ Security Improvements</h4>
           <ul>
             <li>
-              <strong>Whitelist Integration:</strong> Instant detection now respects user whitelist settings
+              <strong>Whitelist Integration:</strong> Instant detection now
+              respects user whitelist settings
             </li>
             <li>
-              <strong>Bot Self-Moderation:</strong> Bot never triggers anti-nuke on its own actions
+              <strong>Bot Self-Moderation:</strong> Bot never triggers anti-nuke
+              on its own actions
             </li>
             <li>
-              <strong>Raid Pattern Detection:</strong> Detects raid channels by name patterns (nuked, raid, hacked, spam characters)
+              <strong>Raid Pattern Detection:</strong> Detects raid channels by
+              name patterns (nuked, raid, hacked, spam characters)
             </li>
             <li>
-              <strong>Instant Trigger:</strong> High-priority threat handling for confirmed raid channels
+              <strong>Instant Trigger:</strong> High-priority threat handling
+              for confirmed raid channels
             </li>
           </ul>
         </div>

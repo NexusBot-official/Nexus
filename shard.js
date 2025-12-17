@@ -478,19 +478,21 @@ manager.on("shardCreate", (shard) => {
 
   shard.on("death", () => {
     // Check if token leak shutdown flag exists
-    const fs = require('fs');
-    if (fs.existsSync('./.TOKEN_LEAK_SHUTDOWN')) {
+    const fs = require("fs");
+    if (fs.existsSync("./.TOKEN_LEAK_SHUTDOWN")) {
       console.log(`💀 ${shardName} died due to TOKEN LEAK - NOT RESPAWNING`);
       console.log(`🚨 MANUAL ACTION REQUIRED:`);
-      console.log(`   1. Regenerate bot token at https://discord.com/developers/applications`);
+      console.log(
+        `   1. Regenerate bot token at https://discord.com/developers/applications`
+      );
       console.log(`   2. Update .env with new token`);
       console.log(`   3. Delete .TOKEN_LEAK_SHUTDOWN file`);
       console.log(`   4. Restart bot manually`);
-      
+
       // Don't respawn - exit the entire shard manager
       process.exit(1);
     }
-    
+
     console.log(`💀 ${shardName} died, respawning...`);
   });
 

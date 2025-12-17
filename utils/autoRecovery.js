@@ -296,7 +296,7 @@ class AutoRecovery {
           batch.map(async (channelData) => {
             try {
               let existingChannel = guild.channels.cache.get(channelData.id);
-              
+
               // Verify channel actually exists (cache might be stale)
               if (existingChannel) {
                 try {
@@ -343,7 +343,11 @@ class AutoRecovery {
                   if (channelExists) {
                     // Process permissions in smaller batches to avoid rate limits
                     const permBatches = [];
-                    for (let i = 0; i < channelData.permissions.length; i += 5) {
+                    for (
+                      let i = 0;
+                      i < channelData.permissions.length;
+                      i += 5
+                    ) {
                       permBatches.push(channelData.permissions.slice(i, i + 5));
                     }
 

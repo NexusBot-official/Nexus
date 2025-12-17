@@ -42,19 +42,25 @@ manager.on("clusterCreate", (cluster) => {
 
   cluster.on("death", () => {
     // Check if token leak shutdown flag exists
-    const fs = require('fs');
-    if (fs.existsSync('./.TOKEN_LEAK_SHUTDOWN')) {
-      logger.error("Cluster", `💀 ${clusterName} died due to TOKEN LEAK - NOT RESPAWNING`);
+    const fs = require("fs");
+    if (fs.existsSync("./.TOKEN_LEAK_SHUTDOWN")) {
+      logger.error(
+        "Cluster",
+        `💀 ${clusterName} died due to TOKEN LEAK - NOT RESPAWNING`
+      );
       logger.error("Cluster", `🚨 MANUAL ACTION REQUIRED:`);
-      logger.error("Cluster", `   1. Regenerate bot token at https://discord.com/developers/applications`);
+      logger.error(
+        "Cluster",
+        `   1. Regenerate bot token at https://discord.com/developers/applications`
+      );
       logger.error("Cluster", `   2. Update .env with new token`);
       logger.error("Cluster", `   3. Delete .TOKEN_LEAK_SHUTDOWN file`);
       logger.error("Cluster", `   4. Restart bot manually`);
-      
+
       // Don't respawn - exit the entire cluster manager
       process.exit(1);
     }
-    
+
     logger.error("Cluster", `💀 ${clusterName} died, respawning...`);
   });
 

@@ -28,24 +28,24 @@ module.exports = {
         })
         .catch(() => null);
       const entry = auditLogs?.entries?.first();
-      
+
       if (entry && entry.executor) {
         const isBot = entry.executor.id === client.user.id;
         const isGuildOwner = entry.executor.id === channel.guild.ownerId;
-        
+
         logger.info(
           `[channelCreate] Lockdown active - Channel "${channel.name}" created by ${entry.executor.tag} (${entry.executor.id}) | Guild Owner ID: ${channel.guild.ownerId} | isGuildOwner: ${isGuildOwner} | isBot: ${isBot}`
         );
-        
+
         // Skip lockdown ONLY for bot and guild owner (NOT whitelisted users during lockdown)
         if (isBot || isGuildOwner) {
           logger.info(
-            `[channelCreate] ✅ Allowing channel "${channel.name}" - created by ${isBot ? 'bot' : 'guild owner'} ${entry.executor.tag}`
+            `[channelCreate] ✅ Allowing channel "${channel.name}" - created by ${isBot ? "bot" : "guild owner"} ${entry.executor.tag}`
           );
           return; // Allow and skip all monitoring
         }
       }
-      
+
       // Not bot/owner/whitelisted - delete during lockdown
       try {
         await channel
@@ -80,25 +80,27 @@ module.exports = {
       if (!client.channelCreationTracker) {
         client.channelCreationTracker = new Map();
       }
-      
+
       const guildId = channel.guild.id;
       if (!client.channelCreationTracker.has(guildId)) {
         client.channelCreationTracker.set(guildId, []);
       }
-      
+
       const creationHistory = client.channelCreationTracker.get(guildId);
       const now = Date.now();
-      
+
       // Add current creation
       creationHistory.push({ timestamp: now, channelId: channel.id });
-      
+
       // Clean old entries (older than 10 seconds)
-      const recentCreations = creationHistory.filter(c => now - c.timestamp < 10000);
+      const recentCreations = creationHistory.filter(
+        (c) => now - c.timestamp < 10000
+      );
       client.channelCreationTracker.set(guildId, recentCreations);
-      
+
       // INSTANT TRIGGER: If 2+ channels created in 10 seconds = RAID
       const isRapidCreation = recentCreations.length >= 2;
-      
+
       // Also check for obvious raid channel names
       const isRaidChannel =
         channel.name.includes("nuked") ||
@@ -114,10 +116,13 @@ module.exports = {
         // Skip instant detection for server owner and bot itself
         const isGuildOwner = entry.executor.id === channel.guild.ownerId;
         const isBot = entry.executor.id === client.user.id;
-        
+
         // Check if user is whitelisted
         const isWhitelisted = client.advancedAntiNuke
-          ? await client.advancedAntiNuke.isWhitelisted(channel.guild.id, entry.executor.id)
+          ? await client.advancedAntiNuke.isWhitelisted(
+              channel.guild.id,
+              entry.executor.id
+            )
           : false;
 
         // Track in event-based tracker
@@ -134,13 +139,11 @@ module.exports = {
         // NOTE: Whitelisted users are NOT exempt from raid detection - they can still trigger if they spam
         if ((isRapidCreation || isRaidChannel) && !isGuildOwner && !isBot) {
           logger.warn(
-            `[Anti-Nuke] INSTANT DETECTION: ${isRapidCreation ? `Rapid channel creation (${recentCreations.length} in 10s)` : 'Raid channel'} "${channel.name}" by ${entry.executor.tag} (${entry.executor.id}) | Guild Owner ID: ${channel.guild.ownerId} | isGuildOwner: ${isGuildOwner} in ${channel.guild.name}`
+            `[Anti-Nuke] INSTANT DETECTION: ${isRapidCreation ? `Rapid channel creation (${recentCreations.length} in 10s)` : "Raid channel"} "${channel.name}" by ${entry.executor.tag} (${entry.executor.id}) | Guild Owner ID: ${channel.guild.ownerId} | isGuildOwner: ${isGuildOwner} in ${channel.guild.name}`
           );
 
           // Delete channel immediately
-          await channel
-            .delete("Anti-Nuke: Raid detected")
-            .catch(() => {});
+          await channel.delete("Anti-Nuke: Raid detected").catch(() => {});
 
           // Trigger anti-nuke with HIGH PRIORITY
           await client.advancedAntiNuke.monitorAction(
@@ -163,7 +166,7 @@ module.exports = {
               `[Anti-Nuke] Skipping instant detection for guild owner ${entry.executor.tag}`
             );
           }
-          
+
           // Whitelisted users skip NORMAL anti-nuke monitoring (not instant raid detection)
           if (!isWhitelisted) {
             await client.advancedAntiNuke.monitorAction(
