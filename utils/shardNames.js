@@ -173,13 +173,25 @@ function getClusterName(clusterId) {
     const baseIndex = clusterId % CLUSTER_BASES.length;
     return `${CLUSTER_PREFIXES[prefixIndex]} ${CLUSTER_BASES[baseIndex]}`;
   }
-  
+
   // For clusters 20-50, add Roman numerals
-  const romanNumerals = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
+  const romanNumerals = [
+    "I",
+    "II",
+    "III",
+    "IV",
+    "V",
+    "VI",
+    "VII",
+    "VIII",
+    "IX",
+    "X",
+  ];
   const baseIndex = (clusterId - 20) % CLUSTER_BASES.length;
-  const numeralIndex = Math.floor((clusterId - 20) / CLUSTER_BASES.length) % romanNumerals.length;
+  const numeralIndex =
+    Math.floor((clusterId - 20) / CLUSTER_BASES.length) % romanNumerals.length;
   const prefixIndex = (clusterId - 20) % CLUSTER_PREFIXES.length;
-  
+
   return `${CLUSTER_PREFIXES[prefixIndex]} ${CLUSTER_BASES[baseIndex]}-${romanNumerals[numeralIndex]}`;
 }
 
