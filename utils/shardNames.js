@@ -5,7 +5,7 @@
 
 // Greek Gods Theme for Shards
 const SHARD_NAMES = [
-  "⚡ Zeus", // King of gods
+  "🛡️ Sentinel", // The Guardian
   "🌊 Poseidon", // God of sea
   "⚔️ Ares", // God of war
   "🏹 Artemis", // Goddess of hunt
