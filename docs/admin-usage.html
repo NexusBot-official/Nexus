@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Usage Patterns - Admin</title>
+    <script src="admin-auth.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
     <style>
       * {
@@ -247,42 +248,24 @@
         }
       }
 
-      // Admin password (prompt on first load)
-      let adminPassword = sessionStorage.getItem("adminPassword");
-
       async function loadUsagePatterns() {
-        // Check if admin password is set
-        if (!adminPassword) {
-          adminPassword = prompt("Enter admin password:");
-          if (!adminPassword) {
-            document.body.innerHTML = `
-              <div style="display: flex; align-items: center; justify-content: center; height: 100vh; text-align: center;">
-                <div>
-                  <h1>🔐 Admin Authentication Required</h1>
-                  <p>Please refresh the page and enter your admin password.</p>
-                </div>
-              </div>
-            `;
-            return;
-          }
-          sessionStorage.setItem("adminPassword", adminPassword);
-        }
+        const authToken = sessionStorage.getItem("adminToken");
 
         try {
           const response = await fetch(`${USAGE_API}?days=7`, {
             headers: {
               "ngrok-skip-browser-warning": "true",
-              "x-admin-password": adminPassword,
+              Authorization: `Bearer ${authToken}`,
             },
           });
 
           if (!response.ok) {
-            // If 401, clear stored password and prompt again
+            // If 401, redirect to login
             if (response.status === 401) {
-              sessionStorage.removeItem("adminPassword");
-              adminPassword = null;
-              alert("❌ Invalid admin password. Please try again.");
-              location.reload();
+              sessionStorage.removeItem("adminAuthenticated");
+              sessionStorage.removeItem("adminToken");
+              sessionStorage.removeItem("adminTokenExpiry");
+              window.location.href = "admin.html";
               return;
             }
             throw new Error(
