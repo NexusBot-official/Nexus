@@ -38,6 +38,40 @@ module.exports = {
       return interaction.reply(ErrorMessages.cannotTargetOwner());
     }
 
+    // Fetch target member
+    const targetMember = await interaction.guild.members
+      .fetch(user.id)
+      .catch(() => null);
+
+    if (!targetMember) {
+      return interaction.reply({
+        content: "❌ User is not in this server!",
+        flags: MessageFlags.Ephemeral,
+      });
+    }
+
+    // Check if moderator is server owner (owners can warn anyone)
+    const isOwner = interaction.member.id === interaction.guild.ownerId;
+
+    // Check role hierarchy (unless moderator is owner)
+    if (
+      !isOwner &&
+      targetMember.roles.highest.position >=
+        interaction.member.roles.highest.position
+    ) {
+      return interaction.reply(ErrorMessages.targetHigherRole("warn"));
+    }
+
+    // Check if bot can moderate this user
+    const botMember = await interaction.guild.members.fetch(
+      interaction.client.user.id
+    );
+    if (
+      targetMember.roles.highest.position >= botMember.roles.highest.position
+    ) {
+      return interaction.reply(ErrorMessages.botTargetHigherRole("warn"));
+    }
+
     const result = await Moderation.warn(
       interaction.guild,
       user,

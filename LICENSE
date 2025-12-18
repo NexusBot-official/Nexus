@@ -35,7 +35,7 @@ Notwithstanding the above permissions, the following are EXPRESSLY PROHIBITED:
    - Layout, formatting, or presentation styles that are substantially similar to Sentinel Bot's branded materials
    - Command structures, naming conventions, or user interface elements that closely mimic Sentinel Bot's distinctive presentation
    - Any elements that would cause confusion or create an impression of association with Sentinel Bot
-   
+
    **"Substantially Similar" Definition**: Visual elements are considered substantially similar if they:
    - Use identical or near-identical color schemes, layouts, or design patterns
    - Mimic distinctive UI elements, command structures, or presentation styles
@@ -52,7 +52,7 @@ Notwithstanding the above permissions, the following are EXPRESSLY PROHIBITED:
    - Use Sentinel Bot's documentation verbatim or substantially similar
    - Claim authorship of Sentinel Bot's documentation
    - Use Sentinel Bot's documentation as your own
-   
+
    **"Substantially Similar" Definition**: Documentation is considered substantially similar if it:
    - Copies 50% or more of the original text without significant modification
    - Uses identical or near-identical structure, headings, and organization
@@ -81,7 +81,7 @@ Notwithstanding the above permissions, the following are EXPRESSLY PROHIBITED:
    - You MUST distinguish your fork/modification clearly from the official Sentinel Bot
    - You MUST NOT use Sentinel Bot's taglines, slogans, or marketing copy
    - You MUST provide a link to the original project when reasonable
-   
+
    **"Reasonable" Attribution Definition**: Providing a link to the original project is considered reasonable when:
    - You are distributing the code publicly (GitHub, website, documentation, etc.)
    - You have space/ability to include a link without significant burden
@@ -101,12 +101,14 @@ If you wish to use any of the above protected materials, you must obtain explici
 - Privacy Email: Sentinelbot0@proton.me
 
 **Termination of License**: The license granted herein shall automatically terminate upon any breach of these restrictions. However, before termination, you will receive a written notice of violation (sent to the contact information provided in your distribution or to the email associated with your GitHub account) allowing **14 calendar days** to remedy the violation. Termination will only occur if:
+
 - The violation is not remedied within 14 days of written notice, OR
 - The violation is willful and intentional (e.g., deliberate trademark infringement, malicious impersonation), in which case termination may occur immediately upon notice
 
 Upon termination, you must immediately cease all use of protected materials and destroy all copies in your possession, except that you may retain copies necessary to comply with legal obligations or to remove the violating materials.
 
 **Dispute Resolution**: Before initiating any legal proceedings, parties agree to first attempt to resolve disputes through:
+
 1. **Good faith negotiation** (14 days from written notice of dispute)
 2. **Mediation** (30 days) through a mutually agreed mediator or mediation service in England
 3. If mediation fails, disputes shall proceed to the exclusive jurisdiction of the courts of England and Wales as specified in the Governing Law section below
@@ -120,12 +122,13 @@ This dispute resolution process applies to all disputes arising from these restr
 **Commercial Use Disclaimer**: While this license permits commercial use of the code, you may NOT use Sentinel Bot's branding, name, or protected materials in any commercial context without explicit written permission. Commercial forks must clearly distinguish themselves from the official Sentinel Bot in all customer-facing materials.
 
 **"Commercial Use" Definition**: Use is considered commercial if it:
-   - Involves charging money (one-time payment, subscription, or fees) for the software, derivative works, or services incorporating the code
-   - Is used in a commercial/business context (company internal use, client services, B2B offerings)
-   - Generates revenue directly or indirectly from the software (advertising, data collection, premium features)
-   - Is used to promote, market, or support a commercial product or service
-   - **Examples**: Selling a modified version, offering it as paid service/SaaS, using it in commercial client work, monetizing a fork through ads or premium features
-   - **Not Commercial**: Personal projects, educational use, non-profit use, open source distributions (even if company uses internally)
+
+- Involves charging money (one-time payment, subscription, or fees) for the software, derivative works, or services incorporating the code
+- Is used in a commercial/business context (company internal use, client services, B2B offerings)
+- Generates revenue directly or indirectly from the software (advertising, data collection, premium features)
+- Is used to promote, market, or support a commercial product or service
+- **Examples**: Selling a modified version, offering it as paid service/SaaS, using it in commercial client work, monetizing a fork through ads or premium features
+- **Not Commercial**: Personal projects, educational use, non-profit use, open source distributions (even if company uses internally)
 
 ---
 
