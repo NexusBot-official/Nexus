@@ -260,13 +260,71 @@ class ThreatVisualization {
    * Generate geographic threat map
    */
   async generateGeoMap(guildId) {
-    // This would integrate with IP geolocation
-    // For now, return structure for future implementation
-    return {
-      regions: [{ country: "Unknown", threatCount: 0, percentage: 0 }],
-      topRegions: [],
-      totalThreats: 0,
-    };
+    try {
+      // Get threat data with IP information from security logs
+      const threats = await db.db.all(
+        `SELECT user_id, metadata, timestamp 
+         FROM security_logs 
+         WHERE guild_id = ? 
+         AND action IN ('ban', 'kick', 'raid_detected', 'nuke_detected')
+         AND timestamp > ?
+         ORDER BY timestamp DESC
+         LIMIT 1000`,
+        [guildId, Date.now() - 30 * 24 * 60 * 60 * 1000] // Last 30 days
+      );
+
+      if (threats.length === 0) {
+        return {
+          regions: [],
+          topRegions: [],
+          totalThreats: 0,
+        };
+      }
+
+      // Count threats by country (extracted from metadata if available)
+      const countryMap = new Map();
+      let totalThreats = 0;
+
+      for (const threat of threats) {
+        totalThreats++;
+        
+        // Try to extract country from metadata
+        let country = "Unknown";
+        try {
+          const metadata = JSON.parse(threat.metadata || "{}");
+          country = metadata.country || metadata.location || "Unknown";
+        } catch (e) {
+          // If metadata parsing fails, use Unknown
+        }
+
+        countryMap.set(country, (countryMap.get(country) || 0) + 1);
+      }
+
+      // Convert to array and calculate percentages
+      const regions = Array.from(countryMap.entries())
+        .map(([country, threatCount]) => ({
+          country,
+          threatCount,
+          percentage: ((threatCount / totalThreats) * 100).toFixed(1),
+        }))
+        .sort((a, b) => b.threatCount - a.threatCount);
+
+      // Get top 10 regions
+      const topRegions = regions.slice(0, 10);
+
+      return {
+        regions,
+        topRegions,
+        totalThreats,
+      };
+    } catch (error) {
+      logger.error("Failed to generate geo map:", error);
+      return {
+        regions: [],
+        topRegions: [],
+        totalThreats: 0,
+      };
+    }
   }
 
   /**
