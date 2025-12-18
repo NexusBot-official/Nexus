@@ -30,6 +30,15 @@ class DashboardServer {
       baseBlockMs: 60 * 60 * 1000, // 1 hour base block
     };
 
+    // Permission abuse blacklist (per-IP failed permission attempts)
+    // Structure: ip -> { count, firstAttempt, lastAttempt, blacklistedUntil }
+    this.permissionAbuseBlacklist = new Map();
+    this.permissionAbuseConfig = {
+      maxAttempts: 3, // 3 failed permission attempts = blacklist
+      windowMs: 5 * 60 * 1000, // 5 minute window
+      blacklistDurationMs: 24 * 60 * 60 * 1000, // 24 hour blacklist
+    };
+
     // Periodic cleanup of old failed attempt records
     this.adminFailedAttemptsCleanup = setInterval(
       () => {
@@ -41,6 +50,24 @@ class DashboardServer {
             now - info.lastFailedAt > 24 * 60 * 60 * 1000
           ) {
             this.adminFailedAttempts.delete(ip);
+          }
+        }
+      },
+      60 * 60 * 1000
+    );
+
+    // Periodic cleanup of permission abuse blacklist
+    this.permissionAbuseCleanup = setInterval(
+      () => {
+        const now = Date.now();
+        for (const [ip, info] of this.permissionAbuseBlacklist.entries()) {
+          // Remove expired blacklists
+          if (info.blacklistedUntil && now > info.blacklistedUntil) {
+            this.permissionAbuseBlacklist.delete(ip);
+            logger.info(
+              "Security",
+              `🔓 IP blacklist expired and removed: ${ip}`
+            );
           }
         }
       },
@@ -398,6 +425,44 @@ class DashboardServer {
 
       // Increment counter
       record.count++;
+      next();
+    });
+
+    // Permission Abuse Blacklist Middleware (check if IP is blacklisted)
+    this.app.use((req, res, next) => {
+      const ip = this.getRealIP(req);
+      const blacklistInfo = this.permissionAbuseBlacklist.get(ip);
+
+      if (blacklistInfo && blacklistInfo.blacklistedUntil) {
+        const now = Date.now();
+        if (now < blacklistInfo.blacklistedUntil) {
+          // IP is blacklisted - redirect to blacklist page
+          const hoursRemaining = Math.ceil(
+            (blacklistInfo.blacklistedUntil - now) / (60 * 60 * 1000)
+          );
+
+          // If it's an API request, return JSON
+          if (req.path.startsWith("/api/")) {
+            return res.status(403).json({
+              error: "IP Blacklisted",
+              message: `Your IP has been blacklisted due to repeated permission abuse attempts. Blacklist expires in ${hoursRemaining} hour(s).`,
+              blacklistedUntil: blacklistInfo.blacklistedUntil,
+              reason: "Multiple failed permission checks",
+              contact: process.env.SUPPORT_SERVER_INVITE || "Contact support",
+            });
+          }
+
+          // For web requests, redirect to blacklist page
+          return res.redirect(
+            `/blacklisted?ip=${encodeURIComponent(ip)}&hours=${hoursRemaining}`
+          );
+        } else {
+          // Blacklist expired, remove it
+          this.permissionAbuseBlacklist.delete(ip);
+          logger.info("Security", `🔓 IP blacklist expired: ${ip}`);
+        }
+      }
+
       next();
     });
 
@@ -1075,6 +1140,73 @@ class DashboardServer {
         res.json(stats);
       } catch (error) {
         res.status(500).json({ error: "Failed to get stats" });
+      }
+    });
+
+    // Blacklisted page
+    this.app.get("/blacklisted", (req, res) => {
+      res.sendFile(path.join(__dirname, "public", "blacklisted.html"));
+    });
+
+    // Admin endpoint - Remove IP from blacklist
+    this.app.post("/api/admin/blacklist/remove", async (req, res) => {
+      try {
+        const adminPassword = req.headers["x-admin-password"];
+        if (!adminPassword || adminPassword !== process.env.ADMIN_PASSWORD) {
+          return res.status(401).json({ error: "Unauthorized" });
+        }
+
+        const { ip } = req.body;
+        if (!ip) {
+          return res.status(400).json({ error: "IP address is required" });
+        }
+
+        if (this.permissionAbuseBlacklist.has(ip)) {
+          this.permissionAbuseBlacklist.delete(ip);
+          logger.info("Admin", `🔓 IP manually removed from blacklist: ${ip}`);
+          res.json({ success: true, message: "IP removed from blacklist" });
+        } else {
+          res.json({ success: false, message: "IP not found in blacklist" });
+        }
+      } catch (error) {
+        logger.error("Admin", "Failed to remove IP from blacklist", error);
+        res.status(500).json({ error: error.message });
+      }
+    });
+
+    // Admin endpoint - List blacklisted IPs
+    this.app.get("/api/admin/blacklist", async (req, res) => {
+      try {
+        const adminPassword = req.headers["x-admin-password"];
+        if (!adminPassword || adminPassword !== process.env.ADMIN_PASSWORD) {
+          return res.status(401).json({ error: "Unauthorized" });
+        }
+
+        const blacklistedIPs = [];
+        const now = Date.now();
+
+        for (const [ip, info] of this.permissionAbuseBlacklist.entries()) {
+          if (info.blacklistedUntil && now < info.blacklistedUntil) {
+            blacklistedIPs.push({
+              ip: ip,
+              attempts: info.count,
+              firstAttempt: info.firstAttempt,
+              lastAttempt: info.lastAttempt,
+              blacklistedUntil: info.blacklistedUntil,
+              hoursRemaining: Math.ceil(
+                (info.blacklistedUntil - now) / (60 * 60 * 1000)
+              ),
+            });
+          }
+        }
+
+        res.json({
+          total: blacklistedIPs.length,
+          blacklistedIPs: blacklistedIPs,
+        });
+      } catch (error) {
+        logger.error("Admin", "Failed to list blacklisted IPs", error);
+        res.status(500).json({ error: error.message });
       }
     });
 
@@ -4449,6 +4581,8 @@ class DashboardServer {
         .fetch(requesterId)
         .catch(() => null);
       if (!requesterMember) {
+        // Track permission abuse
+        this.trackPermissionAbuse(req);
         return {
           allowed: false,
           error: "You must be a member of this server to perform this action",
@@ -4457,6 +4591,8 @@ class DashboardServer {
 
       // Check if requester has the required permission
       if (!requesterMember.permissions.has(requiredPermission)) {
+        // Track permission abuse
+        this.trackPermissionAbuse(req);
         return {
           allowed: false,
           error: `You need the ${requiredPermission} permission in this server`,
@@ -4478,6 +4614,82 @@ class DashboardServer {
         allowed: false,
         error: `Permission check failed: ${error.message}`,
       };
+    }
+  }
+
+  trackPermissionAbuse(req) {
+    const ip = this.getRealIP(req);
+    const now = Date.now();
+    const config = this.permissionAbuseConfig;
+
+    let abuseInfo = this.permissionAbuseBlacklist.get(ip);
+
+    if (!abuseInfo) {
+      // First failed attempt
+      abuseInfo = {
+        count: 1,
+        firstAttempt: now,
+        lastAttempt: now,
+        blacklistedUntil: null,
+      };
+      this.permissionAbuseBlacklist.set(ip, abuseInfo);
+      logger.warn(
+        "Security",
+        `⚠️ Permission abuse attempt 1/${config.maxAttempts} | IP: ${ip} | Path: ${req.path}`
+      );
+      return;
+    }
+
+    // Check if we're within the time window
+    if (now - abuseInfo.firstAttempt > config.windowMs) {
+      // Window expired, reset counter
+      abuseInfo.count = 1;
+      abuseInfo.firstAttempt = now;
+      abuseInfo.lastAttempt = now;
+      logger.warn(
+        "Security",
+        `⚠️ Permission abuse attempt 1/${config.maxAttempts} (window reset) | IP: ${ip} | Path: ${req.path}`
+      );
+      return;
+    }
+
+    // Increment counter
+    abuseInfo.count++;
+    abuseInfo.lastAttempt = now;
+
+    if (abuseInfo.count >= config.maxAttempts) {
+      // Blacklist the IP
+      abuseInfo.blacklistedUntil = now + config.blacklistDurationMs;
+      const hoursBlacklisted = Math.ceil(
+        config.blacklistDurationMs / (60 * 60 * 1000)
+      );
+
+      logger.error(
+        "Security",
+        `🚫 IP BLACKLISTED for ${hoursBlacklisted}h due to ${abuseInfo.count} permission abuse attempts | IP: ${ip} | User: ${req.apiKey?.discord_username || "Unknown"} | API Key: ${req.apiKey?.api_key?.substring(0, 10) || "None"}...`
+      );
+
+      // Log to database
+      db.logSecurityEvent(
+        null,
+        "ip_blacklisted",
+        "critical",
+        `IP blacklisted for ${hoursBlacklisted}h after ${abuseInfo.count} permission abuse attempts`,
+        {
+          ip: ip,
+          attempts: abuseInfo.count,
+          blacklistedUntil: abuseInfo.blacklistedUntil,
+          userId: req.apiKey?.discord_user_id || null,
+          username: req.apiKey?.discord_username || null,
+        }
+      ).catch((err) =>
+        logger.error("Security", "Failed to log blacklist event", err)
+      );
+    } else {
+      logger.warn(
+        "Security",
+        `⚠️ Permission abuse attempt ${abuseInfo.count}/${config.maxAttempts} | IP: ${ip} | Path: ${req.path}`
+      );
     }
   }
 

@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IP Blacklisted - Sentinel Security</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+        color: #ffffff;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 600px;
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        text-align: center;
+      }
+
+      .icon {
+        font-size: 80px;
+        margin-bottom: 20px;
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+      }
+
+      h1 {
+        font-size: 32px;
+        margin-bottom: 10px;
+        color: #ff4444;
+      }
+
+      .subtitle {
+        font-size: 18px;
+        color: #aaaaaa;
+        margin-bottom: 30px;
+      }
+
+      .info-box {
+        background: rgba(255, 68, 68, 0.1);
+        border: 1px solid rgba(255, 68, 68, 0.3);
+        border-radius: 10px;
+        padding: 20px;
+        margin: 20px 0;
+        text-align: left;
+      }
+
+      .info-box h2 {
+        font-size: 18px;
+        margin-bottom: 15px;
+        color: #ff4444;
+      }
+
+      .info-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .info-item:last-child {
+        border-bottom: none;
+      }
+
+      .info-label {
+        color: #aaaaaa;
+        font-weight: 500;
+      }
+
+      .info-value {
+        color: #ffffff;
+        font-weight: 600;
+      }
+
+      .reason-box {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        padding: 20px;
+        margin: 20px 0;
+      }
+
+      .reason-box h3 {
+        font-size: 16px;
+        margin-bottom: 10px;
+        color: #ffaa00;
+      }
+
+      .reason-box ul {
+        text-align: left;
+        padding-left: 20px;
+        color: #cccccc;
+        line-height: 1.8;
+      }
+
+      .contact-box {
+        background: rgba(0, 200, 255, 0.1);
+        border: 1px solid rgba(0, 200, 255, 0.3);
+        border-radius: 10px;
+        padding: 20px;
+        margin: 20px 0;
+      }
+
+      .contact-box h3 {
+        font-size: 16px;
+        margin-bottom: 10px;
+        color: #00c8ff;
+      }
+
+      .contact-box p {
+        color: #cccccc;
+        line-height: 1.6;
+        margin-bottom: 15px;
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 12px 30px;
+        background: linear-gradient(135deg, #00c8ff 0%, #0080ff 100%);
+        color: #ffffff;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+        margin: 5px;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 200, 255, 0.4);
+      }
+
+      .btn-secondary {
+        background: linear-gradient(135deg, #666666 0%, #444444 100%);
+      }
+
+      .btn-secondary:hover {
+        box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+      }
+
+      .timer {
+        font-size: 48px;
+        font-weight: 700;
+        color: #ff4444;
+        margin: 20px 0;
+        font-family: "Courier New", monospace;
+      }
+
+      .footer {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        color: #888888;
+        font-size: 14px;
+      }
+
+      .warning {
+        background: rgba(255, 170, 0, 0.1);
+        border: 1px solid rgba(255, 170, 0, 0.3);
+        border-radius: 8px;
+        padding: 15px;
+        margin: 20px 0;
+        color: #ffaa00;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="icon">🚫</div>
+      <h1>IP Address Blacklisted</h1>
+      <p class="subtitle">Access Denied - Security Violation</p>
+
+      <div class="info-box">
+        <h2>📋 Blacklist Information</h2>
+        <div class="info-item">
+          <span class="info-label">Your IP Address:</span>
+          <span class="info-value" id="ipAddress">Loading...</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Blacklist Expires In:</span>
+          <span class="info-value" id="expiresIn">Loading...</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Reason:</span>
+          <span class="info-value">Permission Abuse</span>
+        </div>
+      </div>
+
+      <div class="timer" id="countdown">--:--:--</div>
+
+      <div class="reason-box">
+        <h3>⚠️ Why Was I Blacklisted?</h3>
+        <ul>
+          <li>
+            You attempted to perform moderation actions on servers where you
+            don't have permissions
+          </li>
+          <li>
+            Multiple failed permission checks were detected (3+ attempts within
+            5 minutes)
+          </li>
+          <li>This is an automated security measure to prevent abuse</li>
+        </ul>
+      </div>
+
+      <div class="warning">
+        <strong>⏰ Automatic Removal:</strong> Your IP will be automatically
+        removed from the blacklist after the timer expires. No action is
+        required.
+      </div>
+
+      <div class="contact-box">
+        <h3>💬 Need Help?</h3>
+        <p>
+          If you believe this was a mistake or need immediate assistance, please
+          contact our support team:
+        </p>
+        <a href="#" class="btn" id="supportBtn">Join Support Server</a>
+        <a
+          href="https://github.com/Sentinelbot-official/Sentinel/issues"
+          class="btn btn-secondary"
+          target="_blank"
+          >Report Issue</a
+        >
+      </div>
+
+      <div class="footer">
+        <p>
+          <strong>Sentinel Security System</strong><br />
+          Automated IP blacklist for permission abuse prevention
+        </p>
+        <p style="margin-top: 10px; font-size: 12px">
+          Blacklist ID: <span id="blacklistId"></span>
+        </p>
+      </div>
+    </div>
+
+    <script>
+      // Get URL parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const ip = urlParams.get("ip") || "Unknown";
+      const hoursRemaining = parseInt(urlParams.get("hours") || "24");
+
+      // Display IP
+      document.getElementById("ipAddress").textContent = ip;
+      document.getElementById("expiresIn").textContent =
+        `${hoursRemaining} hour(s)`;
+
+      // Generate blacklist ID (hash of IP + timestamp)
+      const blacklistId = btoa(ip + Date.now())
+        .substring(0, 12)
+        .toUpperCase();
+      document.getElementById("blacklistId").textContent = blacklistId;
+
+      // Countdown timer
+      let remainingSeconds = hoursRemaining * 60 * 60;
+
+      function updateCountdown() {
+        const hours = Math.floor(remainingSeconds / 3600);
+        const minutes = Math.floor((remainingSeconds % 3600) / 60);
+        const seconds = remainingSeconds % 60;
+
+        document.getElementById("countdown").textContent = `${String(
+          hours
+        ).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(
+          seconds
+        ).padStart(2, "0")}`;
+
+        if (remainingSeconds > 0) {
+          remainingSeconds--;
+        } else {
+          // Blacklist expired, reload page
+          document.getElementById("countdown").textContent = "EXPIRED";
+          document.querySelector("h1").textContent = "Blacklist Expired";
+          document.querySelector(".subtitle").textContent =
+            "You can now access the dashboard";
+          document.querySelector(".icon").textContent = "✅";
+
+          // Auto-redirect after 3 seconds
+          setTimeout(() => {
+            window.location.href = "/dashboard";
+          }, 3000);
+        }
+      }
+
+      // Update countdown every second
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
+
+      // Set support server link
+      fetch("/api/v2/config")
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.supportServerInvite) {
+            document.getElementById("supportBtn").href =
+              data.supportServerInvite;
+          }
+        })
+        .catch(() => {
+          // Fallback
+          document.getElementById("supportBtn").href =
+            "https://discord.gg/your-server";
+        });
+    </script>
+  </body>
+</html>
