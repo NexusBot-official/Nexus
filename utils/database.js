@@ -1317,8 +1317,8 @@ class Database {
 
           defaultSources.forEach((source) => {
             this.db.run(
-              "INSERT OR IGNORE INTO invite_sources (source, description, created_by, created_at) VALUES (?, ?, ?, ?)",
-              [source.name, source.description, "system", Date.now()]
+              "INSERT OR IGNORE INTO invite_sources (source, description, created_at, updated_at) VALUES (?, ?, ?, ?)",
+              [source.name, source.description, Date.now(), Date.now()]
             );
           });
         }
