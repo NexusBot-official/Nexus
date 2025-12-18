@@ -90,7 +90,10 @@ class Database {
                 presence_verification_enabled INTEGER DEFAULT 0,
                 status_roles_enabled INTEGER DEFAULT 0,
                 activity_analytics_enabled INTEGER DEFAULT 1,
-                threat_intelligence_sharing INTEGER DEFAULT 1
+                threat_intelligence_sharing INTEGER DEFAULT 1,
+                antinuke_channels_threshold INTEGER DEFAULT 3,
+                antinuke_roles_threshold INTEGER DEFAULT 2,
+                antinuke_bans_threshold INTEGER DEFAULT 3
             )
         `);
 

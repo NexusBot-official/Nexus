@@ -218,28 +218,77 @@ module.exports = {
     const rolesDeleted = interaction.options.getInteger("roles_deleted");
     const bans = interaction.options.getInteger("bans");
 
+    // Get current config
+    const config = await db.getServerConfig(interaction.guild.id);
+    const currentChannels = config?.antinuke_channels_threshold || 3;
+    const currentRoles = config?.antinuke_roles_threshold || 2;
+    const currentBans = config?.antinuke_bans_threshold || 3;
+
+    // If no options provided, show current config
     if (!channelsDeleted && !rolesDeleted && !bans) {
-      return interaction.reply({
-        content: "❌ Specify at least one threshold to configure!",
-        ephemeral: true,
-      });
+      const embed = new EmbedBuilder()
+        .setTitle("⚙️ Current Anti-Nuke Thresholds")
+        .setDescription(
+          "Configure how sensitive anti-nuke detection should be.\n" +
+            "Lower values = more sensitive (may cause false positives)\n" +
+            "Higher values = less sensitive (may miss attacks)"
+        )
+        .addFields(
+          {
+            name: "🗑️ Channels Deleted",
+            value: `**${currentChannels}** channels\nTriggers when someone deletes this many channels`,
+            inline: true,
+          },
+          {
+            name: "🎭 Roles Deleted",
+            value: `**${currentRoles}** roles\nTriggers when someone deletes this many roles`,
+            inline: true,
+          },
+          {
+            name: "🔨 Mass Bans",
+            value: `**${currentBans}** bans\nTriggers when someone bans this many users`,
+            inline: true,
+          }
+        )
+        .setColor(0x667eea)
+        .setFooter({
+          text: "Use /antinuke config to change these values",
+        });
+
+      return interaction.reply({ embeds: [embed], ephemeral: true });
     }
 
-    // Note: These would need to be stored in config and read by advancedAntiNuke
-    // For now, show what would be changed
+    // Update thresholds
+    const updates = {};
+    if (channelsDeleted) updates.antinuke_channels_threshold = channelsDeleted;
+    if (rolesDeleted) updates.antinuke_roles_threshold = rolesDeleted;
+    if (bans) updates.antinuke_bans_threshold = bans;
+
+    await db.updateServerConfig(interaction.guild.id, updates);
+
     const embed = new EmbedBuilder()
-      .setTitle("⚙️ Anti-Nuke Configuration")
-      .setDescription(
-        "**Note:** Custom thresholds coming soon!\n\n" +
-          "Current thresholds are optimized based on testing:\n" +
-          "• Channels Deleted: **3** (catches nukes, avoids false positives)\n" +
-          "• Roles Deleted: **2** (suspicious activity)\n" +
-          "• Mass Bans: **3** (admin abuse)\n\n" +
-          "These thresholds balance security vs normal server management."
+      .setTitle("✅ Anti-Nuke Thresholds Updated")
+      .setDescription("Your custom thresholds have been saved!")
+      .addFields(
+        {
+          name: "🗑️ Channels Deleted",
+          value: `${currentChannels} → **${channelsDeleted || currentChannels}**`,
+          inline: true,
+        },
+        {
+          name: "🎭 Roles Deleted",
+          value: `${currentRoles} → **${rolesDeleted || currentRoles}**`,
+          inline: true,
+        },
+        {
+          name: "🔨 Mass Bans",
+          value: `${currentBans} → **${bans || currentBans}**`,
+          inline: true,
+        }
       )
-      .setColor(0x667eea)
+      .setColor(0x00ff00)
       .setFooter({
-        text: "Custom thresholds will be added in a future update",
+        text: "Changes take effect immediately",
       });
 
     await interaction.reply({ embeds: [embed], ephemeral: true });

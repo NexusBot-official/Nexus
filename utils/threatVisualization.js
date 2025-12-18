@@ -287,7 +287,7 @@ class ThreatVisualization {
 
       for (const threat of threats) {
         totalThreats++;
-        
+
         // Try to extract country from metadata
         let country = "Unknown";
         try {

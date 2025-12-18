@@ -40,8 +40,14 @@ class AdvancedAntiNuke {
   }
 
   // Get server-size-aware adaptive thresholds
-  getAdaptiveThresholds(guild) {
+  async getAdaptiveThresholds(guild) {
     const memberCount = guild.memberCount || 1;
+
+    // Get custom thresholds from database
+    const config = await db.getServerConfig(guild.id);
+    const customChannels = config?.antinuke_channels_threshold;
+    const customRoles = config?.antinuke_roles_threshold;
+    const customBans = config?.antinuke_bans_threshold;
 
     // Calculate multiplier based on server size
     // Larger servers may have more legitimate bulk operations
@@ -55,21 +61,27 @@ class AdvancedAntiNuke {
     }
     // Small/medium servers (< 1000): use base thresholds (1.0x)
 
-    // Apply multiplier to base thresholds
+    // Apply multiplier to base thresholds (or use custom if set)
     return {
-      channelsDeleted: Math.max(
-        1,
-        Math.ceil(this.baseThresholds.channelsDeleted * multiplier)
-      ),
+      channelsDeleted: customChannels
+        ? customChannels
+        : Math.max(
+            1,
+            Math.ceil(this.baseThresholds.channelsDeleted * multiplier)
+          ),
       channelsCreated: Math.ceil(
         this.baseThresholds.channelsCreated * multiplier
       ),
-      rolesDeleted: Math.max(
-        1,
-        Math.ceil(this.baseThresholds.rolesDeleted * multiplier)
-      ),
+      rolesDeleted: customRoles
+        ? customRoles
+        : Math.max(
+            1,
+            Math.ceil(this.baseThresholds.rolesDeleted * multiplier)
+          ),
       rolesCreated: Math.ceil(this.baseThresholds.rolesCreated * multiplier),
-      membersBanned: Math.ceil(this.baseThresholds.membersBanned * multiplier),
+      membersBanned: customBans
+        ? customBans
+        : Math.ceil(this.baseThresholds.membersBanned * multiplier),
       membersKicked: Math.ceil(this.baseThresholds.membersKicked * multiplier),
       webhooksCreated: Math.ceil(
         this.baseThresholds.webhooksCreated * multiplier
@@ -422,7 +434,7 @@ class AdvancedAntiNuke {
     // Predictive threat detection runs silently unless action is taken
 
     // Use adaptive thresholds (EXCEEDS WICK - intelligent adaptation)
-    const thresholds = this.getAdaptiveThresholds(guild);
+    const thresholds = await this.getAdaptiveThresholds(guild);
 
     const key = `${guild.id}-${userId}`;
     const now = Date.now();
