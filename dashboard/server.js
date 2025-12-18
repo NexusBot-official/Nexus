@@ -9105,6 +9105,173 @@ class DashboardServer {
       }
     });
 
+    // POST /api/v1/templates/custom - Save custom template
+    this.app.post("/api/v1/templates/custom", verifyApiKey, async (req, res) => {
+      try {
+        const { name, description, config, guildId } = req.body;
+
+        if (!name || !config || !guildId) {
+          return res.status(400).json({
+            success: false,
+            error: "Missing required fields: name, config, guildId",
+          });
+        }
+
+        // Validate name
+        if (name.length < 3 || name.length > 50) {
+          return res.status(400).json({
+            success: false,
+            error: "Template name must be 3-50 characters",
+          });
+        }
+
+        // Create custom_templates table if it doesn't exist
+        await new Promise((resolve, reject) => {
+          db.db.run(
+            `
+            CREATE TABLE IF NOT EXISTS custom_templates (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              name TEXT NOT NULL,
+              description TEXT,
+              config TEXT NOT NULL,
+              guild_id TEXT NOT NULL,
+              created_at INTEGER DEFAULT (strftime('%s', 'now') * 1000),
+              updated_at INTEGER DEFAULT (strftime('%s', 'now') * 1000)
+            )
+          `,
+            (err) => {
+              if (err) reject(err);
+              else resolve();
+            }
+          );
+        });
+
+        // Save template
+        const templateId = await new Promise((resolve, reject) => {
+          db.db.run(
+            `INSERT INTO custom_templates (name, description, config, guild_id) 
+             VALUES (?, ?, ?, ?)`,
+            [name, description || "", JSON.stringify(config), guildId],
+            function (err) {
+              if (err) reject(err);
+              else resolve(this.lastID);
+            }
+          );
+        });
+
+        res.json({
+          success: true,
+          data: {
+            id: templateId,
+            name,
+            description,
+          },
+        });
+      } catch (error) {
+        console.error("Error saving custom template:", error);
+        res.status(500).json({
+          success: false,
+          error: error.message,
+        });
+      }
+    });
+
+    // GET /api/v1/templates/custom - Get all custom templates
+    this.app.get("/api/v1/templates/custom", verifyApiKey, async (req, res) => {
+      try {
+        const templates = await new Promise((resolve, reject) => {
+          db.db.all(
+            `SELECT id, name, description, created_at, updated_at 
+             FROM custom_templates 
+             ORDER BY created_at DESC`,
+            (err, rows) => {
+              if (err) reject(err);
+              else resolve(rows || []);
+            }
+          );
+        });
+
+        res.json({
+          success: true,
+          data: templates,
+        });
+      } catch (error) {
+        console.error("Error fetching custom templates:", error);
+        res.status(500).json({
+          success: false,
+          error: error.message,
+        });
+      }
+    });
+
+    // GET /api/v1/templates/custom/:id - Get specific custom template
+    this.app.get("/api/v1/templates/custom/:id", verifyApiKey, async (req, res) => {
+      try {
+        const { id } = req.params;
+
+        const template = await new Promise((resolve, reject) => {
+          db.db.get(
+            `SELECT * FROM custom_templates WHERE id = ?`,
+            [id],
+            (err, row) => {
+              if (err) reject(err);
+              else resolve(row);
+            }
+          );
+        });
+
+        if (!template) {
+          return res.status(404).json({
+            success: false,
+            error: "Template not found",
+          });
+        }
+
+        // Parse config JSON
+        template.config = JSON.parse(template.config);
+
+        res.json({
+          success: true,
+          data: template,
+        });
+      } catch (error) {
+        console.error("Error fetching custom template:", error);
+        res.status(500).json({
+          success: false,
+          error: error.message,
+        });
+      }
+    });
+
+    // DELETE /api/v1/templates/custom/:id - Delete custom template
+    this.app.delete("/api/v1/templates/custom/:id", verifyApiKey, async (req, res) => {
+      try {
+        const { id } = req.params;
+
+        await new Promise((resolve, reject) => {
+          db.db.run(
+            `DELETE FROM custom_templates WHERE id = ?`,
+            [id],
+            function (err) {
+              if (err) reject(err);
+              else resolve();
+            }
+          );
+        });
+
+        res.json({
+          success: true,
+          message: "Template deleted successfully",
+        });
+      } catch (error) {
+        console.error("Error deleting custom template:", error);
+        res.status(500).json({
+          success: false,
+          error: error.message,
+        });
+      }
+    });
+
     // GET /api/v1/health - System health check
     this.app.get("/api/v1/health", async (req, res) => {
       try {

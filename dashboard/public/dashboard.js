@@ -857,7 +857,21 @@ async function loadTemplates() {
     <div id="template-result" style="margin-top: 30px; display: none; padding: 20px; background: rgba(0, 209, 178, 0.2); border-radius: 10px; border: 2px solid #00d1b2; text-align: center;">
       <div id="template-message"></div>
     </div>
+
+    <!-- Custom Templates Section -->
+    <div id="custom-templates-section" style="margin-top: 50px;">
+      <h2 style="margin-bottom: 20px;">🌟 Your Custom Templates</h2>
+      <div id="custom-templates-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px;">
+        <div style="text-align: center; padding: 40px; opacity: 0.6;">
+          <div style="font-size: 3rem; margin-bottom: 10px;">📦</div>
+          <p>Loading custom templates...</p>
+        </div>
+      </div>
+    </div>
   `;
+
+  // Load custom templates
+  loadCustomTemplates();
 }
 
 const templates = {
@@ -935,8 +949,205 @@ async function applyTemplate(templateName) {
   }
 }
 
+async function loadCustomTemplates() {
+  try {
+    const response = await fetch(`${API_BASE}/api/v1/templates/custom`, {
+      headers: {
+        "x-api-key": API_KEY,
+      },
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      throw new Error(result.error || "Failed to load custom templates");
+    }
+
+    const templates = result.data || [];
+    const grid = document.getElementById("custom-templates-grid");
+
+    if (templates.length === 0) {
+      grid.innerHTML = `
+        <div style="text-align: center; padding: 40px; opacity: 0.6;">
+          <div style="font-size: 3rem; margin-bottom: 10px;">📦</div>
+          <p>No custom templates yet. Save your first one above!</p>
+        </div>
+      `;
+      return;
+    }
+
+    grid.innerHTML = templates.map(template => `
+      <div class="setting-card" style="height: auto;">
+        <div style="text-align: center; margin-bottom: 20px;">
+          <div style="font-size: 4rem; margin-bottom: 10px;">⭐</div>
+          <h2>${escapeHtml(template.name)}</h2>
+          <p style="opacity: 0.8; margin-bottom: 10px;">${escapeHtml(template.description || "Custom template")}</p>
+          <p style="opacity: 0.5; font-size: 0.85rem;">Created: ${new Date(template.created_at).toLocaleDateString()}</p>
+        </div>
+        <button class="btn" onclick="applyCustomTemplate(${template.id})" style="width: 100%; margin-bottom: 10px;">
+          ⚡ Apply to Current Server
+        </button>
+        <button class="btn-secondary" onclick="deleteCustomTemplate(${template.id})" style="width: 100%;">
+          🗑️ Delete Template
+        </button>
+      </div>
+    `).join("");
+
+  } catch (error) {
+    console.error("Error loading custom templates:", error);
+    document.getElementById("custom-templates-grid").innerHTML = `
+      <div style="text-align: center; padding: 40px; opacity: 0.6;">
+        <div style="font-size: 3rem; margin-bottom: 10px;">❌</div>
+        <p>Failed to load custom templates</p>
+      </div>
+    `;
+  }
+}
+
+function escapeHtml(text) {
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+async function applyCustomTemplate(templateId) {
+  if (!confirm("Apply this custom template to the current server?")) {
+    return;
+  }
+
+  try {
+    // Get template config
+    const response = await fetch(`${API_BASE}/api/v1/templates/custom/${templateId}`, {
+      headers: {
+        "x-api-key": API_KEY,
+      },
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      throw new Error(result.error || "Failed to load template");
+    }
+
+    const config = result.data.config;
+
+    // Apply config to current server
+    const applyResponse = await fetch(`${API_BASE}/api/v1/server/${currentGuildId}/config`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": API_KEY,
+      },
+      body: JSON.stringify(config),
+    });
+
+    const applyResult = await applyResponse.json();
+
+    if (!applyResponse.ok || !applyResult.success) {
+      throw new Error(applyResult.error || "Failed to apply template");
+    }
+
+    alert("✅ Custom template applied successfully!");
+    loadPage("overview"); // Reload to show new config
+
+  } catch (error) {
+    console.error("Error applying custom template:", error);
+    alert(`❌ Failed to apply template: ${error.message}`);
+  }
+}
+
+async function deleteCustomTemplate(templateId) {
+  if (!confirm("Delete this custom template? This cannot be undone.")) {
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API_BASE}/api/v1/templates/custom/${templateId}`, {
+      method: "DELETE",
+      headers: {
+        "x-api-key": API_KEY,
+      },
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      throw new Error(result.error || "Failed to delete template");
+    }
+
+    alert("✅ Template deleted successfully!");
+    loadCustomTemplates(); // Reload templates
+
+  } catch (error) {
+    console.error("Error deleting custom template:", error);
+    alert(`❌ Failed to delete template: ${error.message}`);
+  }
+}
+
 async function saveTemplate() {
-  alert("Custom templates coming soon! For now, use the pre-made templates.");
+  const templateName = document.getElementById("template-name").value.trim();
+  
+  if (!templateName) {
+    alert("❌ Please enter a template name!");
+    return;
+  }
+
+  if (templateName.length < 3 || templateName.length > 50) {
+    alert("❌ Template name must be 3-50 characters!");
+    return;
+  }
+
+  try {
+    // Get current server config
+    const response = await window.apiCall(`/api/v1/server/${currentGuildId}/config`);
+    
+    if (!response.success) {
+      throw new Error("Failed to fetch server config");
+    }
+
+    const config = response.data;
+
+    // Save as custom template
+    const saveResponse = await fetch(`${API_BASE}/api/v1/templates/custom`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": API_KEY,
+      },
+      body: JSON.stringify({
+        name: templateName,
+        description: `Custom template created from ${currentGuildId}`,
+        config: config,
+        guildId: currentGuildId,
+      }),
+    });
+
+    const result = await saveResponse.json();
+
+    if (!saveResponse.ok || !result.success) {
+      throw new Error(result.error || "Failed to save template");
+    }
+
+    // Show success message
+    document.getElementById("template-result").style.display = "block";
+    document.getElementById("template-message").innerHTML = `
+      <h3 style="color: #00d1b2; margin-bottom: 10px;">✅ Template Saved!</h3>
+      <p><strong>${templateName}</strong> has been saved as a custom template.</p>
+      <p style="opacity: 0.8; margin-top: 10px;">You can now apply this template to other servers!</p>
+    `;
+
+    // Clear input
+    document.getElementById("template-name").value = "";
+
+    // Reload templates to show the new one
+    setTimeout(() => {
+      loadTemplates();
+    }, 2000);
+
+  } catch (error) {
+    console.error("Error saving template:", error);
+    alert(`❌ Failed to save template: ${error.message}`);
+  }
 }
 
 // Bulk Operations Page (EXCEEDS WICK!)
