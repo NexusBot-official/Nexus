@@ -1,66 +1,186 @@
 /**
  * Custom Shard & Cluster Names
- * Make your bot's infrastructure sound badass!
+ * Scalable naming system for 500+ shards and 50+ clusters
  */
 
-// Greek Gods Theme for Shards
-const SHARD_NAMES = [
-  "🛡️ Sentinel", // The Guardian
-  "🌊 Poseidon", // God of sea
-  "⚔️ Ares", // God of war
-  "🏹 Artemis", // Goddess of hunt
-  "☀️ Apollo", // God of sun
-  "🛡️ Athena", // Goddess of wisdom
-  "🔱 Hades", // God of underworld
-  "💘 Aphrodite", // Goddess of love
-  "⚒️ Hephaestus", // God of forge
-  "🍇 Dionysus", // God of wine
-  "📨 Hermes", // Messenger god
-  "🌾 Demeter", // Goddess of harvest
-  "🔥 Hestia", // Goddess of hearth
-  "🌙 Selene", // Goddess of moon
-  "🌟 Helios", // God of sun
-  "⭐ Aether", // God of light
-  "🌑 Nyx", // Goddess of night
-  "⚡ Kronos", // Titan of time
-  "🏔️ Atlas", // Titan who holds sky
-  "🌊 Oceanus", // Titan of ocean
+// Base names for themed generation
+const SHARD_PREFIXES = [
+  "🛡️",
+  "🗼",
+  "🔭",
+  "🚨",
+  "⚔️",
+  "🏰",
+  "🎯",
+  "🔒",
+  "⚡",
+  "🌟",
+  "🔱",
+  "🗡️",
+  "🏹",
+  "🔥",
+  "💎",
+  "🌊",
+  "🌙",
+  "☀️",
+  "⭐",
+  "🌌",
 ];
 
-// Mythical Creatures Theme for Clusters
-const CLUSTER_NAMES = [
-  "🐉 Dragon", // Ultimate power
-  "🦅 Phoenix", // Rebirth
-  "🦁 Sphinx", // Wisdom
-  "🦄 Unicorn", // Purity
-  "🐺 Cerberus", // Guardian
-  "🦂 Hydra", // Regeneration
-  "🦇 Basilisk", // Deadly
-  "🐍 Leviathan", // Sea monster
-  "🦉 Griffin", // Nobility
-  "🐲 Wyvern", // Aerial might
+const SHARD_BASES = [
+  "Sentinel",
+  "Watchtower",
+  "Lookout",
+  "Alarm",
+  "Warden",
+  "Citadel",
+  "Ranger",
+  "Keeper",
+  "Striker",
+  "Beacon",
+  "Trident",
+  "Blade",
+  "Arrow",
+  "Pyre",
+  "Guardian",
+  "Fortress",
+  "Outpost",
+  "Bastion",
+  "Defender",
+  "Vanguard",
+  "Shield",
+  "Vault",
+  "Bulwark",
+  "Aegis",
+  "Rampart",
+  "Sentry",
+  "Patrol",
+  "Watch",
+  "Guard",
+  "Protector",
+  "Barrier",
+  "Wall",
+  "Gate",
+  "Tower",
+  "Post",
+  "Scout",
+  "Recon",
+  "Spy",
+  "Observer",
+  "Monitor",
+  "Hunter",
+  "Tracker",
+  "Seeker",
+  "Finder",
+  "Stalker",
+  "Storm",
+  "Thunder",
+  "Lightning",
+  "Tempest",
+  "Gale",
+  "Frost",
+  "Blaze",
+  "Inferno",
+  "Glacier",
+  "Volcano",
+  "Nova",
+  "Comet",
+  "Meteor",
+  "Pulsar",
+  "Quasar",
+];
+
+const CLUSTER_PREFIXES = [
+  "🐉",
+  "🦅",
+  "🦁",
+  "🦄",
+  "🐺",
+  "🦂",
+  "🦇",
+  "🐍",
+  "🦉",
+  "🐲",
+];
+
+const CLUSTER_BASES = [
+  "Dragon",
+  "Phoenix",
+  "Sphinx",
+  "Unicorn",
+  "Cerberus",
+  "Hydra",
+  "Basilisk",
+  "Leviathan",
+  "Griffin",
+  "Wyvern",
+  "Chimera",
+  "Manticore",
+  "Pegasus",
+  "Kraken",
+  "Minotaur",
+  "Cyclops",
+  "Titan",
+  "Colossus",
+  "Behemoth",
+  "Goliath",
 ];
 
 /**
- * Get name for a shard
+ * Get name for a shard (supports 500+ shards)
  */
 function getShardName(shardId) {
-  if (shardId < SHARD_NAMES.length) {
-    return SHARD_NAMES[shardId];
+  // First shard is always Sentinel
+  if (shardId === 0) {
+    return "🛡️ Sentinel";
   }
-  // Fallback for shards beyond our list
-  return `⚡ Shard-${shardId}`;
+
+  // Use base names for first 50 shards
+  if (shardId <= 50) {
+    const prefixIndex = (shardId - 1) % SHARD_PREFIXES.length;
+    const baseIndex = (shardId - 1) % SHARD_BASES.length;
+    return `${SHARD_PREFIXES[prefixIndex]} ${SHARD_BASES[baseIndex]}`;
+  }
+
+  // For shards 51-500, add suffixes (Alpha, Beta, Gamma, etc.)
+  const suffixes = [
+    "Alpha",
+    "Beta",
+    "Gamma",
+    "Delta",
+    "Epsilon",
+    "Zeta",
+    "Eta",
+    "Theta",
+    "Iota",
+    "Kappa",
+  ];
+  const baseIndex = (shardId - 51) % SHARD_BASES.length;
+  const suffixIndex =
+    Math.floor((shardId - 51) / SHARD_BASES.length) % suffixes.length;
+  const prefixIndex = (shardId - 51) % SHARD_PREFIXES.length;
+
+  return `${SHARD_PREFIXES[prefixIndex]} ${SHARD_BASES[baseIndex]}-${suffixes[suffixIndex]}`;
 }
 
 /**
- * Get name for a cluster
+ * Get name for a cluster (supports 50+ clusters)
  */
 function getClusterName(clusterId) {
-  if (clusterId < CLUSTER_NAMES.length) {
-    return CLUSTER_NAMES[clusterId];
+  // Use base names for first 20 clusters
+  if (clusterId < 20) {
+    const prefixIndex = clusterId % CLUSTER_PREFIXES.length;
+    const baseIndex = clusterId % CLUSTER_BASES.length;
+    return `${CLUSTER_PREFIXES[prefixIndex]} ${CLUSTER_BASES[baseIndex]}`;
   }
-  // Fallback for clusters beyond our list
-  return `🔥 Cluster-${clusterId}`;
+  
+  // For clusters 20-50, add Roman numerals
+  const romanNumerals = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
+  const baseIndex = (clusterId - 20) % CLUSTER_BASES.length;
+  const numeralIndex = Math.floor((clusterId - 20) / CLUSTER_BASES.length) % romanNumerals.length;
+  const prefixIndex = (clusterId - 20) % CLUSTER_PREFIXES.length;
+  
+  return `${CLUSTER_PREFIXES[prefixIndex]} ${CLUSTER_BASES[baseIndex]}-${romanNumerals[numeralIndex]}`;
 }
 
 /**
@@ -79,6 +199,6 @@ module.exports = {
   getClusterName,
   getShardDisplay,
   getClusterDisplay,
-  SHARD_NAMES,
-  CLUSTER_NAMES,
+  SHARD_BASES,
+  CLUSTER_BASES,
 };
