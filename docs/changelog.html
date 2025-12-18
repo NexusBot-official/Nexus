@@ -84,8 +84,37 @@
 
       <div class="content-section">
         <div class="changelog-entry">
-          <h2>Version 1.0.2 - December 18, 2025</h2>
+          <h2>Version 1.0.3 - December 18, 2025</h2>
           <span class="version-badge">Latest</span>
+          <h3>🔒 Critical Security Patches</h3>
+          <ul>
+            <li>
+              🛡️ Fixed role hierarchy bypass in /warn and /timeout commands
+            </li>
+            <li>
+              🤖 Prevented bot self-moderation (users could warn/kick/ban
+              Sentinel)
+            </li>
+            <li>👑 Added bot protection to all moderation commands</li>
+            <li>📋 Fixed bulk operations allowing bot/owner targeting</li>
+            <li>✅ All commands now properly validate role hierarchy</li>
+            <li>🔐 Server owners can still moderate anyone (as intended)</li>
+          </ul>
+          <h3>🔧 Commands Fixed</h3>
+          <ul>
+            <li>/warn - Added hierarchy and bot protection</li>
+            <li>/kick - Added bot protection</li>
+            <li>/mute - Added bot protection</li>
+            <li>
+              /timeout - Added hierarchy and bot protection (both add/remove)
+            </li>
+            <li>/clearwarnings - Added bot protection</li>
+            <li>/bulk ban/kick/timeout - Added bot/owner skipping</li>
+          </ul>
+        </div>
+
+        <div class="changelog-entry">
+          <h2>Version 1.0.2 - December 18, 2025</h2>
           <h3>👮 Admin Dashboard Enhancement</h3>
           <ul>
             <li>📊 Added admin dashboard for blacklist management</li>
