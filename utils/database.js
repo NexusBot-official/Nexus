@@ -1295,11 +1295,18 @@ class Database {
         if (!err && row.count === 0) {
           const defaultSources = [
             { name: "topgg", description: "Top.gg bot list" },
+            { name: "top-gg", description: "Top.gg bot list (alt)" },
             { name: "discordbotlist", description: "Discord Bot List" },
+            { name: "discord-bot-list", description: "Discord Bot List (alt)" },
             { name: "voidbots", description: "Void Bots" },
+            { name: "void-bots", description: "Void Bots (alt)" },
             { name: "discordbots", description: "Discord Bots (bots.gg)" },
+            { name: "discord-bots", description: "Discord Bots (alt)" },
+            { name: "discord_bot", description: "Discord Bot (generic)" },
             { name: "botlistme", description: "Botlist.me" },
+            { name: "botlist-me", description: "Botlist.me (alt)" },
             { name: "discordservers", description: "Discord Servers" },
+            { name: "discord-servers", description: "Discord Servers (alt)" },
             { name: "reddit", description: "Reddit" },
             { name: "discord", description: "Discord servers/DMs" },
             { name: "github", description: "GitHub repository" },
