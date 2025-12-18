@@ -1265,15 +1265,15 @@ class Database {
           const defaultLinks = [
             {
               name: "Top.gg",
-              url: "https://top.gg/bot/1444739230679957646/vote",
+              url: "https://top.gg/bot/1450948411313619199/vote",
             },
             {
               name: "Discord Bot List",
-              url: "https://discordbotlist.com/bots/Sentinel-8245/upvote",
+              url: "https://discordbotlist.com/bots/sentinel/upvote",
             },
             {
               name: "Void Bots",
-              url: "https://voidbots.net/bot/1444739230679957646/vote",
+              url: "https://voidbots.net/bot/1450948411313619199/vote",
             },
           ];
 
@@ -1281,6 +1281,44 @@ class Database {
             this.db.run(
               "INSERT OR IGNORE INTO botlist_links (name, url, added_by, added_at) VALUES (?, ?, ?, ?)",
               [link.name, link.url, "system", Date.now()]
+            );
+          });
+        }
+      }
+    );
+
+    // Add default invite tracking sources if table is empty
+    this.db.get(
+      "SELECT COUNT(*) as count FROM invite_sources",
+      [],
+      (err, row) => {
+        if (!err && row.count === 0) {
+          const defaultSources = [
+            { name: "topgg", description: "Top.gg bot list" },
+            { name: "discordbotlist", description: "Discord Bot List" },
+            { name: "voidbots", description: "Void Bots" },
+            { name: "discordbots", description: "Discord Bots (bots.gg)" },
+            { name: "botlistme", description: "Botlist.me" },
+            { name: "discordservers", description: "Discord Servers" },
+            { name: "reddit", description: "Reddit" },
+            { name: "discord", description: "Discord servers/DMs" },
+            { name: "github", description: "GitHub repository" },
+            { name: "website", description: "Main website" },
+            { name: "youtube", description: "YouTube" },
+            { name: "twitter", description: "Twitter/X" },
+            { name: "tiktok", description: "TikTok" },
+            { name: "instagram", description: "Instagram" },
+            { name: "facebook", description: "Facebook" },
+            { name: "referral", description: "User referral" },
+            { name: "partner", description: "Partner server" },
+            { name: "ad", description: "Advertisement" },
+            { name: "other", description: "Other source" },
+          ];
+
+          defaultSources.forEach((source) => {
+            this.db.run(
+              "INSERT OR IGNORE INTO invite_sources (source, description, created_by, created_at) VALUES (?, ?, ?, ?)",
+              [source.name, source.description, "system", Date.now()]
             );
           });
         }
