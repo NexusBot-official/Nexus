@@ -235,8 +235,15 @@ module.exports = {
       // Train in background (don't block startup)
       setTimeout(async () => {
         logger.info("Ready", "🤖 Starting ML model training...");
-        await client.mlRaidDetection.train();
-        logger.info("Ready", "✅ ML model training complete");
+        const success = await client.mlRaidDetection.train();
+        if (success) {
+          logger.info("Ready", "✅ ML model training complete");
+        } else {
+          logger.info(
+            "Ready",
+            "⚠️ ML training failed - using rule-based detection"
+          );
+        }
       }, 5000); // Wait 5 seconds after startup
     }
 

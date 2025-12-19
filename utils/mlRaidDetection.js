@@ -377,6 +377,7 @@ class MLRaidDetection {
 
   /**
    * Train model on historical raid data
+   * @returns {boolean} True if training succeeded, false otherwise
    */
   async train() {
     // Skip if TensorFlow unavailable
@@ -385,12 +386,12 @@ class MLRaidDetection {
         "MLRaidDetection",
         "TensorFlow unavailable. Cannot train model."
       );
-      return;
+      return false;
     }
 
     if (this.isTraining) {
       logger.warn("MLRaidDetection", "Training already in progress");
-      return;
+      return false;
     }
 
     this.isTraining = true;
@@ -406,7 +407,7 @@ class MLRaidDetection {
           `Insufficient training data (${trainingData.length} samples), skipping training`
         );
         this.isTraining = false;
-        return;
+        return false;
       }
 
       logger.info(
@@ -442,7 +443,7 @@ class MLRaidDetection {
         this.tfAvailable = false;
         this.tfLoadError = tensorError.message;
         this.isTraining = false;
-        return;
+        return false;
       }
 
       // Train model
@@ -478,20 +479,25 @@ class MLRaidDetection {
       );
 
       this.lastTrainingTime = Date.now();
+      this.isTraining = false;
+      return true; // Training succeeded
     } catch (error) {
-      logger.error("MLRaidDetection", `Training failed: ${error.message}`);
+      this.isTraining = false;
 
       // If it's the isNullOrUndefined error, disable TensorFlow
       if (error.message && error.message.includes("isNullOrUndefined")) {
         logger.warn(
           "MLRaidDetection",
-          "TensorFlow compatibility issue detected. Disabling ML features."
+          `TensorFlow compatibility issue: ${error.message}. Disabling ML features.`
         );
         this.tfAvailable = false;
         this.tfLoadError = error.message;
+        return false;
       }
-    } finally {
-      this.isTraining = false;
+
+      // Other errors
+      logger.error("MLRaidDetection", `Training failed: ${error.message}`);
+      return false;
     }
   }
 
