@@ -228,23 +228,22 @@ module.exports = {
     }
 
     // Train ML Raid Detection Model (EXCEEDS WICK - AI-powered security)
-    if (
-      client.mlRaidDetection &&
-      (!shardInfo.isSharded || shardInfo.shardId === 0)
-    ) {
-      // Train in background (don't block startup)
-      setTimeout(async () => {
-        logger.info("Ready", "🤖 Starting ML model training...");
-        const success = await client.mlRaidDetection.train();
-        if (success) {
-          logger.info("Ready", "✅ ML model training complete");
-        } else {
-          logger.info(
-            "Ready",
-            "⚠️ ML training failed - using rule-based detection"
-          );
+    if (client.mlRaidDetection) {
+      if (client.mlRaidDetection.tfAvailable) {
+        // Only train if TensorFlow is actually available
+        if (!shardInfo.isSharded || shardInfo.shardId === 0) {
+          setTimeout(async () => {
+            logger.info("Ready", "🤖 Starting ML model training...");
+            const success = await client.mlRaidDetection.train();
+            if (success) {
+              logger.info("Ready", "✅ ML model training complete");
+            }
+          }, 5000);
         }
-      }, 5000); // Wait 5 seconds after startup
+      } else {
+        // TensorFlow unavailable - using rule-based detection (silent)
+        logger.info("Ready", "🛡️ ML raid detection active (rule-based mode)");
+      }
     }
 
     // Start Scheduled Actions System (EXCEEDS WICK - automation)
