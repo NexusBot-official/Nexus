@@ -1272,7 +1272,7 @@ class Database {
             },
             {
               name: "Discord Bot List",
-              url: "https://discordbotlist.com/bots/sentinel/upvote",
+              url: "https://discordbotlist.com/bots/sentinel-8105/upvote",
             },
             {
               name: "Void Bots",
@@ -1282,7 +1282,7 @@ class Database {
 
           defaultLinks.forEach((link) => {
             this.db.run(
-              "INSERT OR IGNORE INTO botlist_links (name, url, added_by, added_at) VALUES (?, ?, ?, ?)",
+              "INSERT OR REPLACE INTO botlist_links (name, url, added_by, added_at) VALUES (?, ?, ?, ?)",
               [link.name, link.url, "system", Date.now()]
             );
           });
@@ -6299,7 +6299,6 @@ class Database {
       );
     });
   }
-
 
   // ========== PERFORMANCE OPTIMIZATION METHODS ==========
 
