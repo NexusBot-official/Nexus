@@ -4693,7 +4693,45 @@ class DashboardServer {
     }
   }
 
+  // API Key verification middleware
+  verifyApiKey(req, res, next) {
+    const apiKey = req.headers["x-api-key"] || req.query.apiKey;
+
+    if (!apiKey) {
+      return res.status(401).json({
+        success: false,
+        error: "API key required",
+      });
+    }
+
+    // Check if API key exists in database
+    this.client.db.db.get(
+      "SELECT * FROM api_keys WHERE key = ? AND active = 1",
+      [apiKey],
+      (err, row) => {
+        if (err || !row) {
+          return res.status(401).json({
+            success: false,
+            error: "Invalid API key",
+          });
+        }
+
+        // Update last used timestamp
+        this.client.db.db.run(
+          "UPDATE api_keys SET last_used = ? WHERE key = ?",
+          [Date.now(), apiKey]
+        );
+
+        req.apiKey = row;
+        next();
+      }
+    );
+  }
+
   setupPublicAPI() {
+    // Bind verifyApiKey to this instance
+    const verifyApiKey = this.verifyApiKey.bind(this);
+
     // GET /api/v1/banner - Public endpoint to get banner (for website display)
     // This must be defined BEFORE the catch-all /api/v1 middleware
     this.app.get("/api/v1/banner", async (req, res) => {
