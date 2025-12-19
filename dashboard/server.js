@@ -10225,62 +10225,6 @@ class DashboardServer {
       }
     );
 
-    // ==================== ML RAID DETECTION API ====================
-
-    // GET /api/ml/stats - Get ML model statistics
-    this.app.get("/api/ml/stats", (req, res) => {
-      try {
-        if (!this.client.mlRaidDetection) {
-          return res.status(503).json({ error: "ML system not initialized" });
-        }
-
-        const stats = this.client.mlRaidDetection.getStats();
-        res.json({
-          success: true,
-          ...stats,
-          nextTrainingIn: Math.round(stats.nextTrainingIn / 1000 / 60), // minutes
-          lastTrainingTime: stats.lastTrainingTime
-            ? new Date(stats.lastTrainingTime).toISOString()
-            : null,
-        });
-      } catch (error) {
-        res.status(500).json({ error: error.message });
-      }
-    });
-
-    // POST /api/ml/train - Trigger manual training (admin only)
-    this.app.post("/api/ml/train", async (req, res) => {
-      try {
-        // Admin verification
-        const v = this.verifyAdmin(req);
-        if (!v.ok) {
-          return res
-            .status(v.status || 401)
-            .json({ error: v.message || "Unauthorized" });
-        }
-        this.clearAdminFailures(this.getRealIP(req));
-
-        if (!this.client.mlRaidDetection) {
-          return res.status(503).json({ error: "ML system not initialized" });
-        }
-
-        if (this.client.mlRaidDetection.isTraining) {
-          return res
-            .status(409)
-            .json({ error: "Training already in progress" });
-        }
-
-        // Trigger training in background
-        this.client.mlRaidDetection.train().catch((err) => {
-          logger.error("ML training error:", err);
-        });
-
-        res.json({ success: true, message: "Training started" });
-      } catch (error) {
-        res.status(500).json({ error: error.message });
-      }
-    });
-
     // ==================== THREAT NETWORK API ====================
 
     // GET /api/threat-network/stats - Get threat network statistics
@@ -10638,8 +10582,6 @@ class DashboardServer {
       }
     });
 
-    logger.info("API", "🔥 API v2 active (v1 deprecated)");
-    logger.info("API", "🤖 ML Raid Detection API active");
     logger.info("API", "🌐 Threat Network API active");
     logger.info("API", "⛓️ Blockchain Threat Intelligence API active");
     logger.info("API", "📊 Predictive Auto-Scaling API active");

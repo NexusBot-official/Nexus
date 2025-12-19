@@ -227,25 +227,6 @@ module.exports = {
       );
     }
 
-    // Train ML Raid Detection Model (EXCEEDS WICK - AI-powered security)
-    if (client.mlRaidDetection) {
-      if (client.mlRaidDetection.tfAvailable) {
-        // Only train if TensorFlow is actually available
-        if (!shardInfo.isSharded || shardInfo.shardId === 0) {
-          setTimeout(async () => {
-            logger.info("Ready", "🤖 Starting ML model training...");
-            const success = await client.mlRaidDetection.train();
-            if (success) {
-              logger.info("Ready", "✅ ML model training complete");
-            }
-          }, 5000);
-        }
-      } else {
-        // TensorFlow unavailable - using rule-based detection (silent)
-        logger.info("Ready", "🛡️ ML raid detection active (rule-based mode)");
-      }
-    }
-
     // Start Scheduled Actions System (EXCEEDS WICK - automation)
     if (
       client.scheduledActions &&

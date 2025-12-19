@@ -185,10 +185,6 @@ client.voteRewards = new VoteRewards(client);
 const ThreatNetwork = require("./utils/threatNetwork");
 client.threatNetwork = new ThreatNetwork(client);
 
-// ML-Based Raid Detection (EXCEEDS WICK - AI-powered pattern recognition)
-const MLRaidDetection = require("./utils/mlRaidDetection");
-client.mlRaidDetection = new MLRaidDetection(client);
-
 // Blockchain Threat Intelligence (EXCEEDS WICK - decentralized trust system)
 const BlockchainThreatIntel = require("./utils/blockchainThreatIntel");
 client.blockchainThreatIntel = new BlockchainThreatIntel(client);

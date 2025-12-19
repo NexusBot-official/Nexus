@@ -178,64 +178,6 @@ module.exports = {
         userId: member.id,
       });
 
-      // ML-Based Prediction (EXCEEDS WICK - AI pattern recognition)
-      if (client.mlRaidDetection) {
-        try {
-          // Get recent joins for ML context
-          const joinHistory = await AdvancedAntiRaid.getJoinHistory(
-            member.guild.id
-          );
-          const recentJoins = joinHistory.joins
-            .filter((j) => Date.now() - j.timestamp < 30000) // Last 30 seconds
-            .map((j) => ({
-              user: { avatar: j.avatar, username: j.username },
-              timestamp: j.timestamp,
-            }));
-
-          const mlPrediction = await client.mlRaidDetection.predict(
-            member,
-            recentJoins,
-            10000
-          );
-
-          if (mlPrediction.isRaid && mlPrediction.confidence > 0.8) {
-            logger.warn(
-              `🤖 ML detected raid pattern for ${member.user.tag} (confidence: ${(mlPrediction.confidence * 100).toFixed(1)}%)`
-            );
-
-            // Broadcast ML prediction to threat network
-            if (client.threatNetwork) {
-              await client.threatNetwork.reportThreat(
-                member.guild.id,
-                member.guild.name,
-                {
-                  type: "raid",
-                  severity: Math.ceil(mlPrediction.confidence * 10),
-                  userId: member.id,
-                  userTag: member.user.tag,
-                  details: {
-                    mlDetected: true,
-                    confidence: mlPrediction.confidence,
-                    features: mlPrediction.features,
-                    joinRate: mlPrediction.features.joinRate,
-                    accountAge: mlPrediction.features.accountAge,
-                  },
-                  evidence: [
-                    {
-                      type: "ml_prediction",
-                      confidence: mlPrediction.confidence,
-                      features: mlPrediction.features,
-                    },
-                  ],
-                }
-              );
-            }
-          }
-        } catch (mlError) {
-          logger.debug("ML prediction failed:", mlError.message);
-        }
-      }
-
       logger.debug(
         `[guildMemberAdd] Calling AdvancedAntiRaid.detectRaid for ${member.user.tag}`
       );
