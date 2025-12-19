@@ -10225,7 +10225,417 @@ class DashboardServer {
       }
     );
 
+    // ==================== ML RAID DETECTION API ====================
+
+    // GET /api/ml/stats - Get ML model statistics
+    this.app.get("/api/ml/stats", (req, res) => {
+      try {
+        if (!this.client.mlRaidDetection) {
+          return res.status(503).json({ error: "ML system not initialized" });
+        }
+
+        const stats = this.client.mlRaidDetection.getStats();
+        res.json({
+          success: true,
+          ...stats,
+          nextTrainingIn: Math.round(stats.nextTrainingIn / 1000 / 60), // minutes
+          lastTrainingTime: stats.lastTrainingTime
+            ? new Date(stats.lastTrainingTime).toISOString()
+            : null,
+        });
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    });
+
+    // POST /api/ml/train - Trigger manual training (admin only)
+    this.app.post(
+      "/api/ml/train",
+      this.verifyAdminPassword.bind(this),
+      async (req, res) => {
+        try {
+          if (!this.client.mlRaidDetection) {
+            return res.status(503).json({ error: "ML system not initialized" });
+          }
+
+          if (this.client.mlRaidDetection.isTraining) {
+            return res
+              .status(409)
+              .json({ error: "Training already in progress" });
+          }
+
+          // Trigger training in background
+          this.client.mlRaidDetection.train().catch((err) => {
+            logger.error("ML training error:", err);
+          });
+
+          res.json({ success: true, message: "Training started" });
+        } catch (error) {
+          res.status(500).json({ error: error.message });
+        }
+      }
+    );
+
+    // ==================== THREAT NETWORK API ====================
+
+    // GET /api/threat-network/stats - Get threat network statistics
+    this.app.get("/api/threat-network/stats", (req, res) => {
+      try {
+        if (!this.client.threatNetwork) {
+          return res
+            .status(503)
+            .json({ error: "Threat network not initialized" });
+        }
+
+        const stats = this.client.threatNetwork.getStatistics();
+        const state = this.client.threatNetwork.getCurrentState();
+
+        res.json({
+          success: true,
+          statistics: stats,
+          currentState: state,
+        });
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    });
+
+    // GET /api/threat-network/reputation/:guildId - Get server reputation
+    this.app.get("/api/threat-network/reputation/:guildId", (req, res) => {
+      try {
+        if (!this.client.threatNetwork) {
+          return res
+            .status(503)
+            .json({ error: "Threat network not initialized" });
+        }
+
+        const { guildId } = req.params;
+        const reputation =
+          this.client.threatNetwork.getServerReputation(guildId);
+
+        if (!reputation) {
+          return res.status(404).json({ error: "Server not found" });
+        }
+
+        res.json({
+          success: true,
+          guildId,
+          reputation,
+        });
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    });
+
+    // GET /api/threat-network/leaderboard - Get reputation leaderboard
+    this.app.get("/api/threat-network/leaderboard", (req, res) => {
+      try {
+        if (!this.client.threatNetwork) {
+          return res
+            .status(503)
+            .json({ error: "Threat network not initialized" });
+        }
+
+        const leaderboard = this.client.threatNetwork.getAllReputations();
+
+        res.json({
+          success: true,
+          leaderboard: leaderboard.slice(0, 100), // Top 100
+        });
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    });
+
+    // ==================== BLOCKCHAIN THREAT INTEL API ====================
+
+    // GET /api/blockchain/stats - Get blockchain statistics
+    this.app.get("/api/blockchain/stats", (req, res) => {
+      try {
+        if (!this.client.blockchainThreatIntel) {
+          return res.status(503).json({ error: "Blockchain not initialized" });
+        }
+
+        const stats = this.client.blockchainThreatIntel.getStats();
+        res.json({
+          success: true,
+          ...stats,
+        });
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    });
+
+    // GET /api/blockchain/reputation/:guildId - Get blockchain-verified reputation
+    this.app.get("/api/blockchain/reputation/:guildId", (req, res) => {
+      try {
+        if (!this.client.blockchainThreatIntel) {
+          return res.status(503).json({ error: "Blockchain not initialized" });
+        }
+
+        const { guildId } = req.params;
+        const reputation =
+          this.client.blockchainThreatIntel.getServerReputation(guildId);
+
+        res.json({
+          success: true,
+          guildId,
+          reputation,
+        });
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    });
+
+    // GET /api/blockchain/user/:userId - Get user threat reports
+    this.app.get("/api/blockchain/user/:userId", (req, res) => {
+      try {
+        if (!this.client.blockchainThreatIntel) {
+          return res.status(503).json({ error: "Blockchain not initialized" });
+        }
+
+        const { userId } = req.params;
+        const reports =
+          this.client.blockchainThreatIntel.getUserThreatReports(userId);
+
+        res.json({
+          success: true,
+          userId,
+          reports,
+          reportCount: reports.length,
+        });
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    });
+
+    // GET /api/blockchain/block/:index - Get specific block
+    this.app.get("/api/blockchain/block/:index", (req, res) => {
+      try {
+        if (!this.client.blockchainThreatIntel) {
+          return res.status(503).json({ error: "Blockchain not initialized" });
+        }
+
+        const { index } = req.params;
+        const block = this.client.blockchainThreatIntel.blocks[parseInt(index)];
+
+        if (!block) {
+          return res.status(404).json({ error: "Block not found" });
+        }
+
+        res.json({
+          success: true,
+          block,
+        });
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    });
+
+    // GET /api/blockchain/verify/:blockIndex/:txIndex - Get Merkle proof for transaction
+    this.app.get("/api/blockchain/verify/:blockIndex/:txIndex", (req, res) => {
+      try {
+        if (!this.client.blockchainThreatIntel) {
+          return res.status(503).json({ error: "Blockchain not initialized" });
+        }
+
+        const { blockIndex, txIndex } = req.params;
+        const proof = this.client.blockchainThreatIntel.getMerkleProof(
+          parseInt(blockIndex),
+          parseInt(txIndex)
+        );
+
+        if (!proof) {
+          return res.status(404).json({ error: "Transaction not found" });
+        }
+
+        res.json({
+          success: true,
+          blockIndex: parseInt(blockIndex),
+          txIndex: parseInt(txIndex),
+          proof,
+          verified: true,
+        });
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    });
+
+    // GET /api/blockchain/export - Export entire blockchain for verification
+    this.app.get("/api/blockchain/export", (req, res) => {
+      try {
+        if (!this.client.blockchainThreatIntel) {
+          return res.status(503).json({ error: "Blockchain not initialized" });
+        }
+
+        const chain = this.client.blockchainThreatIntel.exportChain();
+        res.json({
+          success: true,
+          ...chain,
+        });
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    });
+
+    // POST /api/blockchain/mine - Trigger manual mining (admin only)
+    this.app.post(
+      "/api/blockchain/mine",
+      this.verifyAdminPassword.bind(this),
+      async (req, res) => {
+        try {
+          if (!this.client.blockchainThreatIntel) {
+            return res
+              .status(503)
+              .json({ error: "Blockchain not initialized" });
+          }
+
+          const { minerAddress } = req.body;
+          const block = await this.client.blockchainThreatIntel.mineBlock(
+            minerAddress || "admin"
+          );
+
+          if (!block) {
+            return res
+              .status(400)
+              .json({ error: "No pending transactions to mine" });
+          }
+
+          res.json({
+            success: true,
+            message: "Block mined successfully",
+            block,
+          });
+        } catch (error) {
+          res.status(500).json({ error: error.message });
+        }
+      }
+    );
+
+    // ==================== PREDICTIVE AUTO-SCALING API ====================
+
+    // GET /api/scaling/predictions - Get growth predictions
+    this.app.get("/api/scaling/predictions", (req, res) => {
+      try {
+        if (!this.client.predictiveAutoScaling) {
+          return res
+            .status(503)
+            .json({ error: "Predictive scaling not initialized" });
+        }
+
+        const predictions = this.client.predictiveAutoScaling.getPredictions();
+
+        if (!predictions) {
+          return res
+            .status(404)
+            .json({ error: "No predictions available yet (need more data)" });
+        }
+
+        res.json({
+          success: true,
+          ...predictions,
+        });
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    });
+
+    // GET /api/scaling/stats - Get scaling statistics
+    this.app.get("/api/scaling/stats", (req, res) => {
+      try {
+        if (!this.client.predictiveAutoScaling) {
+          return res
+            .status(503)
+            .json({ error: "Predictive scaling not initialized" });
+        }
+
+        const stats = this.client.predictiveAutoScaling.getStats();
+
+        res.json({
+          success: true,
+          ...stats,
+        });
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    });
+
+    // GET /api/scaling/chart - Get growth chart data
+    this.app.get("/api/scaling/chart", (req, res) => {
+      try {
+        if (!this.client.predictiveAutoScaling) {
+          return res
+            .status(503)
+            .json({ error: "Predictive scaling not initialized" });
+        }
+
+        const chartData =
+          this.client.predictiveAutoScaling.getGrowthChartData();
+
+        res.json({
+          success: true,
+          ...chartData,
+        });
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    });
+
+    // ==================== BEHAVIORAL BIOMETRICS API ====================
+
+    // GET /api/biometrics/stats - Get biometrics statistics
+    this.app.get("/api/biometrics/stats", (req, res) => {
+      try {
+        if (!this.client.behavioralBiometrics) {
+          return res
+            .status(503)
+            .json({ error: "Behavioral biometrics not initialized" });
+        }
+
+        const stats = this.client.behavioralBiometrics.getStats();
+
+        res.json({
+          success: true,
+          ...stats,
+        });
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    });
+
+    // GET /api/biometrics/user/:userId - Get user behavioral summary
+    this.app.get("/api/biometrics/user/:userId", (req, res) => {
+      try {
+        if (!this.client.behavioralBiometrics) {
+          return res
+            .status(503)
+            .json({ error: "Behavioral biometrics not initialized" });
+        }
+
+        const { userId } = req.params;
+        const summary =
+          this.client.behavioralBiometrics.getUserBehavioralSummary(userId);
+
+        if (!summary) {
+          return res.status(404).json({ error: "User not found in system" });
+        }
+
+        res.json({
+          success: true,
+          userId,
+          ...summary,
+        });
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    });
+
     logger.info("API", "🔥 API v2 active (v1 deprecated)");
+    logger.info("API", "🤖 ML Raid Detection API active");
+    logger.info("API", "🌐 Threat Network API active");
+    logger.info("API", "⛓️ Blockchain Threat Intelligence API active");
+    logger.info("API", "📊 Predictive Auto-Scaling API active");
+    logger.info("API", "🧬 Behavioral Biometrics API active");
   }
 
   // Analytics system removed - causing errors
@@ -10307,8 +10717,31 @@ class DashboardServer {
       }
     }, 300000);
 
-    // Store server instance for graceful shutdown
-    this.server = this.app.listen(port, () => {
+    // Create HTTP server instance
+    const http = require("http");
+    this.server = http.createServer(this.app);
+
+    // Initialize Socket.IO for real-time communication
+    const { Server } = require("socket.io");
+    this.io = new Server(this.server, {
+      cors: {
+        origin: process.env.DASHBOARD_URL || "*",
+        methods: ["GET", "POST"],
+      },
+      transports: ["websocket", "polling"],
+    });
+
+    // Connect Socket.IO to Threat Network
+    if (this.client.threatNetwork) {
+      this.client.threatNetwork.setSocketIO(this.io);
+      logger.info(
+        "Dashboard",
+        "🌐 Real-time threat network initialized with WebSocket"
+      );
+    }
+
+    // Start server
+    this.server.listen(port, () => {
       logger.info(
         "Dashboard",
         `🚀 Dashboard server running on http://localhost:${port}`
@@ -10323,6 +10756,10 @@ class DashboardServer {
       logger.info(
         "Dashboard",
         "✅ Input validation, Redis caching, and per-endpoint rate limiting enabled"
+      );
+      logger.info(
+        "Dashboard",
+        "⚡ WebSocket server active for real-time threat collaboration"
       );
     });
 
@@ -10347,6 +10784,13 @@ class DashboardServer {
       // Clear intervals
       if (this.rateLimitCleanupInterval) {
         clearInterval(this.rateLimitCleanupInterval);
+      }
+
+      // Close Socket.IO connections
+      if (this.io) {
+        this.io.close(() => {
+          logger.info("Dashboard", "WebSocket server closed");
+        });
       }
 
       // Close SSE connections

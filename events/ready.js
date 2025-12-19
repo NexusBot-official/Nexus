@@ -227,6 +227,19 @@ module.exports = {
       );
     }
 
+    // Train ML Raid Detection Model (EXCEEDS WICK - AI-powered security)
+    if (
+      client.mlRaidDetection &&
+      (!shardInfo.isSharded || shardInfo.shardId === 0)
+    ) {
+      // Train in background (don't block startup)
+      setTimeout(async () => {
+        logger.info("Ready", "🤖 Starting ML model training...");
+        await client.mlRaidDetection.train();
+        logger.info("Ready", "✅ ML model training complete");
+      }, 5000); // Wait 5 seconds after startup
+    }
+
     // Start Scheduled Actions System (EXCEEDS WICK - automation)
     if (
       client.scheduledActions &&

@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sentinel - Live Threat Network</title>
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        color: #e0e0e0;
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      header {
+        text-align: center;
+        margin-bottom: 40px;
+      }
+
+      h1 {
+        font-size: 2.5em;
+        color: #00ff88;
+        margin-bottom: 10px;
+      }
+
+      .subtitle {
+        color: #a0a0a0;
+        font-size: 1.1em;
+      }
+
+      .network-health {
+        background: rgba(0, 255, 136, 0.1);
+        border: 2px solid #00ff88;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 30px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+      }
+
+      .health-stat {
+        text-align: center;
+      }
+
+      .health-stat-value {
+        font-size: 2.5em;
+        font-weight: bold;
+        color: #00ff88;
+      }
+
+      .health-stat-label {
+        color: #a0a0a0;
+        font-size: 0.9em;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .threat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .threat-card {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        padding: 20px;
+        border-left: 4px solid;
+        animation: slideIn 0.3s ease;
+        position: relative;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .threat-card.raid {
+        border-color: #ff4444;
+      }
+
+      .threat-card.spam {
+        border-color: #ffaa00;
+      }
+
+      .threat-card.token_leak {
+        border-color: #ff0088;
+      }
+
+      .threat-card.consensus {
+        border-color: #00ff88;
+        box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+      }
+
+      .threat-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+
+      .threat-type {
+        font-size: 1.2em;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+
+      .threat-severity {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.9em;
+      }
+
+      .threat-guild {
+        color: #00ff88;
+        font-size: 1.1em;
+        margin-bottom: 10px;
+      }
+
+      .threat-details {
+        color: #c0c0c0;
+        font-size: 0.95em;
+        margin-bottom: 10px;
+      }
+
+      .threat-consensus {
+        background: rgba(0, 255, 136, 0.1);
+        border: 1px solid #00ff88;
+        padding: 10px;
+        border-radius: 5px;
+        margin-top: 10px;
+      }
+
+      .threat-timestamp {
+        color: #888;
+        font-size: 0.85em;
+        margin-top: 10px;
+      }
+
+      .no-threats {
+        text-align: center;
+        padding: 60px 20px;
+        color: #666;
+        font-size: 1.2em;
+      }
+
+      .connection-status {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 10px 20px;
+        border-radius: 20px;
+        font-size: 0.9em;
+        font-weight: bold;
+      }
+
+      .connected {
+        background: rgba(0, 255, 136, 0.2);
+        color: #00ff88;
+        border: 2px solid #00ff88;
+      }
+
+      .disconnected {
+        background: rgba(255, 68, 68, 0.2);
+        color: #ff4444;
+        border: 2px solid #ff4444;
+      }
+
+      .alert-icon {
+        font-size: 1.5em;
+        margin-right: 5px;
+      }
+
+      .pulse {
+        animation: pulse 2s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="connection-status disconnected" id="connection-status">
+      <span class="alert-icon">⚠️</span>
+      Connecting...
+    </div>
+
+    <div class="container">
+      <header>
+        <h1>🛡️ Sentinel Threat Network</h1>
+        <p class="subtitle">Real-Time Cross-Server Threat Intelligence</p>
+      </header>
+
+      <div class="network-health" id="network-health">
+        <div class="health-stat">
+          <div class="health-stat-value" id="health-score">--</div>
+          <div class="health-stat-label">Network Health</div>
+        </div>
+        <div class="health-stat">
+          <div class="health-stat-value" id="total-servers">--</div>
+          <div class="health-stat-label">Connected Servers</div>
+        </div>
+        <div class="health-stat">
+          <div class="health-stat-value" id="active-threats">--</div>
+          <div class="health-stat-label">Active Threats</div>
+        </div>
+        <div class="health-stat">
+          <div class="health-stat-value" id="avg-reputation">--</div>
+          <div class="health-stat-label">Avg Reputation</div>
+        </div>
+      </div>
+
+      <div class="threat-grid" id="threat-grid">
+        <div class="no-threats">
+          No active threats detected. Network is secure. ✅
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const DASHBOARD_URL = "https://regular-puma-clearly.ngrok-free.app";
+
+      // Connect to WebSocket server
+      const socket = io(DASHBOARD_URL, {
+        transports: ["websocket", "polling"],
+      });
+
+      const statusEl = document.getElementById("connection-status");
+      const threatGridEl = document.getElementById("threat-grid");
+      const healthScoreEl = document.getElementById("health-score");
+      const totalServersEl = document.getElementById("total-servers");
+      const activeThreatsEl = document.getElementById("active-threats");
+      const avgReputationEl = document.getElementById("avg-reputation");
+
+      let threats = new Map();
+
+      // Connection status
+      socket.on("connect", () => {
+        console.log("Connected to threat network");
+        statusEl.textContent = "🟢 Connected";
+        statusEl.className = "connection-status connected";
+      });
+
+      socket.on("disconnect", () => {
+        console.log("Disconnected from threat network");
+        statusEl.textContent = "⚠️ Disconnected";
+        statusEl.className = "connection-status disconnected";
+      });
+
+      // Initial state
+      socket.on("threat:state", (state) => {
+        console.log("Received threat state:", state);
+        updateNetworkHealth(state.networkHealth);
+
+        // Display active threats
+        state.activeThreats.forEach((threat) => {
+          threats.set(threat.id, threat);
+        });
+        renderThreats();
+      });
+
+      // New threat
+      socket.on("threat:new", (threat) => {
+        console.log("New threat:", threat);
+        threats.set(threat.id, threat);
+        renderThreats();
+
+        // Show notification
+        if (Notification.permission === "granted") {
+          new Notification(`🚨 ${threat.type.toUpperCase()} Threat Detected`, {
+            body: `${threat.guildName}: ${threat.details.suspiciousJoinCount || "Unknown count"} suspicious accounts`,
+            icon: "/favicon.ico",
+          });
+        }
+      });
+
+      // Threat updated
+      socket.on("threat:update", (threat) => {
+        console.log("Threat updated:", threat);
+        threats.set(threat.id, threat);
+        renderThreats();
+      });
+
+      // Consensus reached
+      socket.on("threat:consensus", (threat) => {
+        console.log("Consensus reached:", threat);
+        threats.set(threat.id, threat);
+        renderThreats();
+
+        // Show special notification
+        if (Notification.permission === "granted") {
+          new Notification("⚠️ CONSENSUS REACHED", {
+            body: `${(threat.consensusRatio * 100).toFixed(0)}% of servers confirm ${threat.type} threat in ${threat.guildName}`,
+            icon: "/favicon.ico",
+          });
+        }
+      });
+
+      function updateNetworkHealth(health) {
+        healthScoreEl.textContent = health.score;
+        totalServersEl.textContent = health.totalServers;
+        activeThreatsEl.textContent = health.activeThreats;
+        avgReputationEl.textContent = health.avgReputation;
+
+        // Color code health score
+        if (health.score >= 80) {
+          healthScoreEl.style.color = "#00ff88";
+        } else if (health.score >= 50) {
+          healthScoreEl.style.color = "#ffaa00";
+        } else {
+          healthScoreEl.style.color = "#ff4444";
+        }
+      }
+
+      function renderThreats() {
+        if (threats.size === 0) {
+          threatGridEl.innerHTML =
+            '<div class="no-threats">No active threats detected. Network is secure. ✅</div>';
+          return;
+        }
+
+        const threatsArray = Array.from(threats.values()).sort(
+          (a, b) => b.timestamp - a.timestamp
+        );
+
+        threatGridEl.innerHTML = threatsArray
+          .map(
+            (threat) => `
+          <div class="threat-card ${threat.type} ${threat.status === "consensus_reached" ? "consensus" : ""}">
+            <div class="threat-header">
+              <div class="threat-type">
+                ${threat.type === "raid" ? "🚨" : threat.type === "spam" ? "⚠️" : "🔥"} ${threat.type}
+              </div>
+              <div class="threat-severity">
+                Severity: ${threat.severity}/10
+              </div>
+            </div>
+            <div class="threat-guild">
+              📍 ${threat.guildName}
+            </div>
+            <div class="threat-details">
+              <strong>User:</strong> ${threat.userTag}<br>
+              <strong>Details:</strong> ${threat.details.suspiciousJoinCount || 0} suspicious accounts
+            </div>
+            ${
+              threat.status === "consensus_reached"
+                ? `
+              <div class="threat-consensus pulse">
+                <strong>⚠️ NETWORK CONSENSUS REACHED</strong><br>
+                ${threat.confirmedBy.length} servers confirm (${(threat.consensusRatio * 100).toFixed(0)}%)
+              </div>
+            `
+                : `
+              <div style="color: #888; font-size: 0.9em;">
+                Confirmed by: ${threat.confirmedBy.length} server${threat.confirmedBy.length !== 1 ? "s" : ""}
+              </div>
+            `
+            }
+            <div class="threat-timestamp">
+              ${new Date(threat.timestamp).toLocaleString()}
+            </div>
+          </div>
+        `
+          )
+          .join("");
+      }
+
+      // Request notification permission
+      if (Notification.permission === "default") {
+        Notification.requestPermission();
+      }
+
+      // Auto-refresh network health every 30 seconds
+      setInterval(() => {
+        socket.emit("request:health");
+      }, 30000);
+    </script>
+  </body>
+</html>

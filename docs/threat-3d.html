@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sentinel - 3D Threat Visualization</title>
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r160/three.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: #000;
+        color: #e0e0e0;
+        overflow: hidden;
+      }
+
+      #canvas-container {
+        width: 100vw;
+        height: 100vh;
+        position: relative;
+      }
+
+      #info-panel {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        background: rgba(0, 0, 0, 0.8);
+        border: 2px solid #00ff88;
+        border-radius: 10px;
+        padding: 20px;
+        min-width: 300px;
+        max-width: 400px;
+        z-index: 100;
+      }
+
+      h1 {
+        color: #00ff88;
+        font-size: 1.5em;
+        margin-bottom: 15px;
+      }
+
+      .stat {
+        display: flex;
+        justify-content: space-between;
+        margin: 10px 0;
+        padding: 5px 0;
+        border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+      }
+
+      .stat-label {
+        color: #a0a0a0;
+      }
+
+      .stat-value {
+        color: #00ff88;
+        font-weight: bold;
+      }
+
+      .controls {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.8);
+        border: 2px solid #00ff88;
+        border-radius: 10px;
+        padding: 15px 30px;
+        z-index: 100;
+      }
+
+      button {
+        background: rgba(0, 255, 136, 0.2);
+        border: 1px solid #00ff88;
+        color: #00ff88;
+        padding: 10px 20px;
+        margin: 0 5px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 0.9em;
+        transition: all 0.3s;
+      }
+
+      button:hover {
+        background: rgba(0, 255, 136, 0.4);
+      }
+
+      button.active {
+        background: #00ff88;
+        color: #000;
+      }
+
+      .threat-popup {
+        position: absolute;
+        background: rgba(255, 68, 68, 0.9);
+        border: 2px solid #ff4444;
+        border-radius: 5px;
+        padding: 10px;
+        color: white;
+        font-size: 0.9em;
+        pointer-events: none;
+        z-index: 1000;
+        animation: popup 0.3s ease;
+      }
+
+      @keyframes popup {
+        from {
+          opacity: 0;
+          transform: scale(0.8);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .legend {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: rgba(0, 0, 0, 0.8);
+        border: 2px solid #00ff88;
+        border-radius: 10px;
+        padding: 15px;
+        z-index: 100;
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        margin: 8px 0;
+      }
+
+      .legend-color {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        margin-right: 10px;
+      }
+
+      .connection-status {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        padding: 10px 20px;
+        border-radius: 20px;
+        font-size: 0.9em;
+        font-weight: bold;
+        z-index: 150;
+      }
+
+      .connected {
+        background: rgba(0, 255, 136, 0.2);
+        color: #00ff88;
+        border: 2px solid #00ff88;
+      }
+
+      .disconnected {
+        background: rgba(255, 68, 68, 0.2);
+        color: #ff4444;
+        border: 2px solid #ff4444;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="canvas-container"></div>
+
+    <div class="connection-status disconnected" id="connection-status">
+      ⚠️ Connecting...
+    </div>
+
+    <div id="info-panel">
+      <h1>🛡️ Sentinel Network</h1>
+      <div class="stat">
+        <span class="stat-label">Total Servers:</span>
+        <span class="stat-value" id="total-servers">--</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Active Threats:</span>
+        <span class="stat-value" id="active-threats">--</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Network Health:</span>
+        <span class="stat-value" id="network-health">--</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Threat Level:</span>
+        <span class="stat-value" id="threat-level">LOW</span>
+      </div>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item">
+        <div class="legend-color" style="background: #00ff88"></div>
+        <span>Healthy Server</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background: #ffaa00"></div>
+        <span>Under Attack</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background: #ff4444"></div>
+        <span>Critical Threat</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background: #ff0088"></div>
+        <span>Consensus Reached</span>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button id="toggle-rotation" class="active">🔄 Auto-Rotate</button>
+      <button id="toggle-trails">✨ Particle Trails</button>
+      <button id="replay-attacks">⏮️ Replay Last Attack</button>
+      <button id="reset-view">🔍 Reset View</button>
+    </div>
+
+    <script>
+      const DASHBOARD_URL = "https://regular-puma-clearly.ngrok-free.app";
+
+      // Three.js Scene Setup
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x000000);
+      scene.fog = new THREE.Fog(0x000000, 50, 200);
+
+      const camera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+      );
+      camera.position.set(0, 30, 50);
+      camera.lookAt(0, 0, 0);
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.shadowMap.enabled = true;
+      document
+        .getElementById("canvas-container")
+        .appendChild(renderer.domElement);
+
+      // Lighting
+      const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
+      scene.add(ambientLight);
+
+      const pointLight = new THREE.PointLight(0x00ff88, 1, 100);
+      pointLight.position.set(0, 20, 0);
+      scene.add(pointLight);
+
+      // Grid
+      const gridHelper = new THREE.GridHelper(100, 50, 0x00ff88, 0x003322);
+      scene.add(gridHelper);
+
+      // Data structures
+      const serverNodes = new Map(); // guildId -> mesh
+      const threatLines = []; // Array of threat connection lines
+      const particles = []; // Particle effects for attacks
+      let autoRotate = true;
+      let showTrails = false;
+      let lastAttacks = [];
+
+      // Socket.IO connection
+      const socket = io(DASHBOARD_URL, {
+        transports: ["websocket", "polling"],
+      });
+
+      const statusEl = document.getElementById("connection-status");
+
+      socket.on("connect", () => {
+        console.log("Connected to threat network");
+        statusEl.textContent = "🟢 Connected";
+        statusEl.className = "connection-status connected";
+      });
+
+      socket.on("disconnect", () => {
+        console.log("Disconnected from threat network");
+        statusEl.textContent = "⚠️ Disconnected";
+        statusEl.className = "connection-status disconnected";
+      });
+
+      // Initial state
+      socket.on("threat:state", (state) => {
+        console.log("Received threat state:", state);
+        updateStats(state.networkHealth);
+
+        // Create server nodes
+        const serverCount = state.networkHealth.totalServers;
+        createServerNodes(serverCount);
+      });
+
+      // New threat
+      socket.on("threat:new", (threat) => {
+        console.log("New threat:", threat);
+        visualizeThreat(threat);
+        lastAttacks.unshift(threat);
+        if (lastAttacks.length > 10) lastAttacks.pop();
+      });
+
+      // Create server nodes in 3D space
+      function createServerNodes(count) {
+        // Clear existing nodes
+        serverNodes.forEach((mesh) => scene.remove(mesh));
+        serverNodes.clear();
+
+        // Create nodes in a circle formation
+        const radius = 30;
+        for (let i = 0; i < count; i++) {
+          const angle = (i / count) * Math.PI * 2;
+          const x = Math.cos(angle) * radius;
+          const z = Math.sin(angle) * radius;
+
+          const geometry = new THREE.SphereGeometry(1, 16, 16);
+          const material = new THREE.MeshPhongMaterial({
+            color: 0x00ff88,
+            emissive: 0x00ff88,
+            emissiveIntensity: 0.5,
+          });
+          const sphere = new THREE.Mesh(geometry, material);
+          sphere.position.set(x, 0, z);
+          sphere.castShadow = true;
+
+          scene.add(sphere);
+          serverNodes.set(`server_${i}`, sphere);
+
+          // Add server label
+          const sprite = createTextSprite(`S${i + 1}`);
+          sprite.position.set(x, 3, z);
+          scene.add(sprite);
+        }
+      }
+
+      // Create text sprite for labels
+      function createTextSprite(text) {
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+        canvas.width = 256;
+        canvas.height = 128;
+
+        context.fillStyle = "#00ff88";
+        context.font = "40px Arial";
+        context.textAlign = "center";
+        context.fillText(text, 128, 64);
+
+        const texture = new THREE.CanvasTexture(canvas);
+        const material = new THREE.SpriteMaterial({ map: texture });
+        const sprite = new THREE.Sprite(material);
+        sprite.scale.set(5, 2.5, 1);
+
+        return sprite;
+      }
+
+      // Visualize a threat
+      function visualizeThreat(threat) {
+        // Get random server nodes to visualize attack
+        const nodes = Array.from(serverNodes.values());
+        if (nodes.length < 2) return;
+
+        const sourceNode = nodes[Math.floor(Math.random() * nodes.length)];
+        const targetNode = nodes[Math.floor(Math.random() * nodes.length)];
+
+        // Change colors based on threat severity
+        const threatColor =
+          threat.severity >= 8
+            ? 0xff4444
+            : threat.severity >= 5
+              ? 0xffaa00
+              : 0x00ff88;
+
+        sourceNode.material.color.setHex(threatColor);
+        sourceNode.material.emissive.setHex(threatColor);
+        sourceNode.material.emissiveIntensity = 1.0;
+
+        // Create attack line
+        const points = [sourceNode.position, targetNode.position];
+        const geometry = new THREE.BufferGeometry().setFromPoints(points);
+        const material = new THREE.LineBasicMaterial({ color: threatColor });
+        const line = new THREE.Line(geometry, material);
+        scene.add(line);
+        threatLines.push({ line, createdAt: Date.now() });
+
+        // Create particle burst
+        if (showTrails) {
+          createParticleBurst(sourceNode.position, threatColor);
+        }
+
+        // Fade back to normal after 3 seconds
+        setTimeout(() => {
+          sourceNode.material.color.setHex(0x00ff88);
+          sourceNode.material.emissive.setHex(0x00ff88);
+          sourceNode.material.emissiveIntensity = 0.5;
+          scene.remove(line);
+          threatLines.splice(threatLines.indexOf(line), 1);
+        }, 3000);
+
+        updateStats();
+      }
+
+      // Create particle burst effect
+      function createParticleBurst(position, color) {
+        const particleCount = 20;
+        for (let i = 0; i < particleCount; i++) {
+          const geometry = new THREE.SphereGeometry(0.2, 8, 8);
+          const material = new THREE.MeshBasicMaterial({ color });
+          const particle = new THREE.Mesh(geometry, material);
+
+          particle.position.copy(position);
+          particle.velocity = new THREE.Vector3(
+            (Math.random() - 0.5) * 2,
+            (Math.random() - 0.5) * 2,
+            (Math.random() - 0.5) * 2
+          );
+
+          scene.add(particle);
+          particles.push({ mesh: particle, createdAt: Date.now() });
+        }
+      }
+
+      // Update statistics
+      function updateStats(health) {
+        if (health) {
+          document.getElementById("total-servers").textContent =
+            health.totalServers;
+          document.getElementById("active-threats").textContent =
+            health.activeThreats;
+          document.getElementById("network-health").textContent =
+            health.score + "%";
+
+          const threatLevel =
+            health.activeThreats >= 10
+              ? "CRITICAL"
+              : health.activeThreats >= 5
+                ? "ELEVATED"
+                : health.activeThreats >= 1
+                  ? "MODERATE"
+                  : "LOW";
+          document.getElementById("threat-level").textContent = threatLevel;
+        }
+      }
+
+      // Animation loop
+      function animate() {
+        requestAnimationFrame(animate);
+
+        // Auto-rotate camera
+        if (autoRotate) {
+          camera.position.x = Math.cos(Date.now() * 0.0001) * 50;
+          camera.position.z = Math.sin(Date.now() * 0.0001) * 50;
+          camera.lookAt(0, 0, 0);
+        }
+
+        // Animate particles
+        const now = Date.now();
+        particles.forEach((particle, index) => {
+          particle.mesh.position.add(particle.velocity);
+          particle.velocity.multiplyScalar(0.95); // Decay
+
+          // Remove old particles
+          if (now - particle.createdAt > 2000) {
+            scene.remove(particle.mesh);
+            particles.splice(index, 1);
+          }
+        });
+
+        // Pulse server nodes
+        serverNodes.forEach((node) => {
+          node.material.emissiveIntensity =
+            0.5 + Math.sin(Date.now() * 0.002) * 0.3;
+        });
+
+        renderer.render(scene, camera);
+      }
+
+      animate();
+
+      // Controls
+      document
+        .getElementById("toggle-rotation")
+        .addEventListener("click", (e) => {
+          autoRotate = !autoRotate;
+          e.target.classList.toggle("active");
+        });
+
+      document
+        .getElementById("toggle-trails")
+        .addEventListener("click", (e) => {
+          showTrails = !showTrails;
+          e.target.classList.toggle("active");
+        });
+
+      document
+        .getElementById("replay-attacks")
+        .addEventListener("click", () => {
+          if (lastAttacks.length > 0) {
+            lastAttacks.forEach((attack, index) => {
+              setTimeout(() => {
+                visualizeThreat(attack);
+              }, index * 500);
+            });
+          }
+        });
+
+      document.getElementById("reset-view").addEventListener("click", () => {
+        camera.position.set(0, 30, 50);
+        camera.lookAt(0, 0, 0);
+      });
+
+      // Handle window resize
+      window.addEventListener("resize", () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+    </script>
+  </body>
+</html>

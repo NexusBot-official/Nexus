@@ -710,6 +710,39 @@ class AdvancedAntiRaid {
       `Raid detected in ${guild.name} (${guild.id}) [${serverSizeTier}]: Threat score ${threatScore}, ${suspiciousJoins.length} suspicious joins`
     );
 
+    // Broadcast threat to network (if threat network is available)
+    if (this.client?.threatNetwork) {
+      try {
+        await this.client.threatNetwork.reportThreat(guild.id, guild.name, {
+          type: "raid",
+          severity: Math.min(10, Math.ceil(threatScore / 10)),
+          userId: suspiciousJoins.length > 0 ? suspiciousJoins[0].id : null,
+          userTag:
+            suspiciousJoins.length > 0
+              ? `${suspiciousJoins.length} suspicious accounts`
+              : "Unknown",
+          details: {
+            suspiciousJoinCount: suspiciousJoins.length,
+            threatScore: threatScore,
+            serverSize: memberCount,
+            detectionAlgorithms: Object.keys(detectionResults).filter(
+              (k) => detectionResults[k]?.detected
+            ),
+          },
+          evidence: suspiciousJoins.slice(0, 10).map((m) => ({
+            id: m.id,
+            tag: m.user?.tag || "Unknown",
+            joinedAt: m.joinedAt,
+          })),
+        });
+      } catch (error) {
+        logger.error(
+          "ThreatNetwork",
+          `Failed to broadcast raid: ${error.message}`
+        );
+      }
+    }
+
     // When a raid is confirmed, ban ALL recent joins (they're already filtered to recent in detectRaid)
     // Only apply additional filtering for very large servers to prevent false positives
     const isLargeServer = memberCount > 1000;

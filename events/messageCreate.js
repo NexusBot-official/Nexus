@@ -39,6 +39,23 @@ module.exports = {
       );
     }
 
+    // Advanced Behavioral Biometrics Analysis (EXCEEDS WICK - ML-powered anomaly detection)
+    if (client.behavioralBiometrics) {
+      client.behavioralBiometrics
+        .analyzeMessage(message)
+        .then((result) => {
+          if (result?.isAnomaly) {
+            logger.warn(
+              "BehavioralBiometrics",
+              `Behavioral anomaly detected for ${message.author.tag}: ${(result.score * 100).toFixed(1)}%`
+            );
+          }
+        })
+        .catch((err) => {
+          logger.debug("Behavioral analysis failed:", err.message);
+        });
+    }
+
     // Run security checks in parallel for better performance
     const securityChecks = [];
     if (client.advancedAntiNuke && message.channel) {

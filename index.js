@@ -181,6 +181,26 @@ client.snapshotScheduler = new SnapshotScheduler(client);
 const VoteRewards = require("./utils/voteRewards");
 client.voteRewards = new VoteRewards(client);
 
+// Real-Time Threat Network (EXCEEDS WICK - cross-server WebSocket threat collaboration)
+const ThreatNetwork = require("./utils/threatNetwork");
+client.threatNetwork = new ThreatNetwork(client);
+
+// ML-Based Raid Detection (EXCEEDS WICK - AI-powered pattern recognition)
+const MLRaidDetection = require("./utils/mlRaidDetection");
+client.mlRaidDetection = new MLRaidDetection(client);
+
+// Blockchain Threat Intelligence (EXCEEDS WICK - decentralized trust system)
+const BlockchainThreatIntel = require("./utils/blockchainThreatIntel");
+client.blockchainThreatIntel = new BlockchainThreatIntel(client);
+
+// Behavioral Biometrics (EXCEEDS WICK - advanced user behavior analysis)
+const BehavioralBiometrics = require("./utils/behavioralBiometrics");
+client.behavioralBiometrics = new BehavioralBiometrics(client);
+
+// Predictive Auto-Scaling (EXCEEDS WICK - ML-based growth prediction)
+const PredictiveAutoScaling = require("./utils/predictiveAutoScaling");
+client.predictiveAutoScaling = new PredictiveAutoScaling(client);
+
 // Dashboard Server (EXCEEDS WICK - free dashboard vs Wick's paid)
 const DashboardServer = require("./dashboard/server");
 client.dashboardServer = new DashboardServer(client);
