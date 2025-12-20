@@ -1,7 +1,7 @@
 const logger = require("../utils/logger");
 
 module.exports = {
-  name: "webhookUpdate",
+  name: "webhooksUpdate",
   async execute(channel, client) {
     try {
       const guild = channel.guild;
@@ -12,7 +12,19 @@ module.exports = {
       );
 
       // Fetch current webhooks to see what changed
-      const webhooks = await channel.fetchWebhooks();
+      let webhooks;
+      try {
+        webhooks = await channel.fetchWebhooks();
+      } catch (fetchError) {
+        if (fetchError.code === 50013) {
+          logger.warn(
+            "WebhookUpdate",
+            `Missing 'Manage Webhooks' permission in channel ${channel.name} (${guild.name}) - Cannot fetch webhook details`
+          );
+          return; // Skip if we don't have permission
+        }
+        throw fetchError; // Re-throw other errors
+      }
 
       // Log to database
       const db = require("../utils/database");
