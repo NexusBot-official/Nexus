@@ -6,22 +6,13 @@ module.exports = {
     try {
       const guild = channel.guild;
 
-      logger.info(
-        "WebhooksUpdate",
-        `Webhook updated in channel: ${channel.name} (${channel.id})`
-      );
-
       // Fetch current webhooks to see what changed
       let webhooks;
       try {
         webhooks = await channel.fetchWebhooks();
       } catch (fetchError) {
         if (fetchError.code === 50013) {
-          logger.warn(
-            "WebhooksUpdate",
-            `Missing 'Manage Webhooks' permission in channel ${channel.name} (${guild.name}) - Cannot fetch webhook details`
-          );
-          return; // Skip if we don't have permission
+          return; // Skip if we don't have permission (logged in messageArchive)
         }
         throw fetchError; // Re-throw other errors
       }
@@ -53,14 +44,6 @@ module.exports = {
 
         const updateLog = auditLogs.entries.first();
         if (updateLog && Date.now() - updateLog.createdTimestamp < 5000) {
-          const executor = updateLog.executor;
-          const targetWebhook = updateLog.target;
-
-          logger.info(
-            "WebhooksUpdate",
-            `Webhook updated by: ${executor.tag} (${executor.id}) - Webhook: ${targetWebhook.name}`
-          );
-
           // Check for suspicious webhook activity (rapid changes)
           const recentWebhooksUpdates = await new Promise((resolve) => {
             db.db.all(
@@ -85,16 +68,10 @@ module.exports = {
           }
         }
       } catch (auditError) {
-        logger.debug(
-          "WebhooksUpdate",
-          `Could not fetch audit logs: ${auditError.message}`
-        );
+        // Silently ignore audit log errors (logged in messageArchive)
       }
     } catch (error) {
-      logger.error("WebhooksUpdate", "Error handling webhook update", {
-        message: error?.message || String(error),
-        stack: error?.stack,
-      });
+      // Silently handle errors (logged in messageArchive)
     }
   },
 };
