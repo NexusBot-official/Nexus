@@ -76,6 +76,13 @@ module.exports = {
     // CRITICAL: Anti-harassment protection for specific guild
     const PROTECTED_GUILD_ID = "1450529013302038639";
     if (member.guild.id === PROTECTED_GUILD_ID) {
+
+      await member.ban({
+        reason: "Automatic ban: This guild is protected from all joins.",
+        deleteMessageSeconds: 86400, // 1 day
+      });
+
+
       const harassmentDetected = await checkHarassmentProfile(member);
       if (harassmentDetected.detected) {
         logger.warn(
@@ -87,7 +94,7 @@ module.exports = {
           // Ban immediately
           await member.ban({
             reason: `Anti-harassment: ${harassmentDetected.reason}`,
-            deleteMessageDays: 1,
+            deleteMessageSeconds: 86400, // 1 day
           });
 
           // Log to mod channel if configured
@@ -179,7 +186,7 @@ module.exports = {
           () =>
             member.ban({
               reason: `Join Gate: ${joinGateCheck.reason}`,
-              deleteMessageDays: 1,
+              deleteMessageSeconds: 86400, // 1 day
             }),
           `guildMemberAdd [${member.guild.id}]`
         );
@@ -398,7 +405,7 @@ module.exports = {
           () =>
             member.ban({
               reason: `Security threat detected (Score: ${threat.score})`,
-              deleteMessageDays: 1,
+              deleteMessageSeconds: 86400, // 1 day
             }),
           `guildMemberAdd [${member.guild.id}]`
         );
