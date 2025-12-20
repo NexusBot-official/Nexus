@@ -4,6 +4,7 @@ const ErrorHandler = require("../utils/errorHandler");
 const logger = require("../utils/logger");
 const performanceMonitor = require("../utils/performanceMonitor");
 const InputValidator = require("../utils/inputValidator");
+const { logCommandToFile } = require("../utils/commandFileLogger");
 
 module.exports = {
   name: "interactionCreate",
@@ -82,6 +83,14 @@ module.exports = {
             }
           }
         );
+
+        // Log to detailed text file (non-blocking)
+        logCommandToFile(interaction).catch((err) => {
+          logger.debug(
+            `[interactionCreate] Failed to log command to file:`,
+            err.message
+          );
+        });
 
         // Start performance tracking
         const perfTimer = performanceMonitor.start(command.data.name);
