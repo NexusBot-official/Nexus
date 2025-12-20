@@ -39,6 +39,7 @@ const client = new Client({
     GatewayIntentBits.GuildScheduledEvents, // Required for scheduled event tracking
     GatewayIntentBits.AutoModerationConfiguration, // Required for automod rule tracking
     GatewayIntentBits.AutoModerationExecution, // Required for automod action tracking
+    GatewayIntentBits.GuildIntegrations, // Required for integration tracking
   ],
   partials: [
     Partials.Channel, // Required for DMs
