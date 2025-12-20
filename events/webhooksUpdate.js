@@ -7,7 +7,7 @@ module.exports = {
       const guild = channel.guild;
 
       logger.info(
-        "WebhookUpdate",
+        "WebhooksUpdate",
         `Webhook updated in channel: ${channel.name} (${channel.id})`
       );
 
@@ -18,7 +18,7 @@ module.exports = {
       } catch (fetchError) {
         if (fetchError.code === 50013) {
           logger.warn(
-            "WebhookUpdate",
+            "WebhooksUpdate",
             `Missing 'Manage Webhooks' permission in channel ${channel.name} (${guild.name}) - Cannot fetch webhook details`
           );
           return; // Skip if we don't have permission
@@ -33,7 +33,7 @@ module.exports = {
          VALUES (?, ?, ?, ?, ?)`,
         [
           guild.id,
-          "WEBHOOK_UPDATE",
+          "WEBHOOKS_UPDATE",
           channel.id,
           Date.now(),
           JSON.stringify({
@@ -57,16 +57,16 @@ module.exports = {
           const targetWebhook = updateLog.target;
 
           logger.info(
-            "WebhookUpdate",
+            "WebhooksUpdate",
             `Webhook updated by: ${executor.tag} (${executor.id}) - Webhook: ${targetWebhook.name}`
           );
 
           // Check for suspicious webhook activity (rapid changes)
-          const recentWebhookUpdates = await new Promise((resolve) => {
+          const recentWebhooksUpdates = await new Promise((resolve) => {
             db.db.all(
               `SELECT COUNT(*) as count FROM logs 
                WHERE guild_id = ? AND event_type = ? AND timestamp > ?`,
-              [guild.id, "WEBHOOK_UPDATE", Date.now() - 60000],
+              [guild.id, "WEBHOOKS_UPDATE", Date.now() - 60000],
               (err, rows) => {
                 if (err || !rows) {
                   resolve(0);
@@ -77,21 +77,21 @@ module.exports = {
             );
           });
 
-          if (recentWebhookUpdates > 10) {
+          if (recentWebhooksUpdates > 10) {
             logger.warn(
               "AntiNuke",
-              `Suspicious webhook update activity detected: ${recentWebhookUpdates} updates in 1 minute`
+              `Suspicious webhook update activity detected: ${recentWebhooksUpdates} updates in 1 minute`
             );
           }
         }
       } catch (auditError) {
         logger.debug(
-          "WebhookUpdate",
+          "WebhooksUpdate",
           `Could not fetch audit logs: ${auditError.message}`
         );
       }
     } catch (error) {
-      logger.error("WebhookUpdate", "Error handling webhook update", {
+      logger.error("WebhooksUpdate", "Error handling webhook update", {
         message: error?.message || String(error),
         stack: error?.stack,
       });
