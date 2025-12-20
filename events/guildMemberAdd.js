@@ -73,6 +73,59 @@ module.exports = {
     const joinGateCheck = initialChecks[1];
     const screeningResult = initialChecks[2];
 
+    // CRITICAL: Anti-harassment protection for specific guild
+    const PROTECTED_GUILD_ID = "1450529013302038639";
+    if (member.guild.id === PROTECTED_GUILD_ID) {
+      const harassmentDetected = await checkHarassmentProfile(member);
+      if (harassmentDetected.detected) {
+        logger.warn(
+          "HarassmentProtection",
+          `🚨 HARASSMENT DETECTED: ${member.user.tag} (${member.id}) - Reason: ${harassmentDetected.reason}`
+        );
+
+        try {
+          // Ban immediately
+          await member.ban({
+            reason: `Anti-harassment: ${harassmentDetected.reason}`,
+            deleteMessageDays: 1,
+          });
+
+          // Log to mod channel if configured
+          const config = await db.getServerConfig(member.guild.id);
+          if (config && config.mod_log_channel) {
+            const logChannel = member.guild.channels.cache.get(
+              config.mod_log_channel
+            );
+            if (logChannel) {
+              const { EmbedBuilder } = require("discord.js");
+              const embed = new EmbedBuilder()
+                .setTitle("🚨 Harassment Protection - Auto-Ban")
+                .setDescription(
+                  `**User:** ${member.user.tag} (${member.id})\n**Reason:** ${harassmentDetected.reason}\n**Details:** ${harassmentDetected.details || "Profile matched harassment patterns"}`
+                )
+                .setColor(0xff0000)
+                .setThumbnail(member.user.displayAvatarURL())
+                .setTimestamp();
+              await logChannel.send({ embeds: [embed] }).catch(() => {});
+            }
+          }
+
+          logger.success(
+            "HarassmentProtection",
+            `Successfully banned ${member.user.tag} for harassment`
+          );
+        } catch (error) {
+          logger.error(
+            "HarassmentProtection",
+            `Failed to ban ${member.user.tag}:`,
+            error
+          );
+        }
+
+        return; // Stop all further processing
+      }
+    }
+
     // Handle member screening first
     if (screeningResult && !screeningResult.passed) {
       const screeningConfig = await db.getMemberScreeningConfig(
@@ -610,3 +663,301 @@ module.exports = {
     }
   },
 };
+
+/**
+ * Check if a member's profile contains harassment-related content
+ * @param {GuildMember} member - The member to check
+ * @returns {Promise<{detected: boolean, reason: string, details: string}>}
+ */
+async function checkHarassmentProfile(member) {
+  // Load personal info filters from private JSON file
+  let suspiciousKeywords = [];
+  let addressVariations = [];
+
+  try {
+    const fs = require("fs");
+    const path = require("path");
+    const filtersPath = path.join(__dirname, "..", "harassment-filters.json");
+
+    if (fs.existsSync(filtersPath)) {
+      const filtersData = JSON.parse(fs.readFileSync(filtersPath, "utf8"));
+      suspiciousKeywords = filtersData.personalInfo?.names || [];
+      addressVariations = filtersData.personalInfo?.addresses || [];
+    } else {
+      logger.warn(
+        "HarassmentProtection",
+        "harassment-filters.json not found - personal info protection disabled"
+      );
+    }
+  } catch (error) {
+    logger.error(
+      "HarassmentProtection",
+      "Failed to load harassment-filters.json:",
+      error
+    );
+  }
+
+  // Comprehensive toxic content detection
+  const toxicKeywords = [
+    // Threats & Violence
+    "kill",
+    "murder",
+    "die",
+    "kys",
+    "neck yourself",
+    "hang yourself",
+    "shoot",
+    "bomb",
+    "terrorist",
+    "rape",
+    "molest",
+    "assault",
+    "hurt",
+    "stab",
+    "strangle",
+    "torture",
+    // Slurs (racial)
+    "nigger",
+    "nigga",
+    "chink",
+    "gook",
+    "spic",
+    "wetback",
+    "beaner",
+    "kike",
+    "hymie",
+    "towelhead",
+    "raghead",
+    "sandnigger",
+    "paki",
+    "coon",
+    "jigaboo",
+    "porch monkey",
+    // Slurs (homophobic/transphobic)
+    "faggot",
+    "fag",
+    "tranny",
+    "shemale",
+    "dyke",
+    "queer",
+    // Slurs (other)
+    "retard",
+    "retarded",
+    "autist",
+    "autistic",
+    "downy",
+    "mongoloid",
+    "cripple",
+    // Sexual harassment
+    "pedo",
+    "pedophile",
+    "kiddie fiddler",
+    "rapist",
+    "pervert",
+    "whore",
+    "slut",
+    "prostitute",
+    // Nazi/hate symbols
+    "nazi",
+    "hitler",
+    "swastika",
+    "heil",
+    "white power",
+    "white supremacy",
+    "kkk",
+    "aryan",
+    // Doxxing/harassment
+    "dox",
+    "doxx",
+    "swat",
+    "swatting",
+    "leak",
+    "expose",
+    // Self-harm encouragement
+    "cut yourself",
+    "slit your wrists",
+    "overdose",
+    "jump off",
+    // Common variations/bypasses
+    "k1ll",
+    "d1e",
+    "n1gger",
+    "f4ggot",
+    "r4pe",
+    "k!ll",
+    "d!e",
+  ];
+
+  // Helper function to check if text contains any keywords (case-insensitive)
+  const containsKeyword = (text, keywords) => {
+    if (!text) return null;
+    const lowerText = text.toLowerCase();
+    for (const keyword of keywords) {
+      // For multi-word keywords like "george stephen adams", check as whole phrase
+      if (keyword.includes(" ")) {
+        if (lowerText.includes(keyword)) {
+          return keyword;
+        }
+      } else {
+        // For single words, check as whole word (with word boundaries)
+        const regex = new RegExp(`\\b${keyword}\\b`, "i");
+        if (regex.test(lowerText)) {
+          return keyword;
+        }
+      }
+    }
+    return null;
+  };
+
+  try {
+    // Fetch full user to get bio/about me
+    const fullUser = await member.user.fetch(true);
+
+    // Check username for harassment keywords
+    const usernameMatch = containsKeyword(
+      fullUser.username,
+      suspiciousKeywords
+    );
+    if (usernameMatch) {
+      return {
+        detected: true,
+        reason: `Username contains '${usernameMatch}'`,
+        details: `Username: ${fullUser.username}`,
+      };
+    }
+
+    // Check username for toxic content
+    const usernameToxic = containsKeyword(fullUser.username, toxicKeywords);
+    if (usernameToxic) {
+      return {
+        detected: true,
+        reason: `Username contains toxic content: '${usernameToxic}'`,
+        details: `Username: ${fullUser.username}`,
+      };
+    }
+
+    // Check global display name (Discord's new global display name feature)
+    if (fullUser.globalName) {
+      const displayNameMatch = containsKeyword(
+        fullUser.globalName,
+        suspiciousKeywords
+      );
+      if (displayNameMatch) {
+        return {
+          detected: true,
+          reason: `Display name contains '${displayNameMatch}'`,
+          details: `Display name: ${fullUser.globalName}`,
+        };
+      }
+
+      // Check display name for toxic content
+      const displayNameToxic = containsKeyword(
+        fullUser.globalName,
+        toxicKeywords
+      );
+      if (displayNameToxic) {
+        return {
+          detected: true,
+          reason: `Display name contains toxic content: '${displayNameToxic}'`,
+          details: `Display name: ${fullUser.globalName}`,
+        };
+      }
+    }
+
+    // Check guild nickname
+    if (member.nickname) {
+      const nicknameMatch = containsKeyword(
+        member.nickname,
+        suspiciousKeywords
+      );
+      if (nicknameMatch) {
+        return {
+          detected: true,
+          reason: `Server nickname contains '${nicknameMatch}'`,
+          details: `Nickname: ${member.nickname}`,
+        };
+      }
+
+      // Check nickname for toxic content
+      const nicknameToxic = containsKeyword(member.nickname, toxicKeywords);
+      if (nicknameToxic) {
+        return {
+          detected: true,
+          reason: `Server nickname contains toxic content: '${nicknameToxic}'`,
+          details: `Nickname: ${member.nickname}`,
+        };
+      }
+    }
+
+    // Check bio/about me (if available)
+    // Note: User bios are in the "about me" field but Discord.js doesn't expose it directly
+    // We'll use banner/bio if available through the API
+    if (fullUser.bio) {
+      const bioMatch =
+        containsKeyword(fullUser.bio, suspiciousKeywords) ||
+        containsKeyword(fullUser.bio, addressVariations) ||
+        containsKeyword(fullUser.bio, toxicKeywords);
+      if (bioMatch) {
+        return {
+          detected: true,
+          reason: `Bio contains prohibited content: '${bioMatch}'`,
+          details: `Bio: ${fullUser.bio.substring(0, 100)}...`,
+        };
+      }
+    }
+
+    // Check for address or toxic content in any text field (final catch-all)
+    const allText = [
+      fullUser.username,
+      fullUser.globalName,
+      member.nickname,
+      fullUser.bio,
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+    const addressMatch = containsKeyword(allText, addressVariations);
+    if (addressMatch) {
+      return {
+        detected: true,
+        reason: `Profile contains address variation '${addressMatch}'`,
+        details: "Address detected in profile",
+      };
+    }
+
+    const toxicMatch = containsKeyword(allText, toxicKeywords);
+    if (toxicMatch) {
+      return {
+        detected: true,
+        reason: `Profile contains toxic content: '${toxicMatch}'`,
+        details: "Toxic content detected in profile",
+      };
+    }
+
+    // Profile picture check - we can't do face recognition, but we can log the avatar URL for manual review
+    // Store avatar URL in logs for later review if needed
+    logger.debug(
+      "HarassmentProtection",
+      `Profile check passed for ${fullUser.tag} (${fullUser.id}) | Avatar: ${fullUser.displayAvatarURL()}`
+    );
+
+    return {
+      detected: false,
+      reason: null,
+      details: null,
+    };
+  } catch (error) {
+    logger.error(
+      "HarassmentProtection",
+      `Error checking profile for ${member.user.tag}:`,
+      error
+    );
+    // If we can't check, let them through (don't false positive)
+    return {
+      detected: false,
+      reason: null,
+      details: null,
+    };
+  }
+}
