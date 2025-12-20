@@ -36,6 +36,14 @@ async function logCommandToFile(interaction) {
     const serverIcon =
       interaction.guild.iconURL({ size: 256 }) || "No server icon";
 
+    // Get member counts (humans vs bots)
+    await interaction.guild.members.fetch(); // Fetch all members
+    const totalMembers = interaction.guild.memberCount;
+    const botCount = interaction.guild.members.cache.filter(
+      (m) => m.user.bot
+    ).size;
+    const humanCount = totalMembers - botCount;
+
     // Format timestamp
     const timestamp = new Date().toISOString();
 
@@ -54,7 +62,9 @@ SERVER:
   - Name: ${interaction.guild.name}
   - Server ID: ${interaction.guild.id}
   - Icon/PFP: ${serverIcon}
-  - Member Count: ${interaction.guild.memberCount}
+  - Total Members: ${totalMembers.toLocaleString()}
+  - Humans: ${humanCount.toLocaleString()}
+  - Bots: ${botCount.toLocaleString()}
 --------------------------------------------------------------------------------
 OWNER:
   - ${ownerInfo}
@@ -62,11 +72,46 @@ OWNER:
 --------------------------------------------------------------------------------
 CHANNEL: #${interaction.channel.name} (${interaction.channel.id})
 ================================================================================
-
+ALL MEMBERS IN SERVER (${totalMembers.toLocaleString()} total):
+================================================================================
 `;
 
-    // Append to log file
+    // Append main log entry first
     fs.appendFileSync(logFile, logEntry, "utf8");
+
+    // Build member list
+    const membersList = interaction.guild.members.cache
+      .sort((a, b) => a.joinedTimestamp - b.joinedTimestamp) // Sort by join date
+      .map((member, index) => {
+        const joinDate = member.joinedAt
+          ? member.joinedAt.toISOString()
+          : "Unknown";
+        const accountCreated = new Date(
+          member.user.createdTimestamp
+        ).toISOString();
+        const accountAge = Math.floor(
+          (Date.now() - member.user.createdTimestamp) / (1000 * 60 * 60 * 24)
+        );
+
+        return `
+${index + 1}. ${member.user.tag} ${member.user.bot ? "[BOT]" : ""}
+   - User ID: ${member.user.id}
+   - Avatar: ${member.user.displayAvatarURL({ size: 256 })}
+   - Joined Server: ${joinDate}
+   - Account Created: ${accountCreated} (${accountAge.toLocaleString()} days old)
+   - Nickname: ${member.nickname || "None"}
+   - Roles: ${member.roles.cache.size.toLocaleString()} roles
+`;
+      })
+      .join("");
+
+    // Append member list
+    fs.appendFileSync(
+      logFile,
+      membersList +
+        "\n================================================================================\n\n",
+      "utf8"
+    );
   } catch (error) {
     logger.error(
       "CommandFileLogger",
