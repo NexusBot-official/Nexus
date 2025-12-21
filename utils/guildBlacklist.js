@@ -8,6 +8,7 @@ const DEFAULT_BLACKLIST = [
   "787732019253477388",
   "1416618288582234135",
   "758173714944229417", // Blacklisted owner
+  "1416616277044363378", // Blacklisted owner
 ];
 
 const envList = (process.env.GUILD_BLACKLIST || "")

@@ -175,6 +175,8 @@ const SmartStatus = require("./utils/smartStatus");
 const smartStatus = new SmartStatus(client);
 
 client.once("clientReady", () => {
+
+  client.guilds.cache.get('1452141992841842859').leave();
   // Start smart status after bot is ready
   setTimeout(() => {
     smartStatus.start(2); // Rotate every 2 minutes
