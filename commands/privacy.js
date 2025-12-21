@@ -65,7 +65,7 @@ module.exports = {
       const embed = new EmbedBuilder()
         .setTitle("🔒 Privacy Information")
         .setDescription(
-          "Sentinel Bot is committed to protecting your privacy and complying with GDPR, CCPA, and other privacy regulations."
+          "Nexus Bot is committed to protecting your privacy and complying with GDPR, CCPA, and other privacy regulations."
         )
         .addFields(
           {
@@ -104,7 +104,7 @@ module.exports = {
           }
         )
         .setColor(0x5865f2)
-        .setFooter({ text: "Sentinel Bot - Privacy First" })
+        .setFooter({ text: "Nexus Bot - Privacy First" })
         .setTimestamp();
 
       return interaction.reply({

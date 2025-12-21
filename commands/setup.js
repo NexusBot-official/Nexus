@@ -66,7 +66,7 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setTitle("🎯 Sentinel Setup Wizard")
       .setDescription(
-        "Welcome! I'll guide you through setting up Sentinel Bot for your server.\n\n" +
+        "Welcome! I'll guide you through setting up Nexus Bot for your server.\n\n" +
           "**This wizard will:**\n" +
           "• Configure optimal security settings\n" +
           "• Set up moderation tools\n" +

@@ -141,7 +141,7 @@ module.exports = {
                 logChannel = await guild.channels.create({
                   name: "Sentinel-logs",
                   type: ChannelType.GuildText,
-                  topic: "Sentinel Bot moderation logs and security alerts",
+                  topic: "Nexus Bot moderation logs and security alerts",
                   permissionOverwrites: [
                     {
                       id: guild.roles.everyone.id,

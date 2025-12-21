@@ -1,7 +1,7 @@
 {
   "name": "sentinel-bot",
   "version": "2.0.0",
-  "description": "Sentinel Bot - Advanced Discord Security Bot",
+  "description": "Nexus Bot - Advanced Discord Security Bot",
   "main": "index.js",
   "scripts": {
     "start": "node shard.js",
@@ -16,9 +16,9 @@
     "bot",
     "security",
     "moderation",
-    "Sentinel"
+    "Nexus"
   ],
-  "author": "SentinelBot-official",
+  "author": "NexusBot-official",
   "license": "MIT",
   "dependencies": {
     "@tensorflow/tfjs-node": "^4.15.0",

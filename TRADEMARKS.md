@@ -1,10 +1,10 @@
-# Sentinel Bot Trademark Policy
+# Nexus Bot Trademark Policy
 
 **Last Updated:** December 5, 2025
 
 ## Overview
 
-The Sentinel Bot software is licensed under the [MIT License](LICENSE), which allows you to freely use, modify, and distribute the code. However, **the Sentinel name, branding, and trademarks are not included in this license.**
+The Nexus Bot software is licensed under the [MIT License](LICENSE), which allows you to freely use, modify, and distribute the code. However, **the Sentinel name, branding, and trademarks are not included in this license.**
 
 This document outlines how you may and may not use the Sentinel trademarks.
 
@@ -12,12 +12,12 @@ This document outlines how you may and may not use the Sentinel trademarks.
 
 ## Our Trademarks
 
-The following are trademarks and service marks of the Sentinel Bot project:
+The following are trademarks and service marks of the Nexus Bot project:
 
 ### Protected Names
 
 - "Sentinel"
-- "Sentinel Bot"
+- "Nexus Bot"
 - "Sentinel Security Bot"
 - Any variation that could be confused with the above
 
@@ -43,10 +43,10 @@ You **MAY** use the Sentinel trademarks in the following ways:
 
 ### 1. **Factual References**
 
-- ✅ "Based on Sentinel Bot"
-- ✅ "Fork of Sentinel Bot"
-- ✅ "Modified from Sentinel Bot source code"
-- ✅ "Compatible with Sentinel Bot"
+- ✅ "Based on Nexus Bot"
+- ✅ "Fork of Nexus Bot"
+- ✅ "Modified from Nexus Bot source code"
+- ✅ "Compatible with Nexus Bot"
 
 ### 2. **Educational & Informational**
 
@@ -58,7 +58,7 @@ You **MAY** use the Sentinel trademarks in the following ways:
 ### 3. **Community Discussions**
 
 - ✅ Discussing Sentinel in forums
-- ✅ Reviewing Sentinel Bot features
+- ✅ Reviewing Nexus Bot features
 - ✅ Comparing Sentinel to other bots
 - ✅ User support discussions
 
@@ -113,7 +113,7 @@ You **MAY NOT** use the Sentinel trademarks in the following ways:
 
 ## 🎯 Proper Fork Naming
 
-If you fork Sentinel Bot, you **MUST** give it a unique name. Here are good examples:
+If you fork Nexus Bot, you **MUST** give it a unique name. Here are good examples:
 
 ### ✅ Good Names
 
@@ -144,7 +144,7 @@ When forking or modifying Sentinel, you **MUST**:
 ### Example Attribution
 
 ```markdown
-This bot is based on Sentinel Bot (https://github.com/Azzraya/Sentinel)
+This bot is based on Nexus Bot (https://github.com/Azzraya/Sentinel)
 Original project licensed under MIT License.
 ```
 

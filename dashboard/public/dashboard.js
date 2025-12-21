@@ -65,7 +65,7 @@ function showInstallPromotion() {
   installBanner.innerHTML = `
     <span style="font-size: 24px;">📱</span>
     <div>
-      <div style="font-weight: bold;">Install Sentinel Dashboard</div>
+      <div style="font-weight: bold;">Install Nexus Dashboard</div>
       <div style="font-size: 0.85rem; opacity: 0.9;">Moderate your server on the go!</div>
     </div>
     <button id="pwa-install-btn" style="background: white; color: #667eea; border: none; padding: 8px 20px; border-radius: 20px; font-weight: bold; cursor: pointer;">Install</button>
@@ -205,15 +205,15 @@ function showServerSelection(servers) {
         <p class="selection-subtitle">No servers found where you have admin permissions</p>
         <div class="empty-state">
           <div class="empty-icon">🛡️</div>
-          <h2>Invite Sentinel to Your Server</h2>
-          <p>You need to be an administrator in a server with Sentinel to access the dashboard.</p>
+          <h2>Invite Nexus to Your Server</h2>
+          <p>You need to be an administrator in a server with Nexus to access the dashboard.</p>
           <a href="https://discord.com/oauth2/authorize?client_id=1444739230679957646&permissions=8&scope=bot%20applications.commands" 
              target="_blank" 
              class="invite-server-btn">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
               <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/>
             </svg>
-            Invite Sentinel Bot
+            Invite Nexus Bot
           </a>
         </div>
       </div>
@@ -239,7 +239,7 @@ function showServerSelection(servers) {
       ${
         serversWithBot.length > 0
           ? `
-        <h3 style="margin: 30px 0 20px 0; opacity: 0.9;">Servers with Sentinel</h3>
+        <h3 style="margin: 30px 0 20px 0; opacity: 0.9;">Servers with Nexus</h3>
         <div class="servers-grid">
           ${serversWithBot
             .map(
@@ -277,7 +277,7 @@ function showServerSelection(servers) {
       ${
         serversWithoutBot.length > 0
           ? `
-        <h3 style="margin: 40px 0 20px 0; opacity: 0.9;">Invite Sentinel to Your Servers</h3>
+        <h3 style="margin: 40px 0 20px 0; opacity: 0.9;">Invite Nexus to Your Servers</h3>
         <div class="servers-grid">
           ${serversWithoutBot
             .map(
@@ -1421,7 +1421,7 @@ async function loadAntiNukePage() {
 
     <div class="info-box" style="margin-top:30px;">
       <strong>🛡️ How it works:</strong><br>
-      Sentinel monitors all server changes and automatically detects suspicious patterns. When a threat is detected, the bot will:
+      Nexus monitors all server changes and automatically detects suspicious patterns. When a threat is detected, the bot will:
       <ul style="margin-top:10px; margin-left:20px;">
         <li>Immediately stop the attacker</li>
         <li>Remove dangerous permissions</li>
@@ -1524,12 +1524,12 @@ async function loadAutoModPage() {
 
   contentArea.innerHTML = `
     <div style="display:flex; gap:20px; margin-bottom:30px;">
-      <button class="tab-btn active" onclick="switchAutoModTab('Sentinel')" id="automod-tab-Sentinel">Sentinel Auto-Mod</button>
+      <button class="tab-btn active" onclick="switchAutoModTab('Nexus')" id="automod-tab-Nexus">Nexus Auto-Mod</button>
       <button class="tab-btn" onclick="switchAutoModTab('discord')" id="automod-tab-discord">Discord AutoMod ⚡</button>
     </div>
 
-    <div id="automod-Sentinel-content">
-      <h2>Sentinel Auto-Moderation</h2>
+    <div id="automod-Nexus-content">
+      <h2>Nexus Auto-Moderation</h2>
       <p style="opacity:0.8; margin-bottom:30px;">Advanced AI-powered content filtering and spam protection.</p>
 
       <div class="settings-section">
@@ -1571,7 +1571,7 @@ async function loadAutoModPage() {
       </div>
 
       <div class="info-box" style="margin-top:30px;">
-        <strong>🤖 Sentinel Auto-Mod Features:</strong><br>
+        <strong>🤖 Nexus Auto-Mod Features:</strong><br>
         <ul style="margin-top:10px; margin-left:20px;">
           <li>AI-powered spam detection</li>
           <li>Link filtering and phishing protection</li>
@@ -1609,15 +1609,15 @@ async function loadAutoModPage() {
 function switchAutoModTab(tab) {
   // Update button states
   document
-    .getElementById("automod-tab-Sentinel")
-    .classList.toggle("active", tab === "Sentinel");
+    .getElementById("automod-tab-Nexus")
+    .classList.toggle("active", tab === "Nexus");
   document
     .getElementById("automod-tab-discord")
     .classList.toggle("active", tab === "discord");
 
   // Show/hide content
-  document.getElementById("automod-Sentinel-content").style.display =
-    tab === "Sentinel" ? "block" : "none";
+  document.getElementById("automod-Nexus-content").style.display =
+    tab === "Nexus" ? "block" : "none";
   document.getElementById("automod-discord-content").style.display =
     tab === "discord" ? "block" : "none";
 
@@ -1651,7 +1651,7 @@ async function loadDiscordAutoModRules() {
       container.innerHTML = `
         <div class="info-box">
           <strong>No Discord AutoMod rules yet</strong><br>
-          <p style="margin-top:10px;">Click "Create Rule" above to add your first Discord AutoMod rule. Discord AutoMod rules work alongside Sentinel's custom automod system.</p>
+          <p style="margin-top:10px;">Click "Create Rule" above to add your first Discord AutoMod rule. Discord AutoMod rules work alongside Nexus's custom automod system.</p>
         </div>
       `;
       return;
@@ -2155,7 +2155,7 @@ async function loadJoinGatePage() {
           <li>Filters new accounts based on age requirements</li>
           <li>Removes users with invite links in usernames</li>
           <li>AI-powered suspicious account detection</li>
-          <li>Works alongside Sentinel verification system</li>
+          <li>Works alongside Nexus verification system</li>
         </ul>
       </div>
     `;
@@ -3146,7 +3146,7 @@ async function loadMigrationTool() {
 
   contentArea.innerHTML = `
     <h2>🔄 Migrate from Wick</h2>
-    <p style="opacity: 0.8; margin-bottom: 20px;">Automatically import your Wick settings and upgrade to Sentinel</p>
+    <p style="opacity: 0.8; margin-bottom: 20px;">Automatically import your Wick settings and upgrade to Nexus</p>
     
     <div id="migrationStatus">
       <div style="text-align: center; padding: 40px;">
@@ -3179,7 +3179,7 @@ async function loadMigrationTool() {
           </button>
         </div>
 
-        <h3>📊 Why Switch to Sentinel?</h3>
+        <h3>📊 Why Switch to Nexus?</h3>
         <div style="margin-top: 15px;">
           ${data.comparison
             .map(
@@ -3187,7 +3187,7 @@ async function loadMigrationTool() {
             <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; padding: 15px; margin-bottom: 10px; background: var(--bg-card); border-radius: 8px;">
               <div><strong>${item.feature}</strong></div>
               <div style="opacity: 0.7;">Wick: ${item.wick}</div>
-              <div style="color: var(--success);">Sentinel: ${item.Sentinel}</div>
+              <div style="color: var(--success);">Nexus: ${item.Nexus}</div>
             </div>
           `
             )
@@ -3214,7 +3214,7 @@ async function loadMigrationTool() {
 window.startMigration = async function () {
   if (
     !confirm(
-      "Start migration from Wick to Sentinel? This will import settings and enable advanced features."
+      "Start migration from Wick to Nexus? This will import settings and enable advanced features."
     )
   )
     return;

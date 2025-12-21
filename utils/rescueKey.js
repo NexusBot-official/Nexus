@@ -42,7 +42,7 @@ class RescueKey {
     // Generate QR code for authenticator setup
     const otpauth = authenticator.keyuri(
       `Sentinel-${guildId}`,
-      "Sentinel Bot",
+      "Nexus Bot",
       authenticatorSecret
     );
 
@@ -166,7 +166,7 @@ class RescueKey {
 
     const otpauth = authenticator.keyuri(
       `Sentinel-${guildId}`,
-      "Sentinel Bot",
+      "Nexus Bot",
       key.rescue_key
     );
 

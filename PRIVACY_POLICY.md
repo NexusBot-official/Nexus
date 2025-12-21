@@ -4,7 +4,7 @@
 
 ## Introduction
 
-Sentinel Bot ("we", "our", "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and protect information when you use Sentinel Bot on Discord.
+Nexus Bot ("we", "our", "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and protect information when you use Nexus Bot on Discord.
 
 ## Information We Collect
 
@@ -48,7 +48,7 @@ Sentinel Bot ("we", "our", "us") is committed to protecting your privacy. This P
 
 ### Dashboard Authentication Information
 
-When you log in to the Sentinel Bot dashboard, we collect:
+When you log in to the Nexus Bot dashboard, we collect:
 
 - **Discord ID** - Your unique Discord identifier
 - **Username** - Your Discord username
@@ -126,7 +126,7 @@ When you log in to the Sentinel Bot dashboard, we collect:
 
 ## Auto-Recovery System
 
-Sentinel Bot includes an automatic server recovery system that creates snapshots of your server's structure to restore it after attacks.
+Nexus Bot includes an automatic server recovery system that creates snapshots of your server's structure to restore it after attacks.
 
 ### What Data is Stored in Snapshots:
 
@@ -184,7 +184,7 @@ Sentinel Bot includes an automatic server recovery system that creates snapshots
 
 ## Threat Intelligence Network (Cross-Server Data Sharing) - OPT-IN
 
-**IMPORTANT:** Our Threat Intelligence Network is a security feature that can **share threat data across servers using Sentinel Bot**. This feature is **ENABLED BY DEFAULT** but can be **disabled per server** via server configuration.
+**IMPORTANT:** Our Threat Intelligence Network is a security feature that can **share threat data across servers using Nexus Bot**. This feature is **ENABLED BY DEFAULT** but can be **disabled per server** via server configuration.
 
 **By default, threat intelligence is shared across servers for enhanced security. Server owners can disable this feature if they prefer server-specific threat detection only.**
 
@@ -232,7 +232,7 @@ We process threat intelligence data under **legitimate interest** for the purpos
 
 ### Discord API
 
-Sentinel Bot uses Discord's API and services. By using Discord, you are also subject to Discord's Privacy Policy and Terms of Service. We access and process Discord data only as permitted by Discord's API Terms of Service.
+Nexus Bot uses Discord's API and services. By using Discord, you are also subject to Discord's Privacy Policy and Terms of Service. We access and process Discord data only as permitted by Discord's API Terms of Service.
 
 ### Hosting Services
 
@@ -244,7 +244,7 @@ We do not share your data with any other third-party services, analytics platfor
 
 ## Cookies and Tracking Technologies
 
-Sentinel Bot does not use cookies or tracking technologies in the Discord application itself. If you access a web dashboard (if provided), standard session cookies may be used for authentication purposes only.
+Nexus Bot does not use cookies or tracking technologies in the Discord application itself. If you access a web dashboard (if provided), standard session cookies may be used for authentication purposes only.
 
 ## AI and Machine Learning
 
@@ -408,7 +408,7 @@ If a data breach occurs that may affect your privacy:
 
 ## Open Source
 
-Sentinel Bot is open source. You can:
+Nexus Bot is open source. You can:
 
 - View our code
 - See exactly how data is handled
@@ -417,7 +417,7 @@ Sentinel Bot is open source. You can:
 
 ## Children's Privacy (COPPA Compliance)
 
-Sentinel Bot is not intended for users under 13 years of age (Discord's minimum age requirement).
+Nexus Bot is not intended for users under 13 years of age (Discord's minimum age requirement).
 
 ### Our Policy:
 
@@ -502,4 +502,4 @@ We are compliant with California privacy laws:
 
 ---
 
-**By using Sentinel Bot, you agree to this Privacy Policy.**
+**By using Nexus Bot, you agree to this Privacy Policy.**

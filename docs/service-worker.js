@@ -1,4 +1,4 @@
-// Service Worker for Sentinel GitHub Pages
+// Service Worker for Nexus GitHub Pages
 // Provides offline support and caching for better performance
 
 const CACHE_NAME = "sentinel-v1";
@@ -225,7 +225,7 @@ async function doBackgroundSync() {
 // IndexedDB helpers for offline action queue
 function openOfflineDB() {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open("SentinelOfflineDB", 1);
+    const request = indexedDB.open("NexusOfflineDB", 1);
 
     request.onerror = () => reject(request.error);
     request.onsuccess = () => resolve(request.result);

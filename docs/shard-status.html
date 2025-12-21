@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Shard & Cluster Status - Sentinel Bot</title>
+    <title>Shard & Cluster Status - Nexus Bot</title>
     <link
       rel="icon"
       type="image/webp"
@@ -453,7 +453,7 @@
       </div>
 
       <div class="summary">
-        <h2>Service: Sentinel Bot</h2>
+        <h2>Service: Nexus Bot</h2>
         <div class="summary-stats">
           <div class="summary-stat">
             <span class="summary-stat-label">Total Shards</span>
@@ -540,7 +540,7 @@
     <script src="config.js"></script>
     <script>
       const API_BASE =
-        window.Sentinel_API_URL ||
+        window.Nexus_API_URL ||
         "https://regular-puma-clearly.ngrok-free.app";
       let refreshInterval = null;
       let tooltip = null;
@@ -571,7 +571,7 @@
       ];
 
       const SHARD_BASES = [
-        "Sentinel",
+        "Nexus",
         "Watchtower",
         "Lookout",
         "Alarm",
@@ -670,9 +670,9 @@
       ];
 
       function getShardName(shardId) {
-        // First shard is always Sentinel
+        // First shard is always Nexus
         if (shardId === 0) {
-          return "🛡️ Sentinel";
+          return "🛡️ Nexus";
         }
 
         // Use base names for first 50 shards

@@ -1,4 +1,4 @@
-# Sentinel Landing Page with Click Tracking
+# Nexus Landing Page with Click Tracking
 
 ## 🎯 Purpose
 
@@ -106,7 +106,7 @@ Edit `index.html` - all text is easily modifiable.
 ### Click Webhook:
 
 ```
-📊 Sentinel Invite Click
+📊 Nexus Invite Click
 Source: topgg
 Referrer: https://top.gg/bot/...
 Time: December 2, 2025 5:30 PM
@@ -115,7 +115,7 @@ Time: December 2, 2025 5:30 PM
 ### Page View Webhook:
 
 ```
-👁️ Sentinel Page View
+👁️ Nexus Page View
 Referrer: https://reddit.com/r/Discord
 Page: /
 ```

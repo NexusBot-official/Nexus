@@ -1,5 +1,5 @@
 /**
- * Sentinel Bot Embeddable Widget
+ * Nexus Bot Embeddable Widget
  * Displays live bot statistics on any website
  */
 (function () {
@@ -92,10 +92,10 @@
       <div class="sentinel-widget">
         <div class="sentinel-widget-header">
           <img src="https://cdn.discordapp.com/app-icons/1444739230679957646/f3b87982830f72bc256ee6279bde8d03.png?size=256" 
-               alt="Sentinel Bot" 
+               alt="Nexus Bot" 
                class="sentinel-widget-avatar">
           <div>
-            <div class="sentinel-widget-title">Sentinel Bot</div>
+            <div class="sentinel-widget-title">Nexus Bot</div>
             <div class="sentinel-widget-status">● Online</div>
           </div>
         </div>
@@ -156,7 +156,7 @@
         container.innerHTML = createWidget(stats);
       }
     } catch (error) {
-      console.error("Sentinel Widget: Failed to load stats", error);
+      console.error("Nexus Widget: Failed to load stats", error);
       const container = document.getElementById("sentinel-widget");
       if (container) {
         container.innerHTML = createWidget({});

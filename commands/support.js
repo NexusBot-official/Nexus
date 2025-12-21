@@ -11,13 +11,13 @@ const DEV_TIMEZONE_HINT = "Dev is usually online 2PM-4AM GMT";
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("support")
-    .setDescription("Get support and help with Sentinel Bot"),
+    .setDescription("Get support and help with Nexus Bot"),
 
   async execute(interaction) {
-    const devStatusMessage = `⏰ ${DEV_TIMEZONE_HINT}\n\n💬 Join the support server for help with Sentinel Bot!`;
+    const devStatusMessage = `⏰ ${DEV_TIMEZONE_HINT}\n\n💬 Join the support server for help with Nexus Bot!`;
 
     const embed = new EmbedBuilder()
-      .setTitle("🆘 Sentinel Bot Support")
+      .setTitle("🆘 Nexus Bot Support")
       .setDescription("Need help? We're here for you!")
       .addFields(
         {

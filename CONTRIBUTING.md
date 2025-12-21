@@ -1,6 +1,6 @@
-# Contributing to Sentinel Bot
+# Contributing to Nexus Bot
 
-Thank you for your interest in contributing to Sentinel Bot! 🎉
+Thank you for your interest in contributing to Nexus Bot! 🎉
 
 ## Table of Contents
 
@@ -22,7 +22,7 @@ This project follows a Code of Conduct that all contributors are expected to adh
 
 ## How to Contribute
 
-There are many ways to contribute to Sentinel Bot:
+There are many ways to contribute to Nexus Bot:
 
 ### Reporting Bugs
 
@@ -233,7 +233,7 @@ describe("AutoMod System", () => {
 
 ## Premium/Paid Features Policy
 
-**IMPORTANT**: Sentinel Bot is committed to keeping ALL functional features free.
+**IMPORTANT**: Nexus Bot is committed to keeping ALL functional features free.
 
 ### ✅ Acceptable Premium Features
 
@@ -263,4 +263,4 @@ By contributing, you agree that your contributions will be licensed under the sa
 
 ---
 
-Thank you for making Sentinel Bot better! 💙
+Thank you for making Nexus Bot better! 💙

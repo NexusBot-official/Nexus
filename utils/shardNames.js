@@ -28,7 +28,7 @@ const SHARD_PREFIXES = [
 ];
 
 const SHARD_BASES = [
-  "Sentinel",
+  "Nexus",
   "Watchtower",
   "Lookout",
   "Alarm",
@@ -130,9 +130,9 @@ const CLUSTER_BASES = [
  * Get name for a shard (supports 500+ shards)
  */
 function getShardName(shardId) {
-  // First shard is always Sentinel
+  // First shard is always Nexus
   if (shardId === 0) {
-    return "🛡️ Sentinel";
+    return "🛡️ Nexus";
   }
 
   // Use base names for first 50 shards

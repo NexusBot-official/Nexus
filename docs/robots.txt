@@ -1,5 +1,5 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://sentinelbot-official.github.io/Sentinel/sitemap.xml
+Sitemap: https://sentinelbot-official.github.io/Nexus/sitemap.xml
 

@@ -158,7 +158,7 @@ module.exports = {
       recommendations.push("✅ Server is discoverable - good for growth");
     }
 
-    // 10. Check Sentinel Bot Configuration
+    // 10. Check Nexus Bot Configuration
     const config = await db.getServerConfig(guild.id);
     const sentinelModules = {
       antiraid: config?.antiraid_enabled,

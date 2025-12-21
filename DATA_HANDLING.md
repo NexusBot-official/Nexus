@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document explains how Sentinel Bot handles, stores, and protects data.
+This document explains how Nexus Bot handles, stores, and protects data.
 
 ## Data Collection
 
@@ -224,7 +224,7 @@ We share threat intelligence data across servers to protect communities:
 
 ## Open Source Transparency
 
-Since Sentinel Bot is open source:
+Since Nexus Bot is open source:
 
 - Code is publicly available
 - Data handling is transparent

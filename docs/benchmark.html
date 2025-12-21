@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Performance Benchmark - Sentinel vs Wick - Sentinel Bot</title>
+    <title>Performance Benchmark - Nexus vs Wick - Nexus Bot</title>
     <link
       rel="icon"
       type="image/webp"
@@ -269,7 +269,7 @@
       <div class="benchmark-header">
         <h1>⚡ Performance Benchmark</h1>
         <p style="font-size: 1.2rem; opacity: 0.9">
-          Real-time comparison: Sentinel vs Wick Bot
+          Real-time comparison: Nexus vs Wick Bot
         </p>
         <span class="live-indicator"></span>
         <span style="opacity: 0.8">Live Data</span>
@@ -284,7 +284,7 @@
       <div id="benchmark-content" style="display: none">
         <div class="comparison-grid">
           <div class="comparison-card sentinel">
-            <h2 style="margin-bottom: 20px; color: #00d1b2">🚀 Sentinel Bot</h2>
+            <h2 style="margin-bottom: 20px; color: #00d1b2">🚀 Nexus Bot</h2>
             <div id="sentinel-metrics"></div>
           </div>
 
@@ -330,7 +330,7 @@
         const sentinel = data.sentinel;
         const wick = data.wick;
 
-        // Display Sentinel metrics
+        // Display Nexus metrics
         const sentinelMetrics = document.getElementById("sentinel-metrics");
         sentinelMetrics.innerHTML = `
           <div class="metric-row">
@@ -455,7 +455,7 @@
         statsGrid.innerHTML = `
           <div class="stat-card">
             <div class="stat-value">${wins}/${total}</div>
-            <div class="stat-label">Sentinel Wins</div>
+            <div class="stat-label">Nexus Wins</div>
           </div>
           <div class="stat-card">
             <div class="stat-value">${Math.round((wins / total) * 100)}%</div>

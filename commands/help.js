@@ -116,7 +116,7 @@ module.exports = {
     };
 
     const embed = new EmbedBuilder()
-      .setTitle("🛡️ Sentinel Bot - Advanced Protection")
+      .setTitle("🛡️ Nexus Bot - Advanced Protection")
       .setDescription(
         "Everything Wick does, plus AI, plus better UX, plus it's free and open source"
       )

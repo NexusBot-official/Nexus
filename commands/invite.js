@@ -16,7 +16,7 @@ module.exports = {
     const inviteUrl = `https://discord.com/oauth2/authorize?client_id=1444739230679957646&permissions=268443574&scope=bot%20applications.commands`;
 
     const embed = new EmbedBuilder()
-      .setTitle("🔗 Invite Sentinel Bot")
+      .setTitle("🔗 Invite Nexus Bot")
       .setDescription(
         "Add Sentinel to your server for advanced security and moderation features!"
       )

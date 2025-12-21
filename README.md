@@ -4,7 +4,7 @@
 
 ### The Free Discord Security Bot That Exceeds Wick
 
-_Formerly known as Sentinel Bot_
+_Formerly known as Nexus Bot_
 
 [![Discord](https://img.shields.io/badge/Discord-Join%20Support-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/p7rh9sdhHD)
 [![Top.gg](https://img.shields.io/badge/Top.gg-Vote-FF3366?style=for-the-badge&logo=))](https://top.gg/bot/1444739230679957646)
@@ -183,10 +183,10 @@ This project is licensed under the **MIT License** with additional branding rest
 
 **You CANNOT:**
 
-- ❌ Use "Nexus Bot" or "Sentinel Bot" branding, name, or logo
+- ❌ Use "Nexus Bot" or "Nexus Bot" branding, name, or logo
 - ❌ Copy our Privacy Policy, Terms of Service, or legal documents
 - ❌ Use our bot profile pictures or avatars
-- ❌ Present your fork as an official Nexus Bot or Sentinel Bot product
+- ❌ Present your fork as an official Nexus Bot or Nexus Bot product
 - ❌ Use our documentation verbatim
 
 **All branding, legal documents, and intellectual property remain protected.**

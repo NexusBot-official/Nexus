@@ -1,5 +1,5 @@
 /**
- * Centralized Logger for Sentinel Bot
+ * Centralized Logger for Nexus Bot
  * Provides consistent logging across the entire application
  * with timestamps, colors, and log levels
  */
