@@ -13,7 +13,7 @@ module.exports = {
 
   async execute(interaction) {
     // Direct Discord OAuth invite link
-    const inviteUrl = `https://discord.com/oauth2/authorize?client_id=1450948411313619199&permissions=268443574&scope=bot%20applications.commands`;
+    const inviteUrl = `https://discord.com/oauth2/authorize?client_id=1444739230679957646&permissions=268443574&scope=bot%20applications.commands`;
 
     const embed = new EmbedBuilder()
       .setTitle("🔗 Invite Sentinel Bot")

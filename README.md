@@ -7,7 +7,7 @@
 _Formerly known as Sentinel Bot_
 
 [![Discord](https://img.shields.io/badge/Discord-Join%20Support-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/p7rh9sdhHD)
-[![Top.gg](https://img.shields.io/badge/Top.gg-Vote-FF3366?style=for-the-badge&logo=))](https://top.gg/bot/1450948411313619199)
+[![Top.gg](https://img.shields.io/badge/Top.gg-Vote-FF3366?style=for-the-badge&logo=))](https://top.gg/bot/1444739230679957646)
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 [![Version](https://img.shields.io/badge/Version-4.3.10-blue?style=for-the-badge)](https://github.com/SentinelBot-official/Sentinel)
 
@@ -158,7 +158,7 @@ Nexus (formerly Sentinel) is **open source** and **community-driven**.
 - ⚔️ **Sentinel vs Wick Comparison:** https://Sentinelbot-official.github.io/Sentinel/comparison.html
 - 📊 **API Documentation:** https://Sentinelbot-official.github.io/Sentinel/api.html
 - 💬 **Support Server:** https://discord.gg/p7rh9sdhHD
-- 🗳️ **Vote on Top.gg:** https://top.gg/bot/1450948411313619199
+- 🗳️ **Vote on Top.gg:** https://top.gg/bot/1444739230679957646
 
 ---
 

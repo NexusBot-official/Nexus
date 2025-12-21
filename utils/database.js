@@ -1268,7 +1268,7 @@ class Database {
           const defaultLinks = [
             {
               name: "Top.gg",
-              url: "https://top.gg/bot/1450948411313619199/vote",
+              url: "https://top.gg/bot/1444739230679957646/vote",
             },
             {
               name: "Discord Bot List",
@@ -1276,7 +1276,7 @@ class Database {
             },
             {
               name: "Void Bots",
-              url: "https://voidbots.net/bot/1450948411313619199/vote",
+              url: "https://voidbots.net/bot/1444739230679957646/vote",
             },
           ];
 
