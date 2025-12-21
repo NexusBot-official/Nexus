@@ -258,7 +258,7 @@ The Bot includes AI-powered features that may make automated decisions:
 For questions about these Terms:
 
 - **Discord Support Server:** https://discord.gg/9vQzqBVMNX (Preferred method)
-- **Legal/Privacy Email:** sentinelbot0@proton.me (For formal legal inquiries)
+- **Legal/Privacy Email:** nexusbot0@proton.me (For formal legal inquiries)
 - **General Contact:** Open a ticket in our support server
 - **GitHub Issues:** https://github.com/Sentinelbot-official/Sentinel/issues (For code-related questions)
 

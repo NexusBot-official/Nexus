@@ -84,8 +84,70 @@
 
       <div class="content-section">
         <div class="changelog-entry">
-          <h2>Version 2.0.1 - December 2025</h2>
+          <h2>Version 2.0.2 - December 21, 2025</h2>
           <span class="version-badge">Latest</span>
+          <h3>🔒 Security & Performance Improvements</h3>
+          <p>
+            Critical security fixes, performance optimizations, and codebase
+            cleanup.
+          </p>
+
+          <h4>🔒 Security Fixes</h4>
+          <ul>
+            <li>
+              <strong>SQL Injection Protection:</strong> Added table name
+              validation in database optimizer to prevent SQL injection attacks
+            </li>
+            <li>
+              <strong>API Rate Limiting:</strong> Implemented rate limiting on
+              all public API endpoints (60 requests/minute)
+            </li>
+          </ul>
+
+          <h4>⚡ Performance Improvements</h4>
+          <ul>
+            <li>
+              <strong>Cache Memory Leak Fix:</strong> Added automatic cache
+              cleanup every 5 minutes to prevent memory leaks from expired
+              entries
+            </li>
+            <li>
+              <strong>Removed Unused Intent:</strong> Removed GuildMessageTyping
+              intent to reduce resource usage
+            </li>
+          </ul>
+
+          <h4>🧹 Code Cleanup</h4>
+          <ul>
+            <li>
+              <strong>Deprecated Code:</strong> Removed deprecated
+              ValidationHelpers class from helpers.js
+            </li>
+            <li>
+              <strong>Harassment System:</strong> Removed guild-specific
+              harassment detection system
+            </li>
+          </ul>
+
+          <h4>🔧 Improvements</h4>
+          <ul>
+            <li>
+              <strong>Package Name:</strong> Updated package name to nexus-bot
+              for consistency
+            </li>
+            <li>
+              <strong>Merge Helper:</strong> Added npm run fix-merge script for
+              automatic merge conflict resolution
+            </li>
+            <li>
+              <strong>Privacy Policy & ToS:</strong> Updated contact
+              information, support server invite, and GitHub URLs
+            </li>
+          </ul>
+        </div>
+
+        <div class="changelog-entry">
+          <h2>Version 2.0.1 - December 2025</h2>
           <h3>🔧 Repository URL Corrections</h3>
           <p>
             Fixed GitHub repository URLs across all documentation and code to
