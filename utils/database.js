@@ -1275,7 +1275,7 @@ class Database {
             },
             {
               name: "Discord Bot List",
-              url: "https://discordbotlist.com/bots/sentinel-8105/upvote",
+              url: "https://discordbotlist.com/bots/nexus-8105/upvote",
             },
             {
               name: "Void Bots",

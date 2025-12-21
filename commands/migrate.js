@@ -12,7 +12,7 @@ const logger = require("../utils/logger");
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("migrate")
-    .setDescription("Migrate from Wick or other security bots to Sentinel")
+    .setDescription("Migrate from Wick or other security bots to nexus")
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
     .addStringOption((option) =>
       option
@@ -38,21 +38,21 @@ module.exports = {
         const config = await migration.analyzeWickConfig(interaction.guild);
 
         const embed = new EmbedBuilder()
-          .setTitle("🔄 Migrate from Wick to Sentinel")
+          .setTitle("🔄 Migrate from Wick to nexus")
           .setDescription(
             hasWick
               ? "✅ **Wick detected in this server!**\n\n" +
-                  "Sentinel can automatically configure itself with equivalent (and better) settings.\n\n" +
-                  "**Why switch from Wick to Sentinel?**\n" +
-                  "💰 **Save $120/year** - Sentinel is 100% FREE\n" +
+                  "nexus can automatically configure itself with equivalent (and better) settings.\n\n" +
+                  "**Why switch from Wick to nexus?**\n" +
+                  "💰 **Save $120/year** - nexus is 100% FREE\n" +
                   "🤖 **4x Better Detection** - 4 anti-raid algorithms vs Wick's 1\n" +
                   "🧠 **AI-Powered** - Predictive security Wick doesn't have\n" +
                   "💾 **Auto-Backups** - Hourly snapshots (Wick is manual)\n" +
                   "⚡ **Faster** - Sub-millisecond detection\n" +
                   "🔓 **Open Source** - Fully transparent (Wick is closed)"
               : "⚠️ **Wick not detected**\n\n" +
-                  "But you can still set up Sentinel with optimal security settings!\n\n" +
-                  "**Why choose Sentinel over Wick?**\n" +
+                  "But you can still set up nexus with optimal security settings!\n\n" +
+                  "**Why choose nexus over Wick?**\n" +
                   "💰 **100% FREE** - Wick costs $3-10/month\n" +
                   "🤖 **4 Anti-Raid Algorithms** - Wick only has 1\n" +
                   "🧠 **AI-Powered Security** - Predictive threat detection\n" +
@@ -73,7 +73,7 @@ module.exports = {
 
         embed.addFields(
           {
-            name: "🎯 What Sentinel Will Set Up",
+            name: "🎯 What nexus Will Set Up",
             value:
               "✅ 4 Anti-Raid Algorithms (vs Wick's 1)\n" +
               "✅ AI Threat Detection\n" +
@@ -88,7 +88,7 @@ module.exports = {
             name: "💰 Cost Comparison",
             value:
               "**Wick Premium**: $10/month = $120/year\n" +
-              "**Sentinel**: $0/month = $0/year\n\n" +
+              "**nexus**: $0/month = $0/year\n\n" +
               "**You save**: $120/year 💸",
             inline: true,
           }
@@ -105,9 +105,7 @@ module.exports = {
             .setStyle(ButtonStyle.Primary),
           new ButtonBuilder()
             .setLabel("🌐 Visit Website")
-            .setURL(
-              "https://Sentinelbot-official.github.io/Sentinel/comparison.html"
-            )
+            .setURL("https://nexusbot-official.github.io/nexus/comparison.html")
             .setStyle(ButtonStyle.Link)
         );
 
@@ -121,11 +119,11 @@ module.exports = {
       } else {
         // Generic migration
         const embed = new EmbedBuilder()
-          .setTitle("🔄 Migrate to Sentinel")
+          .setTitle("🔄 Migrate to nexus")
           .setDescription(
-            "**Welcome to Sentinel!** 🎉\n\n" +
+            "**Welcome to nexus!** 🎉\n\n" +
               "Let's set up optimal security for your server.\n\n" +
-              "**What makes Sentinel special?**\n" +
+              "**What makes nexus special?**\n" +
               "🤖 **4 Anti-Raid Algorithms** - Best-in-class detection\n" +
               "🧠 **AI-Powered** - Predictive threat detection\n" +
               "💾 **Auto-Backups** - Hourly snapshots\n" +
@@ -137,7 +135,7 @@ module.exports = {
           .addFields({
             name: "🚀 Quick Setup",
             value:
-              "Use `/setup` to configure Sentinel with optimal settings.\n" +
+              "Use `/setup` to configure nexus with optimal settings.\n" +
               "Or use `/tutorial` for a guided walkthrough.",
           });
 

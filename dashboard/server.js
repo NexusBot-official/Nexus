@@ -239,7 +239,7 @@ class DashboardServer {
         "Content-Security-Policy",
         "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdn.ngrok.com; style-src 'self' 'unsafe-inline' https://cdn.ngrok.com; img-src 'self' data: https:; font-src 'self' data: https://assets.ngrok.com; connect-src 'self' https://cdn.jsdelivr.net https://cdn.discordapp.com https://assets.ngrok.com https://cdn.ngrok.com " +
           (process.env.DASHBOARD_URL || "") +
-          " https://sentinelbot-official.github.io;"
+          " https://nexusbot-official.github.io;"
       );
 
       // Cache static assets for 1 day
@@ -334,7 +334,7 @@ class DashboardServer {
     this.app.use((req, res, next) => {
       const origin = req.headers.origin;
       const allowedOrigins = [
-        "https://sentinelbot-official.github.io",
+        "https://nexusbot-official.github.io",
         "http://localhost:5500",
         "http://127.0.0.1:5500",
         "null", // For local file:// protocol
@@ -357,7 +357,7 @@ class DashboardServer {
       } else {
         res.header(
           "Access-Control-Allow-Origin",
-          "https://Sentinelbot-official.github.io"
+          "https://nexusbot-official.github.io"
         );
       }
 

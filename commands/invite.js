@@ -18,7 +18,7 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setTitle("🔗 Invite Nexus Bot")
       .setDescription(
-        "Add Sentinel to your server for advanced security and moderation features!"
+        "Add nexus to your server for advanced security and moderation features!"
       )
       .addFields(
         {
@@ -45,13 +45,13 @@ module.exports = {
       )
       .setColor(0x0099ff)
       .setFooter({
-        text: "Sentinel - Beyond Wick. Free. Open Source. Powerful.",
+        text: "nexus - Beyond Wick. Free. Open Source. Powerful.",
       })
       .setTimestamp();
 
     const row = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
-        .setLabel("Invite Sentinel")
+        .setLabel("Invite nexus")
         .setURL(inviteUrl)
         .setStyle(ButtonStyle.Link),
       new ButtonBuilder()
@@ -60,7 +60,7 @@ module.exports = {
         .setStyle(ButtonStyle.Link),
       new ButtonBuilder()
         .setLabel("GitHub")
-        .setURL("https://github.com/SentinelBot-official/Sentinel")
+        .setURL("https://github.com/nexusBot-official/nexus")
         .setStyle(ButtonStyle.Link)
     );
 

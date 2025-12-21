@@ -171,88 +171,86 @@ class MetricsCollector {
     const uptime = Math.floor((Date.now() - this.startTime) / 1000);
 
     // Help and type declarations
-    lines.push("# HELP Sentinel_uptime_seconds Bot uptime in seconds");
-    lines.push("# TYPE Sentinel_uptime_seconds counter");
-    lines.push(`Sentinel_uptime_seconds ${uptime}`);
+    lines.push("# HELP nexus_uptime_seconds Bot uptime in seconds");
+    lines.push("# TYPE nexus_uptime_seconds counter");
+    lines.push(`nexus_uptime_seconds ${uptime}`);
     lines.push("");
 
     // Guild count
-    lines.push("# HELP Sentinel_guilds Total number of guilds");
-    lines.push("# TYPE Sentinel_guilds gauge");
-    lines.push(`Sentinel_guilds ${this.metrics.guild_count}`);
+    lines.push("# HELP nexus_guilds Total number of guilds");
+    lines.push("# TYPE nexus_guilds gauge");
+    lines.push(`nexus_guilds ${this.metrics.guild_count}`);
     lines.push("");
 
     // User count
-    lines.push("# HELP Sentinel_users Total number of users");
-    lines.push("# TYPE Sentinel_users gauge");
-    lines.push(`Sentinel_users ${this.metrics.user_count}`);
+    lines.push("# HELP nexus_users Total number of users");
+    lines.push("# TYPE nexus_users gauge");
+    lines.push(`nexus_users ${this.metrics.user_count}`);
     lines.push("");
 
     // Memory usage
-    lines.push("# HELP Sentinel_memory_bytes Memory usage in bytes");
-    lines.push("# TYPE Sentinel_memory_bytes gauge");
-    lines.push(`Sentinel_memory_bytes ${this.metrics.memory_usage}`);
+    lines.push("# HELP nexus_memory_bytes Memory usage in bytes");
+    lines.push("# TYPE nexus_memory_bytes gauge");
+    lines.push(`nexus_memory_bytes ${this.metrics.memory_usage}`);
     lines.push("");
 
     // Commands executed
-    lines.push("# HELP Sentinel_commands_total Total commands executed");
-    lines.push("# TYPE Sentinel_commands_total counter");
+    lines.push("# HELP nexus_commands_total Total commands executed");
+    lines.push("# TYPE nexus_commands_total counter");
     for (const [cmd, count] of this.metrics.commands_executed) {
-      lines.push(`Sentinel_commands_total{command="${cmd}"} ${count}`);
+      lines.push(`nexus_commands_total{command="${cmd}"} ${count}`);
     }
     lines.push("");
 
     // Command failures
-    lines.push("# HELP Sentinel_command_failures_total Command failures");
-    lines.push("# TYPE Sentinel_command_failures_total counter");
+    lines.push("# HELP nexus_command_failures_total Command failures");
+    lines.push("# TYPE nexus_command_failures_total counter");
     for (const [cmd, count] of this.metrics.commands_failed) {
-      lines.push(`Sentinel_command_failures_total{command="${cmd}"} ${count}`);
+      lines.push(`nexus_command_failures_total{command="${cmd}"} ${count}`);
     }
     lines.push("");
 
     // Command latency
     lines.push(
-      "# HELP Sentinel_command_latency_ms Average command latency in milliseconds"
+      "# HELP nexus_command_latency_ms Average command latency in milliseconds"
     );
-    lines.push("# TYPE Sentinel_command_latency_ms gauge");
+    lines.push("# TYPE nexus_command_latency_ms gauge");
     for (const [cmd, latencies] of this.metrics.command_latency) {
       if (latencies.length > 0) {
         const avg = latencies.reduce((a, b) => a + b, 0) / latencies.length;
         lines.push(
-          `Sentinel_command_latency_ms{command="${cmd}"} ${avg.toFixed(2)}`
+          `nexus_command_latency_ms{command="${cmd}"} ${avg.toFixed(2)}`
         );
       }
     }
     lines.push("");
 
     // Threats blocked
-    lines.push("# HELP Sentinel_threats_blocked_total Total threats blocked");
-    lines.push("# TYPE Sentinel_threats_blocked_total counter");
-    lines.push(
-      `Sentinel_threats_blocked_total ${this.metrics.threats_blocked}`
-    );
+    lines.push("# HELP nexus_threats_blocked_total Total threats blocked");
+    lines.push("# TYPE nexus_threats_blocked_total counter");
+    lines.push(`nexus_threats_blocked_total ${this.metrics.threats_blocked}`);
     lines.push("");
 
     // Raids detected
-    lines.push("# HELP Sentinel_raids_detected_total Total raids detected");
-    lines.push("# TYPE Sentinel_raids_detected_total counter");
-    lines.push(`Sentinel_raids_detected_total ${this.metrics.raids_detected}`);
+    lines.push("# HELP nexus_raids_detected_total Total raids detected");
+    lines.push("# TYPE nexus_raids_detected_total counter");
+    lines.push(`nexus_raids_detected_total ${this.metrics.raids_detected}`);
     lines.push("");
 
     // Moderation actions
-    lines.push("# HELP Sentinel_mod_actions_total Moderation actions taken");
-    lines.push("# TYPE Sentinel_mod_actions_total counter");
+    lines.push("# HELP nexus_mod_actions_total Moderation actions taken");
+    lines.push("# TYPE nexus_mod_actions_total counter");
     lines.push(
-      `Sentinel_mod_actions_total{action="ban"} ${this.metrics.users_banned}`
+      `nexus_mod_actions_total{action="ban"} ${this.metrics.users_banned}`
     );
     lines.push(
-      `Sentinel_mod_actions_total{action="kick"} ${this.metrics.users_kicked}`
+      `nexus_mod_actions_total{action="kick"} ${this.metrics.users_kicked}`
     );
     lines.push(
-      `Sentinel_mod_actions_total{action="mute"} ${this.metrics.users_muted}`
+      `nexus_mod_actions_total{action="mute"} ${this.metrics.users_muted}`
     );
     lines.push(
-      `Sentinel_mod_actions_total{action="delete"} ${this.metrics.messages_deleted}`
+      `nexus_mod_actions_total{action="delete"} ${this.metrics.messages_deleted}`
     );
     lines.push("");
 
@@ -260,11 +258,9 @@ class MetricsCollector {
     const cacheTotal = this.metrics.cache_hits + this.metrics.cache_misses;
     const cacheHitRate =
       cacheTotal > 0 ? (this.metrics.cache_hits / cacheTotal) * 100 : 0;
-    lines.push(
-      "# HELP Sentinel_cache_hit_rate_percent Cache hit rate percentage"
-    );
-    lines.push("# TYPE Sentinel_cache_hit_rate_percent gauge");
-    lines.push(`Sentinel_cache_hit_rate_percent ${cacheHitRate.toFixed(2)}`);
+    lines.push("# HELP nexus_cache_hit_rate_percent Cache hit rate percentage");
+    lines.push("# TYPE nexus_cache_hit_rate_percent gauge");
+    lines.push(`nexus_cache_hit_rate_percent ${cacheHitRate.toFixed(2)}`);
     lines.push("");
 
     // Database query time
@@ -273,34 +269,32 @@ class MetricsCollector {
         this.metrics.database_query_time.reduce((a, b) => a + b, 0) /
         this.metrics.database_query_time.length;
       lines.push(
-        "# HELP Sentinel_db_query_ms Average database query time in milliseconds"
+        "# HELP nexus_db_query_ms Average database query time in milliseconds"
       );
-      lines.push("# TYPE Sentinel_db_query_ms gauge");
-      lines.push(`Sentinel_db_query_ms ${avgDbTime.toFixed(2)}`);
+      lines.push("# TYPE nexus_db_query_ms gauge");
+      lines.push(`nexus_db_query_ms ${avgDbTime.toFixed(2)}`);
       lines.push("");
     }
 
     // Security metrics
-    lines.push("# HELP Sentinel_security_events_total Security events");
-    lines.push("# TYPE Sentinel_security_events_total counter");
+    lines.push("# HELP nexus_security_events_total Security events");
+    lines.push("# TYPE nexus_security_events_total counter");
     lines.push(
-      `Sentinel_security_events_total{type="rate_limit"} ${this.metrics.rate_limit_hits}`
+      `nexus_security_events_total{type="rate_limit"} ${this.metrics.rate_limit_hits}`
     );
     lines.push(
-      `Sentinel_security_events_total{type="failed_auth"} ${this.metrics.failed_auth_attempts}`
+      `nexus_security_events_total{type="failed_auth"} ${this.metrics.failed_auth_attempts}`
     );
     lines.push(
-      `Sentinel_security_events_total{type="suspicious"} ${this.metrics.suspicious_activities}`
+      `nexus_security_events_total{type="suspicious"} ${this.metrics.suspicious_activities}`
     );
     lines.push("");
 
     // API metrics
-    lines.push("# HELP Sentinel_api_requests_total API requests");
-    lines.push("# TYPE Sentinel_api_requests_total counter");
+    lines.push("# HELP nexus_api_requests_total API requests");
+    lines.push("# TYPE nexus_api_requests_total counter");
     for (const [endpoint, count] of this.metrics.api_requests) {
-      lines.push(
-        `Sentinel_api_requests_total{endpoint="${endpoint}"} ${count}`
-      );
+      lines.push(`nexus_api_requests_total{endpoint="${endpoint}"} ${count}`);
     }
     lines.push("");
 

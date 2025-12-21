@@ -1,6 +1,6 @@
 # Terms of Service
 
-**Last Updated: December 5, 2025**
+**Last Updated: December 21, 2025**
 
 ## Agreement to Terms
 
@@ -187,6 +187,7 @@ Continued use of the Bot after changes constitutes acceptance.
 
 ## Version History
 
+- **December 21, 2025** - Updated contact information (support server invite, GitHub repository URL)
 - **December 5, 2025** - Added XP/leveling system, vote rewards, achievement system, and gateway/shard monitoring to service description
 - **December 1, 2025** - Added enhanced recovery features (webhooks, emojis, stickers, server settings), updated auto-recovery disclaimers
 - **December 1, 2025** - Added auto-recovery snapshots, server lockdown, AI and automated decision-making sections
@@ -256,10 +257,10 @@ The Bot includes AI-powered features that may make automated decisions:
 
 For questions about these Terms:
 
-- **Discord Support Server:** https://discord.gg/p7rh9sdhHD (Preferred method)
+- **Discord Support Server:** https://discord.gg/9vQzqBVMNX (Preferred method)
 - **Legal/Privacy Email:** sentinelbot0@proton.me (For formal legal inquiries)
 - **General Contact:** Open a ticket in our support server
-- **GitHub Issues:** https://github.com/Azzraya/Sentinel/issues (For code-related questions)
+- **GitHub Issues:** https://github.com/Sentinelbot-official/Sentinel/issues (For code-related questions)
 
 ## Acknowledgment
 

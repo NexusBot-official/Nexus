@@ -63,7 +63,7 @@ class BlockchainThreatIntel {
       transactions: [
         {
           type: "genesis",
-          data: "Sentinel Threat Intelligence Network - Genesis Block",
+          data: "nexus Threat Intelligence Network - Genesis Block",
         },
       ],
       previousHash: "0",

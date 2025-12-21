@@ -30,7 +30,7 @@ module.exports = {
           value: [
             "• **Website** - View features, docs, and live stats",
             "• **Support Server** - Get help from our community",
-            "• **Documentation** - Learn how to use Sentinel",
+            "• **Documentation** - Learn how to use nexus",
             "• **GitHub** - View source code and report issues",
             "• **Commands** - Use `/help` to see all commands",
           ].join("\n"),
@@ -39,33 +39,33 @@ module.exports = {
         {
           name: "🔗 Quick Links",
           value: [
-            "• [Official Website](https://Sentinelbot-official.github.io/Sentinel/)",
+            "• [Official Website](https://nexusbot-official.github.io/nexus/)",
             "• [Support Server](https://discord.gg/9vQzqBVMNX)",
-            "• [GitHub Repository](https://github.com/SentinelBot-official/Sentinel)",
-            "• [Privacy Policy](https://github.com/SentinelBot-official/Sentinel/blob/main/PRIVACY_POLICY.md)",
-            "• [Terms of Service](https://github.com/SentinelBot-official/Sentinel/blob/main/TERMS_OF_SERVICE.md)",
+            "• [GitHub Repository](https://github.com/nexusBot-official/nexus)",
+            "• [Privacy Policy](https://github.com/nexusBot-official/nexus/blob/main/PRIVACY_POLICY.md)",
+            "• [Terms of Service](https://github.com/nexusBot-official/nexus/blob/main/TERMS_OF_SERVICE.md)",
           ].join("\n"),
           inline: false,
         },
         {
           name: "❓ Common Questions",
           value: [
-            "**Q: Is Sentinel free?**\nA: Yes, 100% free with all features included.",
+            "**Q: Is nexus free?**\nA: Yes, 100% free with all features included.",
             "**Q: Is it open source?**\nA: Yes, view our code on GitHub.",
-            "**Q: How is it different from Wick?**\nA: Sentinel has AI features, better UX, and is open source.",
+            "**Q: How is it different from Wick?**\nA: nexus has AI features, better UX, and is open source.",
           ].join("\n\n"),
           inline: false,
         }
       )
       .setColor(0x0099ff)
       .setFooter({
-        text: "Sentinel - Beyond Wick. Free. Open Source. Powerful.",
+        text: "nexus - Beyond Wick. Free. Open Source. Powerful.",
       })
       .setTimestamp();
 
     const websiteButton = new ButtonBuilder()
       .setLabel("Visit Website")
-      .setURL("https://Sentinelbot-official.github.io/Sentinel/")
+      .setURL("https://nexusbot-official.github.io/nexus/")
       .setStyle(ButtonStyle.Link);
 
     const supportButton = new ButtonBuilder()
@@ -75,13 +75,13 @@ module.exports = {
 
     const githubButton = new ButtonBuilder()
       .setLabel("GitHub")
-      .setURL("https://github.com/SentinelBot-official/Sentinel")
+      .setURL("https://github.com/nexusBot-official/nexus")
       .setStyle(ButtonStyle.Link);
 
     const inviteButton = new ButtonBuilder()
       .setLabel("Invite Bot")
       .setURL(
-        `https://Sentinelbot-official.github.io/Sentinel/invite.html?source=discord-bot`
+        `https://nexusbot-official.github.io/nexus/invite.html?source=discord-bot`
       )
       .setStyle(ButtonStyle.Link);
 

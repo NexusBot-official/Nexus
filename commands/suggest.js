@@ -14,7 +14,7 @@ const db = require("../utils/database");
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("suggest")
-    .setDescription("Suggest a new feature or improvement for Sentinel"),
+    .setDescription("Suggest a new feature or improvement for nexus"),
 
   async execute(interaction, client) {
     // Create modal for suggestion
@@ -116,7 +116,7 @@ module.exports = {
       const confirmEmbed = new EmbedBuilder()
         .setTitle("✅ Suggestion Submitted!")
         .setDescription(
-          `Thank you for helping improve Sentinel! Your suggestion has been recorded.\n\n` +
+          `Thank you for helping improve nexus! Your suggestion has been recorded.\n\n` +
             `**${title}**\n${description}`
         )
         .addFields({
@@ -141,7 +141,7 @@ module.exports = {
           .setLabel("View All Suggestions")
           .setStyle(ButtonStyle.Link)
           .setURL(
-            "https://Sentinelbot-official.github.io/Sentinel/vote-features.html"
+            "https://nexusbot-official.github.io/nexus/vote-features.html"
           )
       );
 

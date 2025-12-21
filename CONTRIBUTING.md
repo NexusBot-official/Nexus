@@ -67,8 +67,8 @@ There are many ways to contribute to Nexus Bot:
 
 ```bash
 # Clone your fork
-git clone https://github.com/YOUR-USERNAME/Sentinel-bot.git
-cd Sentinel-bot
+git clone https://github.com/YOUR-USERNAME/nexus-bot.git
+cd nexus-bot
 
 # Install dependencies
 npm install
@@ -86,7 +86,7 @@ npm run dev
 ### Project Structure
 
 ```
-Sentinel-bot/
+nexus-bot/
 ├── commands/         # Slash commands
 ├── events/           # Discord event handlers
 ├── utils/            # Utility functions & systems

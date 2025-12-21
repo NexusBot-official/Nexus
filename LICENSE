@@ -15,17 +15,17 @@ BRANDING AND INTELLECTUAL PROPERTY RESTRICTIONS
 Notwithstanding the above permissions, the following are EXPRESSLY PROHIBITED:
 
 1. **Branding and Trademarks**: You may NOT use, copy, modify, or distribute:
-   - The "Nexus Bot" name, logo, or any variations thereof (including but not limited to "Sentinel", "SentinelBot", "Sentinel-Bot")
+   - The "Nexus Bot" name, logo, or any variations thereof (including but not limited to "nexus", "nexusBot", "nexus-Bot")
    - Any branding elements, visual identity, or trademarked materials
    - Bot profile pictures, avatars, or any proprietary images
    - Service marks or trade names associated with Nexus Bot
-   - Official URLs, domains, or website content (including but not limited to Sentinelbot-official.github.io/Sentinel)
+   - Official URLs, domains, or website content (including but not limited to nexusbot-official.github.io/nexus)
    - Discord server invite links or community resources associated with Nexus Bot
-   - Support email addresses (e.g., Sentinelbot0@proton.me) or official contact information
+   - Support email addresses (e.g., nexusbot0@proton.me) or official contact information
    - Bot IDs, application IDs, or other unique identifiers that identify Nexus Bot
 
 2. **Taglines, Slogans, and Marketing Copy**: You may NOT use, copy, modify, or distribute:
-   - Taglines and slogans including but not limited to: "Beyond Wick. Beyond Everything.", "The Free Discord Security Bot That Exceeds Wick", "Everything Wick does, Sentinel does better. 100% FREE."
+   - Taglines and slogans including but not limited to: "Beyond Wick. Beyond Everything.", "The Free Discord Security Bot That Exceeds Wick", "Everything Wick does, nexus does better. 100% FREE."
    - Marketing descriptions, positioning statements, or competitive comparisons
    - Feature descriptions that are substantially similar to Nexus Bot's marketing materials
    - Any catchphrases, mottos, or distinctive marketing language associated with Nexus Bot
@@ -40,7 +40,7 @@ Notwithstanding the above permissions, the following are EXPRESSLY PROHIBITED:
    - Use identical or near-identical color schemes, layouts, or design patterns
    - Mimic distinctive UI elements, command structures, or presentation styles
    - Create visual confusion where users might mistake the fork for official Nexus Bot
-   - **Examples**: Using the same shield emoji (🛡️) prominently in branding, copying the "Sentinel vs Wick" comparison table structure, using identical embed colors or formatting styles that are distinctive to Nexus Bot
+   - **Examples**: Using the same shield emoji (🛡️) prominently in branding, copying the "nexus vs Wick" comparison table structure, using identical embed colors or formatting styles that are distinctive to Nexus Bot
 
 4. **Legal Documents**: You may NOT use, copy, modify, or distribute:
    - Privacy Policy (PRIVACY_POLICY.md)
@@ -98,7 +98,7 @@ Violation of these restrictions constitutes trademark infringement and may resul
 If you wish to use any of the above protected materials, you must obtain explicit written permission from the copyright holders. Contact information:
 
 - Support Server: https://discord.gg/p7rh9sdhHD
-- Privacy Email: Sentinelbot0@proton.me
+- Privacy Email: nexusbot0@proton.me
 
 **Termination of License**: The license granted herein shall automatically terminate upon any breach of these restrictions. However, before termination, you will receive a written notice of violation (sent to the contact information provided in your distribution or to the email associated with your GitHub account) allowing **14 calendar days** to remedy the violation. Termination will only occur if:
 

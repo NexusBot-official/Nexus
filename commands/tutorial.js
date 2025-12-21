@@ -9,7 +9,7 @@ const {
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("tutorial")
-    .setDescription("Interactive tutorial to learn Sentinel features")
+    .setDescription("Interactive tutorial to learn nexus features")
     .addStringOption((option) =>
       option
         .setName("topic")
@@ -38,9 +38,9 @@ module.exports = {
 
   async showMenu(interaction) {
     const embed = new EmbedBuilder()
-      .setTitle("🎓 Sentinel Interactive Tutorial")
+      .setTitle("🎓 nexus Interactive Tutorial")
       .setDescription(
-        "Welcome to Sentinel! Choose a topic below to learn more about the bot's features.\n\n" +
+        "Welcome to nexus! Choose a topic below to learn more about the bot's features.\n\n" +
           "**Topics:**\n" +
           "🛡️ **Security & Protection** - Anti-raid, anti-nuke, and security features\n" +
           "⚙️ **Basic Setup** - Get started with `/quicksetup`\n" +
@@ -122,7 +122,7 @@ module.exports = {
           {
             title: "Anti-Raid System",
             description:
-              "Sentinel uses **4 detection algorithms** to catch raids:\n\n" +
+              "nexus uses **4 detection algorithms** to catch raids:\n\n" +
               "1️⃣ **Join Rate** - Detects mass joins\n" +
               "2️⃣ **Account Age** - Flags new/suspicious accounts\n" +
               "3️⃣ **Username Pattern** - Detects similar names\n" +
@@ -348,7 +348,7 @@ module.exports = {
             description:
               "**Planned for Future:**\n\n" +
               "Platform integrations are not currently available.\n\n" +
-              "Sentinel focuses on core security features:\n" +
+              "nexus focuses on core security features:\n" +
               "• Anti-raid protection\n" +
               "• Anti-nuke defense\n" +
               "• Auto-moderation\n" +

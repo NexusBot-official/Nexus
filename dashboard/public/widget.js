@@ -15,7 +15,7 @@
   // Inject CSS
   const style = document.createElement("style");
   style.textContent = `
-    .sentinel-widget {
+    .nexus-widget {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: ${theme === "dark" ? "#2d2d2d" : "white"};
       color: ${theme === "dark" ? "#f8f8f2" : "#333"};
@@ -24,50 +24,50 @@
       box-shadow: 0 4px 12px rgba(0,0,0,${theme === "dark" ? "0.3" : "0.1"});
       max-width: 400px;
     }
-    .sentinel-widget-header {
+    .nexus-widget-header {
       display: flex;
       align-items: center;
       margin-bottom: 15px;
     }
-    .sentinel-widget-avatar {
+    .nexus-widget-avatar {
       width: 50px;
       height: 50px;
       border-radius: 50%;
       margin-right: 12px;
     }
-    .sentinel-widget-title {
+    .nexus-widget-title {
       font-size: 18px;
       font-weight: 600;
       margin-bottom: 4px;
     }
-    .sentinel-widget-status {
+    .nexus-widget-status {
       font-size: 13px;
       color: ${theme === "dark" ? "#73d13d" : "#52c41a"};
     }
-    .sentinel-widget-stats {
+    .nexus-widget-stats {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 12px;
       margin: 15px 0;
     }
-    .sentinel-widget-stat {
+    .nexus-widget-stat {
       text-align: center;
       padding: 12px;
       background: ${theme === "dark" ? "#3a3a3a" : "#f8f9fa"};
       border-radius: 8px;
     }
-    .sentinel-widget-stat-value {
+    .nexus-widget-stat-value {
       font-size: 24px;
       font-weight: 700;
       color: #667eea;
     }
-    .sentinel-widget-stat-label {
+    .nexus-widget-stat-label {
       font-size: 12px;
       color: ${theme === "dark" ? "#aaa" : "#666"};
       text-transform: uppercase;
       margin-top: 4px;
     }
-    .sentinel-widget-button {
+    .nexus-widget-button {
       display: block;
       width: 100%;
       padding: 12px;
@@ -80,7 +80,7 @@
       margin-top: 15px;
       transition: background 0.3s;
     }
-    .sentinel-widget-button:hover {
+    .nexus-widget-button:hover {
       background: #5568d3;
     }
   `;
@@ -89,28 +89,28 @@
   // Create widget HTML
   function createWidget(stats) {
     let html = `
-      <div class="sentinel-widget">
-        <div class="sentinel-widget-header">
+      <div class="nexus-widget">
+        <div class="nexus-widget-header">
           <img src="https://cdn.discordapp.com/app-icons/1444739230679957646/32f2d77d44c2f3989fecd858be53f396.png?size=256" 
                alt="Nexus Bot" 
-               class="sentinel-widget-avatar">
+               class="nexus-widget-avatar">
           <div>
-            <div class="sentinel-widget-title">Nexus Bot</div>
-            <div class="sentinel-widget-status">● Online</div>
+            <div class="nexus-widget-title">Nexus Bot</div>
+            <div class="nexus-widget-status">● Online</div>
           </div>
         </div>
     `;
 
     if (layout !== "minimal") {
       html += `
-        <div class="sentinel-widget-stats">
-          <div class="sentinel-widget-stat">
-            <div class="sentinel-widget-stat-value">${stats.servers || "..."}</div>
-            <div class="sentinel-widget-stat-label">Servers</div>
+        <div class="nexus-widget-stats">
+          <div class="nexus-widget-stat">
+            <div class="nexus-widget-stat-value">${stats.servers || "..."}</div>
+            <div class="nexus-widget-stat-label">Servers</div>
           </div>
-          <div class="sentinel-widget-stat">
-            <div class="sentinel-widget-stat-value">100+</div>
-            <div class="sentinel-widget-stat-label">Commands</div>
+          <div class="nexus-widget-stat">
+            <div class="nexus-widget-stat-value">100+</div>
+            <div class="nexus-widget-stat-label">Commands</div>
           </div>
         </div>
       `;
@@ -118,14 +118,14 @@
 
     if (layout === "full") {
       html += `
-        <div class="sentinel-widget-stats">
-          <div class="sentinel-widget-stat">
-            <div class="sentinel-widget-stat-value">${stats.uptime || "99.9%"}</div>
-            <div class="sentinel-widget-stat-label">Uptime</div>
+        <div class="nexus-widget-stats">
+          <div class="nexus-widget-stat">
+            <div class="nexus-widget-stat-value">${stats.uptime || "99.9%"}</div>
+            <div class="nexus-widget-stat-label">Uptime</div>
           </div>
-          <div class="sentinel-widget-stat">
-            <div class="sentinel-widget-stat-value">24/7</div>
-            <div class="sentinel-widget-stat-label">Support</div>
+          <div class="nexus-widget-stat">
+            <div class="nexus-widget-stat-value">24/7</div>
+            <div class="nexus-widget-stat-label">Support</div>
           </div>
         </div>
       `;
@@ -135,7 +135,7 @@
       html += `
         <a href="https://discord.com/oauth2/authorize?client_id=1444739230679957646&permissions=268443574&scope=bot%20applications.commands" 
            target="_blank" 
-           class="sentinel-widget-button">
+           class="nexus-widget-button">
           Invite to Server
         </a>
       `;
@@ -151,13 +151,13 @@
       const response = await fetch(`${API_URL}/api/stats`);
       const stats = await response.json();
 
-      const container = document.getElementById("sentinel-widget");
+      const container = document.getElementById("nexus-widget");
       if (container) {
         container.innerHTML = createWidget(stats);
       }
     } catch (error) {
       console.error("Nexus Widget: Failed to load stats", error);
-      const container = document.getElementById("sentinel-widget");
+      const container = document.getElementById("nexus-widget");
       if (container) {
         container.innerHTML = createWidget({});
       }

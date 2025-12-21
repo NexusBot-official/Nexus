@@ -60,7 +60,7 @@ class WebhookEvents {
       const response = await axios.post(event.url, payload, {
         headers: {
           "Content-Type": "application/json",
-          "User-Agent": "Sentinel-Bot-Webhooks/1.0",
+          "User-Agent": "nexus-Bot-Webhooks/1.0",
         },
         timeout: 5000,
       });
@@ -104,7 +104,7 @@ class WebhookEvents {
         {
           event: "webhook_test",
           timestamp: Date.now(),
-          message: "Sentinel webhook subscription test",
+          message: "nexus webhook subscription test",
         },
         { timeout: 5000 }
       );

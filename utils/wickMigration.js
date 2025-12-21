@@ -4,7 +4,7 @@ const logger = require("./logger");
 
 /**
  * Wick Bot Migration Tool
- * Automatically detect and migrate settings from Wick to Sentinel
+ * Automatically detect and migrate settings from Wick to nexus
  */
 class WickMigration {
   constructor(client) {
@@ -84,8 +84,7 @@ class WickMigration {
     recommendations.push({
       category: "Security",
       title: "Upgrade to 4 Anti-Raid Algorithms",
-      description:
-        "Wick uses 1 algorithm, Sentinel uses 4 for better detection",
+      description: "Wick uses 1 algorithm, nexus uses 4 for better detection",
       priority: "high",
     });
 
@@ -99,7 +98,7 @@ class WickMigration {
     recommendations.push({
       category: "Recovery",
       title: "Activate Hourly Auto-Backups",
-      description: "Sentinel creates automatic snapshots every hour",
+      description: "nexus creates automatic snapshots every hour",
       priority: "medium",
     });
 
@@ -107,7 +106,7 @@ class WickMigration {
       recommendations.push({
         category: "Logging",
         title: "Migrate Log Channels",
-        description: `Found ${settings.logChannels.length} log channel(s) - will configure Sentinel to use them`,
+        description: `Found ${settings.logChannels.length} log channel(s) - will configure nexus to use them`,
         priority: "medium",
       });
     }
@@ -116,7 +115,7 @@ class WickMigration {
       recommendations.push({
         category: "Moderation",
         title: "Import Quarantine Roles",
-        description: `Found ${settings.quarantineRoles.length} moderation role(s) - will configure for Sentinel`,
+        description: `Found ${settings.quarantineRoles.length} moderation role(s) - will configure for nexus`,
         priority: "low",
       });
     }
@@ -152,7 +151,7 @@ class WickMigration {
         );
       }
 
-      // 2. Enable all Sentinel security features (better than Wick)
+      // 2. Enable all nexus security features (better than Wick)
       await db.updateServerConfig(guild.id, {
         anti_raid_enabled: 1,
         anti_nuke_enabled: 1,
@@ -197,7 +196,7 @@ class WickMigration {
 
       logger.success(
         "WickMigration",
-        `Successfully migrated ${guild.name} from Wick to Sentinel`
+        `Successfully migrated ${guild.name} from Wick to nexus`
       );
     } catch (error) {
       results.success = false;
@@ -245,54 +244,54 @@ class WickMigration {
         {
           feature: "Anti-Raid Algorithms",
           wick: "1",
-          Sentinel: "4",
-          advantage: "Sentinel",
+          nexus: "4",
+          advantage: "nexus",
         },
         {
           feature: "AI Threat Detection",
           wick: "❌",
-          Sentinel: "✅",
-          advantage: "Sentinel",
+          nexus: "✅",
+          advantage: "nexus",
         },
         {
           feature: "Auto-Backups",
           wick: "Manual Only",
-          Sentinel: "Hourly Automatic",
-          advantage: "Sentinel",
+          nexus: "Hourly Automatic",
+          advantage: "nexus",
         },
         {
           feature: "Workflow Automation",
           wick: "❌",
-          Sentinel: "✅",
-          advantage: "Sentinel",
+          nexus: "✅",
+          advantage: "nexus",
         },
         {
           feature: "Cost",
           wick: "$3-10/month",
-          Sentinel: "100% Free",
-          advantage: "Sentinel",
+          nexus: "100% Free",
+          advantage: "nexus",
         },
         {
           feature: "Open Source",
           wick: "❌",
-          Sentinel: "✅",
-          advantage: "Sentinel",
+          nexus: "✅",
+          advantage: "nexus",
         },
         {
           feature: "Response Time",
           wick: "~500ms",
-          Sentinel: "<200ms",
-          advantage: "Sentinel",
+          nexus: "<200ms",
+          advantage: "nexus",
         },
         {
           feature: "Threat Intelligence",
           wick: "Server-Only",
-          Sentinel: "Cross-Server Network",
-          advantage: "Sentinel",
+          nexus: "Cross-Server Network",
+          advantage: "nexus",
         },
       ],
       summary: {
-        SentinelWins: 8,
+        nexusWins: 8,
         wickWins: 0,
         ties: 0,
       },

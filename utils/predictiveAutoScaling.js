@@ -340,7 +340,7 @@ class PredictiveAutoScaling {
             .fetch(ownerId)
             .then((owner) => {
               owner.send(
-                `🚨 **Sentinel Scaling Alert**\n\n` +
+                `🚨 **nexus Scaling Alert**\n\n` +
                   `Current capacity: ${(capacityUsed * 100).toFixed(1)}%\n` +
                   `Servers: ${currentServers}\n` +
                   `Current shards: ${currentShards}\n` +

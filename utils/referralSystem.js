@@ -4,7 +4,7 @@ const logger = require("./logger");
 /**
  * Referral System
  * Viral growth through server invites
- * Unlock premium features by inviting Sentinel to multiple servers
+ * Unlock premium features by inviting nexus to multiple servers
  */
 class ReferralSystem {
   constructor(client) {
@@ -273,7 +273,7 @@ class ReferralSystem {
           embeds: [
             {
               title: `🎉 Congratulations! You unlocked ${tierData.badge}!`,
-              description: `You've referred Sentinel to enough servers to unlock premium rewards!`,
+              description: `You've referred nexus to enough servers to unlock premium rewards!`,
               fields: [
                 {
                   name: "Your Rewards",
@@ -282,7 +282,7 @@ class ReferralSystem {
                 {
                   name: "Keep Growing!",
                   value:
-                    "Invite Sentinel to more servers to unlock even better rewards!",
+                    "Invite nexus to more servers to unlock even better rewards!",
                 },
               ],
               color: 0x9333ea,

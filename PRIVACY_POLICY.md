@@ -1,6 +1,6 @@
 # Privacy Policy
 
-**Last Updated: December 5, 2025**
+**Last Updated: December 21, 2025**
 
 ## Introduction
 
@@ -446,6 +446,7 @@ We may update this Privacy Policy from time to time. We will:
 
 ## Version History
 
+- **December 21, 2025** - Updated contact information (support server invite, GitHub repository URL)
 - **December 5, 2025** - Added XP/leveling system, vote rewards, and achievement tracking documentation
 - **December 5, 2025** - Added OAuth dashboard authentication tracking documentation
 - **December 5, 2025** - Added message edit/delete event logging documentation, API v2 deprecation notice
@@ -457,10 +458,10 @@ We may update this Privacy Policy from time to time. We will:
 
 For privacy concerns, data requests, or questions:
 
-- **Discord Support Server:** https://discord.gg/p7rh9sdhHD (Preferred method)
-- **Privacy Email:** Sentinelbot0@proton.me (For formal privacy requests)
+- **Discord Support Server:** https://discord.gg/9vQzqBVMNX (Preferred method)
+- **Privacy Email:** nexusbot0@proton.me (For formal privacy requests)
 - **General Contact:** Open a ticket in our support server
-- **GitHub Issues:** https://github.com/Azzraya/Sentinel/issues (For code-related questions)
+- **GitHub Issues:** https://github.com/nexusbot-official/nexus/issues (For code-related questions)
 
 ### Data Protection Officer and ICO
 
