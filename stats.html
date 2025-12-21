@@ -334,50 +334,121 @@
         height: 250px;
       }
 
-      .math-breakdown {
+      .countdown-banner {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 20px;
+        margin: 30px 0;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(240, 147, 251, 0.3);
+      }
+
+      .countdown-number {
+        font-size: 4em;
+        font-weight: bold;
+        margin: 10px 0;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      .countdown-label {
+        font-size: 1.3em;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        opacity: 0.95;
+      }
+
+      .countdown-sublabel {
+        font-size: 1em;
+        margin-top: 10px;
+        opacity: 0.9;
+      }
+
+      .projection-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 25px;
+        border-radius: 15px;
+        margin: 20px 0;
+        text-align: center;
+      }
+
+      .projection-title {
+        font-size: 1.1em;
+        opacity: 0.9;
+        margin-bottom: 15px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .projection-date {
+        font-size: 2.5em;
+        font-weight: bold;
+        margin: 10px 0;
+      }
+
+      .projection-details {
+        font-size: 0.95em;
+        opacity: 0.85;
+        margin-top: 10px;
+      }
+
+      .daily-tracker {
         background: #f8f9fa;
         padding: 20px;
         border-radius: 15px;
         margin: 20px 0;
-        text-align: left;
-        font-family: "Courier New", monospace;
-        font-size: 0.9em;
       }
 
-      .math-breakdown h3 {
-        font-family:
-          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
-          Cantarell, sans-serif;
+      .daily-tracker h3 {
         color: #333;
         margin-bottom: 15px;
+        text-align: center;
       }
 
-      .math-step {
+      .daily-goal-card {
         background: white;
-        padding: 12px;
+        padding: 15px;
+        border-radius: 10px;
         margin: 10px 0;
-        border-radius: 8px;
         border-left: 4px solid #667eea;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
       }
 
-      .math-label {
+      .daily-goal-label {
+        color: #666;
+        font-weight: 500;
+      }
+
+      .daily-goal-value {
         color: #667eea;
         font-weight: bold;
-        margin-bottom: 5px;
+        font-size: 1.3em;
       }
 
-      .math-formula {
-        color: #333;
-        margin: 5px 0;
-        padding: 5px;
-        background: #f0f0f0;
-        border-radius: 4px;
-      }
-
-      .math-result {
-        color: #4ade80;
+      .goal-reached {
+        background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 15px;
+        text-align: center;
+        font-size: 1.5em;
         font-weight: bold;
-        margin-top: 5px;
+        margin: 20px 0;
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0%, 100% {
+          transform: scale(1);
+          box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
+        }
+        50% {
+          transform: scale(1.05);
+          box-shadow: 0 0 20px 10px rgba(74, 222, 128, 0);
+        }
       }
     </style>
   </head>
@@ -421,6 +492,18 @@
         </div>
       </div>
 
+      <!-- Countdown Banner -->
+      <div id="countdown-banner" style="display: none"></div>
+
+      <!-- Projected Verification Date -->
+      <div id="projection-section" style="display: none"></div>
+
+      <!-- Daily Progress Tracker -->
+      <div class="daily-tracker" id="daily-tracker" style="display: none">
+        <h3>📅 Daily Progress Tracker</h3>
+        <div id="daily-goals"></div>
+      </div>
+
       <!-- Growth Statistics -->
       <div class="growth-stats" id="growth-stats" style="display: none">
         <h3 style="margin-bottom: 15px; color: #333">📈 Growth Analytics</h3>
@@ -436,12 +519,6 @@
           <span class="growth-stat-label">Growth Trend</span>
           <span class="growth-stat-value" id="growth-trend">-</span>
         </div>
-      </div>
-
-      <!-- Math Breakdown -->
-      <div class="math-breakdown" id="math-breakdown" style="display: none">
-        <h3>🧮 Calculation Breakdown</h3>
-        <div id="math-steps"></div>
       </div>
 
       <!-- Additional Stats Grid -->
@@ -572,6 +649,125 @@
         return "📉 Slowing";
       }
 
+      function updateCountdownBanner(currentServers) {
+        const banner = document.getElementById("countdown-banner");
+        if (!banner) return;
+
+        const serversNeeded = GOAL - currentServers;
+
+        if (serversNeeded <= 0) {
+          banner.innerHTML = `
+            <div class="goal-reached">
+              🎉 VERIFICATION GOAL REACHED! 🎉
+              <div style="font-size: 0.7em; margin-top: 10px;">
+                You hit ${GOAL} servers!
+              </div>
+            </div>
+          `;
+          banner.style.display = "block";
+        } else {
+          banner.innerHTML = `
+            <div class="countdown-banner">
+              <div class="countdown-label">Servers to Verification</div>
+              <div class="countdown-number">${serversNeeded}</div>
+              <div class="countdown-sublabel">
+                ${currentServers} / ${GOAL} servers
+              </div>
+            </div>
+          `;
+          banner.style.display = "block";
+        }
+      }
+
+      function updateProjectedDate(currentServers, growthRate) {
+        const section = document.getElementById("projection-section");
+        if (!section) return;
+
+        const serversNeeded = GOAL - currentServers;
+
+        if (serversNeeded <= 0) {
+          section.style.display = "none";
+          return;
+        }
+
+        if (!growthRate || growthRate <= 0) {
+          section.innerHTML = `
+            <div class="projection-section">
+              <div class="projection-title">📅 Projected Verification Date</div>
+              <div class="projection-date">Calculating...</div>
+              <div class="projection-details">
+                Need more data to estimate arrival date
+              </div>
+            </div>
+          `;
+          section.style.display = "block";
+          return;
+        }
+
+        const hoursNeeded = serversNeeded / growthRate;
+        const projectedDate = new Date(Date.now() + hoursNeeded * 60 * 60 * 1000);
+        
+        const dateOptions = { 
+          weekday: 'long', 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        };
+        const formattedDate = projectedDate.toLocaleDateString('en-US', dateOptions);
+
+        const daysAway = Math.ceil(hoursNeeded / 24);
+        
+        section.innerHTML = `
+          <div class="projection-section">
+            <div class="projection-title">📅 Projected Verification Date</div>
+            <div class="projection-date">${formattedDate}</div>
+            <div class="projection-details">
+              That's approximately ${daysAway} day${daysAway !== 1 ? 's' : ''} away at current growth rate
+            </div>
+          </div>
+        `;
+        section.style.display = "block";
+      }
+
+      function updateDailyTracker(currentServers, growthRate) {
+        const tracker = document.getElementById("daily-tracker");
+        const goalsDiv = document.getElementById("daily-goals");
+        if (!tracker || !goalsDiv) return;
+
+        const serversNeeded = GOAL - currentServers;
+
+        if (serversNeeded <= 0) {
+          tracker.style.display = "none";
+          return;
+        }
+
+        const serversPerDay = growthRate ? growthRate * 24 : 0;
+        
+        // Calculate different timeframe goals
+        const goals = [
+          { label: "To reach goal in 1 day", value: serversNeeded },
+          { label: "To reach goal in 3 days", value: Math.ceil(serversNeeded / 3) },
+          { label: "To reach goal in 7 days", value: Math.ceil(serversNeeded / 7) },
+          { label: "Current daily rate", value: serversPerDay > 0 ? serversPerDay.toFixed(1) : "N/A", highlight: true }
+        ];
+
+        let html = "";
+        goals.forEach(goal => {
+          const highlightClass = goal.highlight ? ' style="border-left-color: #f093fb;"' : '';
+          html += `
+            <div class="daily-goal-card"${highlightClass}>
+              <span class="daily-goal-label">${goal.label}</span>
+              <span class="daily-goal-value">${typeof goal.value === 'number' ? goal.value.toFixed(1) : goal.value} servers/day</span>
+            </div>
+          `;
+        });
+
+        goalsDiv.innerHTML = html;
+        tracker.style.display = "block";
+      }
+
       function renderChart() {
         const historical = getHistoricalData();
         if (historical.length < 2) return;
@@ -618,122 +814,6 @@
             },
           },
         });
-      }
-
-      function updateMathBreakdown(currentServers, growthRate) {
-        const breakdownSection = document.getElementById("math-breakdown");
-        const mathSteps = document.getElementById("math-steps");
-        
-        if (!breakdownSection || !mathSteps) return;
-
-        const historical = getHistoricalData();
-        let html = "";
-
-        // 1. New Servers Calculation
-        if (initialServerCount !== null && !isNaN(initialServerCount)) {
-          const newServers = currentServers - initialServerCount;
-          html += `
-            <div class="math-step">
-              <div class="math-label">📊 New Servers Since Page Load</div>
-              <div class="math-formula">Current Servers - Initial Servers</div>
-              <div class="math-formula">${currentServers} - ${initialServerCount} = ${newServers}</div>
-              <div class="math-result">Result: ${newServers > 0 ? '+' : ''}${newServers} servers</div>
-            </div>
-          `;
-        }
-
-        // 2. Progress Percentage
-        const progress = Math.min((currentServers / GOAL) * 100, 100);
-        html += `
-          <div class="math-step">
-            <div class="math-label">📈 Progress to Goal (${GOAL} servers)</div>
-            <div class="math-formula">(Current Servers / Goal) × 100</div>
-            <div class="math-formula">(${currentServers} / ${GOAL}) × 100 = ${progress.toFixed(2)}%</div>
-            <div class="math-result">Result: ${Math.round(progress)}%</div>
-          </div>
-        `;
-
-        // 3. Growth Rate Calculation
-        if (historical.length >= 2) {
-          const oldest = historical[0];
-          const newest = historical[historical.length - 1];
-          const timeDiffMs = newest.timestamp - oldest.timestamp;
-          const timeDiffHours = (timeDiffMs / 1000 / 3600).toFixed(2);
-          const serverDiff = newest.servers - oldest.servers;
-          const rate = growthRate !== null ? growthRate.toFixed(2) : "N/A";
-
-          html += `
-            <div class="math-step">
-              <div class="math-label">⏱️ Growth Rate (Servers per Hour)</div>
-              <div class="math-formula">Server Difference / Time Difference (hours)</div>
-              <div class="math-formula">Oldest Data: ${oldest.servers} servers at ${new Date(oldest.timestamp).toLocaleTimeString()}</div>
-              <div class="math-formula">Newest Data: ${newest.servers} servers at ${new Date(newest.timestamp).toLocaleTimeString()}</div>
-              <div class="math-formula">Server Diff: ${newest.servers} - ${oldest.servers} = ${serverDiff}</div>
-              <div class="math-formula">Time Diff: ${timeDiffHours} hours</div>
-              <div class="math-formula">${serverDiff} / ${timeDiffHours} = ${rate}</div>
-              <div class="math-result">Result: ${rate} servers/hour</div>
-            </div>
-          `;
-
-          // 4. Time to Goal Calculation
-          if (growthRate !== null && growthRate > 0) {
-            const serversNeeded = GOAL - currentServers;
-            const hoursNeeded = serversNeeded / growthRate;
-            const daysNeeded = (hoursNeeded / 24).toFixed(2);
-
-            html += `
-              <div class="math-step">
-                <div class="math-label">🎯 Estimated Time to Goal</div>
-                <div class="math-formula">Servers Needed / Growth Rate</div>
-                <div class="math-formula">Servers Needed: ${GOAL} - ${currentServers} = ${serversNeeded}</div>
-                <div class="math-formula">Hours Needed: ${serversNeeded} / ${growthRate.toFixed(2)} = ${hoursNeeded.toFixed(2)}</div>
-                <div class="math-formula">Days Needed: ${hoursNeeded.toFixed(2)} / 24 = ${daysNeeded}</div>
-                <div class="math-result">Result: ${estimateTimeToGoal(currentServers, growthRate)}</div>
-              </div>
-            `;
-          }
-
-          // 5. Growth Trend Calculation
-          if (historical.length >= 3) {
-            const recent = historical.slice(-5);
-            let increases = 0;
-            let trendDetails = [];
-            
-            for (let i = 1; i < recent.length; i++) {
-              const change = recent[i].servers - recent[i - 1].servers;
-              const isIncrease = change > 0;
-              if (isIncrease) increases++;
-              trendDetails.push(`${recent[i - 1].servers} → ${recent[i].servers} (${change > 0 ? '+' : ''}${change})`);
-            }
-
-            const ratio = (increases / (recent.length - 1)).toFixed(2);
-            const trend = getGrowthTrend();
-
-            html += `
-              <div class="math-step">
-                <div class="math-label">📉 Growth Trend Analysis</div>
-                <div class="math-formula">Recent Changes (last ${recent.length} data points):</div>
-                ${trendDetails.map(detail => `<div class="math-formula">• ${detail}</div>`).join('')}
-                <div class="math-formula">Increases: ${increases} out of ${recent.length - 1} intervals</div>
-                <div class="math-formula">Ratio: ${increases} / ${recent.length - 1} = ${ratio}</div>
-                <div class="math-formula">If ratio > 0.6: Accelerating, > 0.3: Steady, else: Slowing</div>
-                <div class="math-result">Result: ${trend}</div>
-              </div>
-            `;
-          }
-        } else {
-          html += `
-            <div class="math-step">
-              <div class="math-label">⏳ Gathering Data...</div>
-              <div class="math-formula">Need at least 2 data points to calculate growth metrics</div>
-              <div class="math-formula">Current data points: ${historical.length}</div>
-              <div class="math-result">Check back in a few minutes!</div>
-            </div>
-          `;
-        }
-
-        mathSteps.innerHTML = html;
-        breakdownSection.style.display = "block";
       }
 
       function createConfetti() {
@@ -935,13 +1015,11 @@
             });
           }
 
-          // Calculate growth rate (needed for multiple sections)
-          const growthRate = calculateGrowthRate();
-
           // Update growth stats
           const growthStatsSection = document.getElementById("growth-stats");
           if (growthStatsSection) {
             growthStatsSection.style.display = "block";
+            const growthRate = calculateGrowthRate();
 
             document.getElementById("servers-per-hour").textContent =
               growthRate !== null
@@ -971,15 +1049,17 @@
               `${stats.ping || 0}ms`;
           }
 
+          // Update new sections
+          updateCountdownBanner(currentServerCount);
+          updateProjectedDate(currentServerCount, growthRate);
+          updateDailyTracker(currentServerCount, growthRate);
+
           // Render chart
           const chartContainer = document.getElementById("chart-container");
           if (chartContainer && getHistoricalData().length >= 2) {
             chartContainer.style.display = "block";
             renderChart();
           }
-
-          // Update math breakdown
-          updateMathBreakdown(currentServerCount, growthRate);
 
           document.getElementById("last-updated").textContent =
             `Last updated: ${new Date().toLocaleTimeString()}`;
