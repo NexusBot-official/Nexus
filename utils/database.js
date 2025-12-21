@@ -1836,6 +1836,13 @@ class Database {
       }
     });
 
+    // Migration: Add action_type column to workflows table
+    this.db.run(`ALTER TABLE workflows ADD COLUMN action_type TEXT`, (err) => {
+      if (err && !err.message.includes("duplicate column")) {
+        logger.error("Migration error (workflows action_type):", err);
+      }
+    });
+
     // Migration: Add threat_type and action_taken columns to security_logs if they don't exist
     this.db.run(
       `ALTER TABLE security_logs ADD COLUMN threat_type TEXT`,
