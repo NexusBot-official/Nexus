@@ -9,7 +9,8 @@
     "cluster": "node cluster.js",
     "test": "jest",
     "format": "prettier --write \"**/*.{js,json,md,html,css}\"",
-    "format:check": "prettier --check \"**/*.{js,json,md,html,css}\""
+    "format:check": "prettier --check \"**/*.{js,json,md,html,css}\"",
+    "fix-merge": "git checkout --ours . && git add -A"
   },
   "keywords": [
     "discord",
