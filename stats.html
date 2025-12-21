@@ -441,7 +441,8 @@
       }
 
       @keyframes pulse {
-        0%, 100% {
+        0%,
+        100% {
           transform: scale(1);
           box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
         }
@@ -482,8 +483,13 @@
       }
 
       @keyframes bounce {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-5px); }
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-5px);
+        }
       }
 
       .records-section {
@@ -614,7 +620,7 @@
       <!-- Progress to Goal -->
       <div class="progress-section" id="progress-section" style="display: none">
         <div class="progress-header">
-          <span>Progress to Goal</span>
+          <span id="progress-goal-label">Progress to Next Milestone</span>
           <span id="progress-percentage">0%</span>
         </div>
         <div class="progress-bar-container">
@@ -661,14 +667,22 @@
       </div>
 
       <!-- Retention Rate -->
-      <div class="retention-section" id="retention-section" style="display: none">
+      <div
+        class="retention-section"
+        id="retention-section"
+        style="display: none"
+      >
         <h3>📊 Server Retention Rate</h3>
         <div class="retention-percentage" id="retention-percentage">-</div>
         <div class="retention-details" id="retention-details"></div>
       </div>
 
       <!-- Peak Hours Analysis -->
-      <div class="peak-hours-section" id="peak-hours-section" style="display: none">
+      <div
+        class="peak-hours-section"
+        id="peak-hours-section"
+        style="display: none"
+      >
         <h3>⏰ Peak Growth Hours</h3>
         <div id="peak-hours-content"></div>
       </div>
@@ -681,7 +695,9 @@
           <span class="growth-stat-value" id="servers-per-hour">-</span>
         </div>
         <div class="growth-stat-row">
-          <span class="growth-stat-label" id="time-to-goal-label">Estimated Time to Next Goal</span>
+          <span class="growth-stat-label" id="time-to-goal-label"
+            >Estimated Time to Next Goal</span
+          >
           <span class="growth-stat-value" id="time-to-goal">-</span>
         </div>
         <div class="growth-stat-row">
@@ -721,9 +737,32 @@
     <script>
       const DASHBOARD_URL = "https://regular-puma-clearly.ngrok-free.app";
       const VERIFICATION_GOAL = 75; // Discord verification requirement
-      const GOAL = 82; // Overall growth goal
+      const MILESTONES = [75, 82, 100, 150, 200, 250, 500, 750, 1000, 1500, 2000, 2500, 5000, 7500, 10000];
       let previousServerCount = null;
       let serversAt75 = null;
+
+      // Get the next milestone based on current server count
+      function getNextMilestone(currentServers) {
+        for (let milestone of MILESTONES) {
+          if (currentServers < milestone) {
+            return milestone;
+          }
+        }
+        // If beyond all milestones, create dynamic ones (increments of 5000)
+        return Math.ceil(currentServers / 5000) * 5000 + 5000;
+      }
+
+      function getCurrentGoalLabel(currentServers, targetGoal) {
+        if (currentServers < VERIFICATION_GOAL) {
+          return "Verification (75)";
+        } else if (targetGoal === 82) {
+          return "Initial Goal (82)";
+        } else if (targetGoal >= 1000) {
+          return `${(targetGoal / 1000).toFixed(targetGoal % 1000 === 0 ? 0 : 1)}K Milestone`;
+        } else {
+          return `${targetGoal} Servers`;
+        }
+      }
       let growthChart = null;
 
       // Get initial server count from localStorage, or set it if not exists
@@ -789,7 +828,11 @@
         return serverDiff / timeDiff; // servers per hour
       }
 
-      function estimateTimeToGoal(currentServers, growthRate, targetGoal = GOAL) {
+      function estimateTimeToGoal(
+        currentServers,
+        growthRate,
+        targetGoal = GOAL
+      ) {
         const serversNeeded = targetGoal - currentServers;
         if (serversNeeded <= 0) return "🎉 Goal reached!";
         if (!growthRate || growthRate <= 0) return "📊 Gathering data...";
@@ -827,22 +870,40 @@
         const recent = historical.slice(-3);
         const older = historical.slice(-6, -3);
 
-        const recentRate = (recent[recent.length - 1].servers - recent[0].servers) / 
-                          ((recent[recent.length - 1].timestamp - recent[0].timestamp) / 1000 / 3600);
-        const olderRate = (older[older.length - 1].servers - older[0].servers) / 
-                         ((older[older.length - 1].timestamp - older[0].timestamp) / 1000 / 3600);
+        const recentRate =
+          (recent[recent.length - 1].servers - recent[0].servers) /
+          ((recent[recent.length - 1].timestamp - recent[0].timestamp) /
+            1000 /
+            3600);
+        const olderRate =
+          (older[older.length - 1].servers - older[0].servers) /
+          ((older[older.length - 1].timestamp - older[0].timestamp) /
+            1000 /
+            3600);
 
         const change = recentRate - olderRate;
-        
-        if (change > 0.5) return { type: 'accelerating', arrow: '↗️', change: change.toFixed(2) };
-        if (change < -0.5) return { type: 'decelerating', arrow: '↘️', change: Math.abs(change).toFixed(2) };
-        return { type: 'steady', arrow: '→', change: '0' };
+
+        if (change > 0.5)
+          return {
+            type: "accelerating",
+            arrow: "↗️",
+            change: change.toFixed(2),
+          };
+        if (change < -0.5)
+          return {
+            type: "decelerating",
+            arrow: "↘️",
+            change: Math.abs(change).toFixed(2),
+          };
+        return { type: "steady", arrow: "→", change: "0" };
       }
 
       function getRecords() {
         const historical = getHistoricalData();
-        const records = JSON.parse(localStorage.getItem('growthRecords') || '{}');
-        
+        const records = JSON.parse(
+          localStorage.getItem("growthRecords") || "{}"
+        );
+
         if (historical.length < 2) return records;
 
         let bestHourGrowth = records.bestHour || 0;
@@ -852,9 +913,12 @@
 
         // Calculate hourly and daily growth
         for (let i = 1; i < historical.length; i++) {
-          const timeDiff = (historical[i].timestamp - historical[i - 1].timestamp) / 1000 / 3600;
+          const timeDiff =
+            (historical[i].timestamp - historical[i - 1].timestamp) /
+            1000 /
+            3600;
           const serverDiff = historical[i].servers - historical[i - 1].servers;
-          
+
           // Best hour (if data points are ~1 hour apart)
           if (timeDiff <= 1.5 && serverDiff > bestHourGrowth) {
             bestHourGrowth = serverDiff;
@@ -873,9 +937,12 @@
 
         // Best day (last 24 hours)
         if (historical.length > 0) {
-          const last24h = historical.filter(d => d.timestamp > Date.now() - 24 * 60 * 60 * 1000);
+          const last24h = historical.filter(
+            (d) => d.timestamp > Date.now() - 24 * 60 * 60 * 1000
+          );
           if (last24h.length >= 2) {
-            const dayGrowth = last24h[last24h.length - 1].servers - last24h[0].servers;
+            const dayGrowth =
+              last24h[last24h.length - 1].servers - last24h[0].servers;
             if (dayGrowth > bestDayGrowth) {
               bestDayGrowth = dayGrowth;
             }
@@ -885,10 +952,10 @@
         const updatedRecords = {
           bestHour: bestHourGrowth,
           bestDay: bestDayGrowth,
-          longestStreak: longestStreak
+          longestStreak: longestStreak,
         };
 
-        localStorage.setItem('growthRecords', JSON.stringify(updatedRecords));
+        localStorage.setItem("growthRecords", JSON.stringify(updatedRecords));
         return updatedRecords;
       }
 
@@ -897,11 +964,11 @@
         if (historical.length < 3) return null;
 
         const hourlyGrowth = {};
-        
+
         for (let i = 1; i < historical.length; i++) {
           const hour = new Date(historical[i].timestamp).getHours();
           const growth = historical[i].servers - historical[i - 1].servers;
-          
+
           if (!hourlyGrowth[hour]) {
             hourlyGrowth[hour] = { total: 0, count: 0 };
           }
@@ -912,16 +979,16 @@
         // Calculate averages
         const averages = Object.entries(hourlyGrowth).map(([hour, data]) => ({
           hour: parseInt(hour),
-          average: data.total / data.count
+          average: data.total / data.count,
         }));
 
         if (averages.length === 0) return null;
 
         averages.sort((a, b) => b.average - a.average);
-        
+
         return {
           best: averages[0],
-          worst: averages[averages.length - 1]
+          worst: averages[averages.length - 1],
         };
       }
 
@@ -942,13 +1009,16 @@
         }
 
         const totalServers = totalGains + totalLosses;
-        const retentionRate = totalServers > 0 ? ((totalGains - totalLosses) / totalGains) * 100 : 100;
+        const retentionRate =
+          totalServers > 0
+            ? ((totalGains - totalLosses) / totalGains) * 100
+            : 100;
 
         return {
           rate: Math.max(0, Math.min(100, retentionRate)),
           gains: totalGains,
           losses: totalLosses,
-          net: totalGains - totalLosses
+          net: totalGains - totalLosses,
         };
       }
 
@@ -956,57 +1026,55 @@
         const banner = document.getElementById("countdown-banner");
         if (!banner) return;
 
-        const serversToVerification = VERIFICATION_GOAL - currentServers;
-        const serversToGoal = GOAL - currentServers;
+        const nextMilestone = getNextMilestone(currentServers);
+        const serversNeeded = nextMilestone - currentServers;
+        const goalLabel = getCurrentGoalLabel(currentServers, nextMilestone);
 
-        if (currentServers >= GOAL) {
-          banner.innerHTML = `
-            <div class="goal-reached">
-              🎉 OVERALL GOAL REACHED! 🎉
-              <div style="font-size: 0.7em; margin-top: 10px;">
-                ${currentServers} servers - Beyond the goal!
-              </div>
-            </div>
-          `;
-          banner.style.display = "block";
-        } else if (currentServers >= VERIFICATION_GOAL) {
-          banner.innerHTML = `
-            <div class="countdown-banner" style="background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);">
-              <div class="countdown-label">✅ Verified! Next Goal: ${GOAL} Servers</div>
-              <div class="countdown-number">${serversToGoal}</div>
-              <div class="countdown-sublabel">
-                ${currentServers} / ${GOAL} servers
-              </div>
-            </div>
-          `;
-          banner.style.display = "block";
-        } else {
+        // Special styling for verification milestone
+        if (currentServers < VERIFICATION_GOAL) {
           banner.innerHTML = `
             <div class="countdown-banner">
               <div class="countdown-label">Servers to Verification</div>
-              <div class="countdown-number">${serversToVerification}</div>
+              <div class="countdown-number">${serversNeeded}</div>
               <div class="countdown-sublabel">
-                ${currentServers} / ${VERIFICATION_GOAL} servers (Verification at 75)
+                ${currentServers} / ${VERIFICATION_GOAL} servers
               </div>
             </div>
           `;
-          banner.style.display = "block";
+        } else if (currentServers >= VERIFICATION_GOAL && currentServers < 82) {
+          // Between verification and first goal
+          banner.innerHTML = `
+            <div class="countdown-banner" style="background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);">
+              <div class="countdown-label">✅ Verified! Next: ${goalLabel}</div>
+              <div class="countdown-number">${serversNeeded}</div>
+              <div class="countdown-sublabel">
+                ${currentServers} / ${nextMilestone} servers
+              </div>
+            </div>
+          `;
+        } else {
+          // All other milestones
+          banner.innerHTML = `
+            <div class="countdown-banner" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+              <div class="countdown-label">Next Milestone: ${goalLabel}</div>
+              <div class="countdown-number">${serversNeeded}</div>
+              <div class="countdown-sublabel">
+                ${currentServers} / ${nextMilestone} servers
+              </div>
+            </div>
+          `;
         }
+        
+        banner.style.display = "block";
       }
 
       function updateProjectedDate(currentServers, growthRate) {
         const section = document.getElementById("projection-section");
         if (!section) return;
 
-        // Determine which goal to show
-        const targetGoal = currentServers < VERIFICATION_GOAL ? VERIFICATION_GOAL : GOAL;
-        const goalLabel = currentServers < VERIFICATION_GOAL ? "Verification" : "Goal (82)";
-        const serversNeeded = targetGoal - currentServers;
-
-        if (currentServers >= GOAL) {
-          section.style.display = "none";
-          return;
-        }
+        const nextMilestone = getNextMilestone(currentServers);
+        const goalLabel = getCurrentGoalLabel(currentServers, nextMilestone);
+        const serversNeeded = nextMilestone - currentServers;
 
         if (!growthRate || growthRate <= 0) {
           section.innerHTML = `
@@ -1023,26 +1091,31 @@
         }
 
         const hoursNeeded = serversNeeded / growthRate;
-        const projectedDate = new Date(Date.now() + hoursNeeded * 60 * 60 * 1000);
-        
-        const dateOptions = { 
-          weekday: 'long', 
-          year: 'numeric', 
-          month: 'long', 
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit'
+        const projectedDate = new Date(
+          Date.now() + hoursNeeded * 60 * 60 * 1000
+        );
+
+        const dateOptions = {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
         };
-        const formattedDate = projectedDate.toLocaleDateString('en-US', dateOptions);
+        const formattedDate = projectedDate.toLocaleDateString(
+          "en-US",
+          dateOptions
+        );
 
         const daysAway = Math.ceil(hoursNeeded / 24);
-        
+
         section.innerHTML = `
           <div class="projection-section">
             <div class="projection-title">📅 Projected ${goalLabel} Date</div>
             <div class="projection-date">${formattedDate}</div>
             <div class="projection-details">
-              That's approximately ${daysAway} day${daysAway !== 1 ? 's' : ''} away at current growth rate
+              That's approximately ${daysAway} day${daysAway !== 1 ? "s" : ""} away at current growth rate
             </div>
           </div>
         `;
@@ -1054,33 +1127,38 @@
         const goalsDiv = document.getElementById("daily-goals");
         if (!tracker || !goalsDiv) return;
 
-        // Determine which goal to show
-        const targetGoal = currentServers < VERIFICATION_GOAL ? VERIFICATION_GOAL : GOAL;
-        const goalLabel = currentServers < VERIFICATION_GOAL ? "verification (75)" : "goal (82)";
-        const serversNeeded = targetGoal - currentServers;
-
-        if (currentServers >= GOAL) {
-          tracker.style.display = "none";
-          return;
-        }
-
+        const nextMilestone = getNextMilestone(currentServers);
+        const goalLabel = getCurrentGoalLabel(currentServers, nextMilestone);
+        const serversNeeded = nextMilestone - currentServers;
         const serversPerDay = growthRate ? growthRate * 24 : 0;
-        
+
         // Calculate different timeframe goals
         const goals = [
           { label: `To reach ${goalLabel} in 1 day`, value: serversNeeded },
-          { label: `To reach ${goalLabel} in 3 days`, value: Math.ceil(serversNeeded / 3) },
-          { label: `To reach ${goalLabel} in 7 days`, value: Math.ceil(serversNeeded / 7) },
-          { label: "Current daily rate", value: serversPerDay > 0 ? serversPerDay.toFixed(1) : "N/A", highlight: true }
+          {
+            label: `To reach ${goalLabel} in 3 days`,
+            value: Math.ceil(serversNeeded / 3),
+          },
+          {
+            label: `To reach ${goalLabel} in 7 days`,
+            value: Math.ceil(serversNeeded / 7),
+          },
+          {
+            label: "Current daily rate",
+            value: serversPerDay > 0 ? serversPerDay.toFixed(1) : "N/A",
+            highlight: true,
+          },
         ];
 
         let html = "";
-        goals.forEach(goal => {
-          const highlightClass = goal.highlight ? ' style="border-left-color: #f093fb;"' : '';
+        goals.forEach((goal) => {
+          const highlightClass = goal.highlight
+            ? ' style="border-left-color: #f093fb;"'
+            : "";
           html += `
             <div class="daily-goal-card"${highlightClass}>
               <span class="daily-goal-label">${goal.label}</span>
-              <span class="daily-goal-value">${typeof goal.value === 'number' ? goal.value.toFixed(1) : goal.value} servers/day</span>
+              <span class="daily-goal-value">${typeof goal.value === "number" ? goal.value.toFixed(1) : goal.value} servers/day</span>
             </div>
           `;
         });
@@ -1095,7 +1173,7 @@
         if (!section || !grid) return;
 
         const records = getRecords();
-        
+
         grid.innerHTML = `
           <div class="record-card">
             <div class="record-icon">⚡</div>
@@ -1113,7 +1191,7 @@
             <div class="record-label">Longest Streak</div>
           </div>
         `;
-        
+
         section.style.display = "block";
       }
 
@@ -1124,14 +1202,14 @@
         if (!section || !percentage || !details) return;
 
         const retention = getRetentionRate();
-        
+
         if (!retention) {
           section.style.display = "none";
           return;
         }
 
         percentage.textContent = `${retention.rate.toFixed(1)}%`;
-        
+
         details.innerHTML = `
           <div class="retention-stat">
             <div class="retention-stat-value">+${retention.gains}</div>
@@ -1142,11 +1220,11 @@
             <div class="retention-stat-label">Servers Lost</div>
           </div>
           <div class="retention-stat">
-            <div class="retention-stat-value">${retention.net > 0 ? '+' : ''}${retention.net}</div>
+            <div class="retention-stat-value">${retention.net > 0 ? "+" : ""}${retention.net}</div>
             <div class="retention-stat-label">Net Growth</div>
           </div>
         `;
-        
+
         section.style.display = "block";
       }
 
@@ -1156,14 +1234,14 @@
         if (!section || !content) return;
 
         const peakHours = getPeakHours();
-        
+
         if (!peakHours) {
           section.style.display = "none";
           return;
         }
 
         const formatHour = (hour) => {
-          const period = hour >= 12 ? 'PM' : 'AM';
+          const period = hour >= 12 ? "PM" : "AM";
           const displayHour = hour % 12 || 12;
           return `${displayHour}:00 ${period}`;
         };
@@ -1175,7 +1253,7 @@
               <div style="color: #666; font-size: 0.9em; margin-top: 5px;">${formatHour(peakHours.best.hour)}</div>
             </div>
             <div style="font-size: 1.5em; font-weight: bold; color: #22c55e;">
-              ${peakHours.best.average > 0 ? '+' : ''}${peakHours.best.average.toFixed(2)}
+              ${peakHours.best.average > 0 ? "+" : ""}${peakHours.best.average.toFixed(2)}
             </div>
           </div>
           <div class="peak-hour-card worst">
@@ -1184,11 +1262,11 @@
               <div style="color: #666; font-size: 0.9em; margin-top: 5px;">${formatHour(peakHours.worst.hour)}</div>
             </div>
             <div style="font-size: 1.5em; font-weight: bold; color: #f87171;">
-              ${peakHours.worst.average > 0 ? '+' : ''}${peakHours.worst.average.toFixed(2)}
+              ${peakHours.worst.average > 0 ? "+" : ""}${peakHours.worst.average.toFixed(2)}
             </div>
           </div>
         `;
-        
+
         section.style.display = "block";
       }
 
@@ -1356,11 +1434,10 @@
             serversAt75 = currentServerCount;
           }
 
-          // Check for confetti trigger: between 75 and 1000 servers, trigger on each increase
+          // Check for confetti trigger: after verification, trigger on each increase
           if (
             previousServerCount !== null &&
             currentServerCount >= 75 &&
-            currentServerCount < 1000 &&
             currentServerCount > previousServerCount
           ) {
             createConfetti();
@@ -1422,13 +1499,23 @@
           const progressPercentage = document.getElementById(
             "progress-percentage"
           );
+          const progressGoalLabel = document.getElementById("progress-goal-label");
 
           if (progressSection && progressBar) {
             progressSection.style.display = "block";
-            const progress = Math.min((currentServerCount / GOAL) * 100, 100);
+            const nextMilestone = getNextMilestone(currentServerCount);
+            const goalLabel = getCurrentGoalLabel(currentServerCount, nextMilestone);
+            
+            // Calculate progress to next milestone
+            const previousMilestone = MILESTONES.filter(m => m <= currentServerCount).pop() || 0;
+            const progressRange = nextMilestone - previousMilestone;
+            const progressMade = currentServerCount - previousMilestone;
+            const progress = Math.min((progressMade / progressRange) * 100, 100);
+            
             progressBar.style.width = `${progress}%`;
             progressPercentage.textContent = `${Math.round(progress)}%`;
-            progressText.textContent = `${currentServerCount}/${GOAL}`;
+            progressText.textContent = `${currentServerCount}/${nextMilestone}`;
+            progressGoalLabel.textContent = `Progress to ${goalLabel}`;
 
             // Update milestones
             [50, 75, 82, 100].forEach((milestone) => {
@@ -1453,21 +1540,22 @@
                 : "📊 Calculating...";
 
             // Update time to goal based on current progress
-            const targetGoal = currentServerCount < VERIFICATION_GOAL ? VERIFICATION_GOAL : GOAL;
-            const goalLabel = currentServerCount < VERIFICATION_GOAL ? "Verification (75)" : "Goal (82)";
-            document.getElementById("time-to-goal-label").textContent = `Estimated Time to ${goalLabel}`;
+            const nextMilestone = getNextMilestone(currentServerCount);
+            const goalLabel = getCurrentGoalLabel(currentServerCount, nextMilestone);
+            document.getElementById("time-to-goal-label").textContent =
+              `Estimated Time to ${goalLabel}`;
             document.getElementById("time-to-goal").textContent =
-              estimateTimeToGoal(currentServerCount, growthRate, targetGoal);
+              estimateTimeToGoal(currentServerCount, growthRate, nextMilestone);
 
             const trendElement = document.getElementById("growth-trend");
             const velocity = getGrowthVelocity();
-            
+
             if (velocity) {
               trendElement.innerHTML = `
                 ${getGrowthTrend()}
                 <span class="velocity-indicator velocity-${velocity.type}">
                   <span class="velocity-arrow">${velocity.arrow}</span>
-                  ${velocity.type === 'steady' ? 'Steady' : velocity.type === 'accelerating' ? 'Speeding up' : 'Slowing down'}
+                  ${velocity.type === "steady" ? "Steady" : velocity.type === "accelerating" ? "Speeding up" : "Slowing down"}
                 </span>
               `;
             } else {
