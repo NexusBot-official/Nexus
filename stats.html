@@ -681,7 +681,7 @@
           <span class="growth-stat-value" id="servers-per-hour">-</span>
         </div>
         <div class="growth-stat-row">
-          <span class="growth-stat-label">Estimated Time to Goal (82)</span>
+          <span class="growth-stat-label" id="time-to-goal-label">Estimated Time to Next Goal</span>
           <span class="growth-stat-value" id="time-to-goal">-</span>
         </div>
         <div class="growth-stat-row">
@@ -720,7 +720,8 @@
 
     <script>
       const DASHBOARD_URL = "https://regular-puma-clearly.ngrok-free.app";
-      const GOAL = 82; // Goal server count
+      const VERIFICATION_GOAL = 75; // Discord verification requirement
+      const GOAL = 82; // Overall growth goal
       let previousServerCount = null;
       let serversAt75 = null;
       let growthChart = null;
@@ -788,8 +789,8 @@
         return serverDiff / timeDiff; // servers per hour
       }
 
-      function estimateTimeToGoal(currentServers, growthRate) {
-        const serversNeeded = GOAL - currentServers;
+      function estimateTimeToGoal(currentServers, growthRate, targetGoal = GOAL) {
+        const serversNeeded = targetGoal - currentServers;
         if (serversNeeded <= 0) return "🎉 Goal reached!";
         if (!growthRate || growthRate <= 0) return "📊 Gathering data...";
 
@@ -955,14 +956,26 @@
         const banner = document.getElementById("countdown-banner");
         if (!banner) return;
 
-        const serversNeeded = GOAL - currentServers;
+        const serversToVerification = VERIFICATION_GOAL - currentServers;
+        const serversToGoal = GOAL - currentServers;
 
-        if (serversNeeded <= 0) {
+        if (currentServers >= GOAL) {
           banner.innerHTML = `
             <div class="goal-reached">
-              🎉 VERIFICATION GOAL REACHED! 🎉
+              🎉 OVERALL GOAL REACHED! 🎉
               <div style="font-size: 0.7em; margin-top: 10px;">
-                You hit ${GOAL} servers!
+                ${currentServers} servers - Beyond the goal!
+              </div>
+            </div>
+          `;
+          banner.style.display = "block";
+        } else if (currentServers >= VERIFICATION_GOAL) {
+          banner.innerHTML = `
+            <div class="countdown-banner" style="background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);">
+              <div class="countdown-label">✅ Verified! Next Goal: ${GOAL} Servers</div>
+              <div class="countdown-number">${serversToGoal}</div>
+              <div class="countdown-sublabel">
+                ${currentServers} / ${GOAL} servers
               </div>
             </div>
           `;
@@ -971,9 +984,9 @@
           banner.innerHTML = `
             <div class="countdown-banner">
               <div class="countdown-label">Servers to Verification</div>
-              <div class="countdown-number">${serversNeeded}</div>
+              <div class="countdown-number">${serversToVerification}</div>
               <div class="countdown-sublabel">
-                ${currentServers} / ${GOAL} servers
+                ${currentServers} / ${VERIFICATION_GOAL} servers (Verification at 75)
               </div>
             </div>
           `;
@@ -985,9 +998,12 @@
         const section = document.getElementById("projection-section");
         if (!section) return;
 
-        const serversNeeded = GOAL - currentServers;
+        // Determine which goal to show
+        const targetGoal = currentServers < VERIFICATION_GOAL ? VERIFICATION_GOAL : GOAL;
+        const goalLabel = currentServers < VERIFICATION_GOAL ? "Verification" : "Goal (82)";
+        const serversNeeded = targetGoal - currentServers;
 
-        if (serversNeeded <= 0) {
+        if (currentServers >= GOAL) {
           section.style.display = "none";
           return;
         }
@@ -995,7 +1011,7 @@
         if (!growthRate || growthRate <= 0) {
           section.innerHTML = `
             <div class="projection-section">
-              <div class="projection-title">📅 Projected Verification Date</div>
+              <div class="projection-title">📅 Projected ${goalLabel} Date</div>
               <div class="projection-date">Calculating...</div>
               <div class="projection-details">
                 Need more data to estimate arrival date
@@ -1023,7 +1039,7 @@
         
         section.innerHTML = `
           <div class="projection-section">
-            <div class="projection-title">📅 Projected Verification Date</div>
+            <div class="projection-title">📅 Projected ${goalLabel} Date</div>
             <div class="projection-date">${formattedDate}</div>
             <div class="projection-details">
               That's approximately ${daysAway} day${daysAway !== 1 ? 's' : ''} away at current growth rate
@@ -1038,9 +1054,12 @@
         const goalsDiv = document.getElementById("daily-goals");
         if (!tracker || !goalsDiv) return;
 
-        const serversNeeded = GOAL - currentServers;
+        // Determine which goal to show
+        const targetGoal = currentServers < VERIFICATION_GOAL ? VERIFICATION_GOAL : GOAL;
+        const goalLabel = currentServers < VERIFICATION_GOAL ? "verification (75)" : "goal (82)";
+        const serversNeeded = targetGoal - currentServers;
 
-        if (serversNeeded <= 0) {
+        if (currentServers >= GOAL) {
           tracker.style.display = "none";
           return;
         }
@@ -1049,9 +1068,9 @@
         
         // Calculate different timeframe goals
         const goals = [
-          { label: "To reach goal in 1 day", value: serversNeeded },
-          { label: "To reach goal in 3 days", value: Math.ceil(serversNeeded / 3) },
-          { label: "To reach goal in 7 days", value: Math.ceil(serversNeeded / 7) },
+          { label: `To reach ${goalLabel} in 1 day`, value: serversNeeded },
+          { label: `To reach ${goalLabel} in 3 days`, value: Math.ceil(serversNeeded / 3) },
+          { label: `To reach ${goalLabel} in 7 days`, value: Math.ceil(serversNeeded / 7) },
           { label: "Current daily rate", value: serversPerDay > 0 ? serversPerDay.toFixed(1) : "N/A", highlight: true }
         ];
 
@@ -1433,8 +1452,12 @@
                 ? `📈 ${growthRate.toFixed(2)}/hr`
                 : "📊 Calculating...";
 
+            // Update time to goal based on current progress
+            const targetGoal = currentServerCount < VERIFICATION_GOAL ? VERIFICATION_GOAL : GOAL;
+            const goalLabel = currentServerCount < VERIFICATION_GOAL ? "Verification (75)" : "Goal (82)";
+            document.getElementById("time-to-goal-label").textContent = `Estimated Time to ${goalLabel}`;
             document.getElementById("time-to-goal").textContent =
-              estimateTimeToGoal(currentServerCount, growthRate);
+              estimateTimeToGoal(currentServerCount, growthRate, targetGoal);
 
             const trendElement = document.getElementById("growth-trend");
             const velocity = getGrowthVelocity();
