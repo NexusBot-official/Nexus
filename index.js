@@ -40,7 +40,6 @@ const client = new Client({
     GatewayIntentBits.AutoModerationConfiguration, // Required for automod rule tracking
     GatewayIntentBits.AutoModerationExecution, // Required for automod action tracking
     GatewayIntentBits.GuildIntegrations, // Required for integration tracking
-    GatewayIntentBits.GuildMessageTyping, // Required for typing indicator tracking
   ],
   partials: [
     Partials.Channel, // Required for DMs

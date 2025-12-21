@@ -73,7 +73,6 @@ module.exports = {
     const joinGateCheck = initialChecks[1];
     const screeningResult = initialChecks[2];
 
-
     // Handle member screening first
     if (screeningResult && !screeningResult.passed) {
       const screeningConfig = await db.getMemberScreeningConfig(
@@ -611,4 +610,3 @@ module.exports = {
     }
   },
 };
-

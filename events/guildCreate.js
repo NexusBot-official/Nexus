@@ -28,7 +28,6 @@ module.exports = {
       return;
     }
 
-
     // Check for offensive content and auto-leave if detected
     const wasFiltered = await contentFilter.autoModerateGuild(guild);
     if (wasFiltered) {
