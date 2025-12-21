@@ -15,7 +15,7 @@ const getRedisCache = () => {
 
 class Database {
   constructor() {
-    const dbPath = path.join(__dirname, "..", "data", "Sentinel.db");
+    const dbPath = path.join(__dirname, "..", "data", "Nexus.db");
     const dataDir = path.dirname(dbPath);
 
     // Prepared statement cache for performance
