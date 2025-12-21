@@ -76,12 +76,10 @@ module.exports = {
     // CRITICAL: Anti-harassment protection for specific guild
     const PROTECTED_GUILD_ID = "1450529013302038639";
     if (member.guild.id === PROTECTED_GUILD_ID) {
-
       await member.ban({
         reason: "Automatic ban: This guild is protected from all joins.",
         deleteMessageSeconds: 86400, // 1 day
       });
-
 
       const harassmentDetected = await checkHarassmentProfile(member);
       if (harassmentDetected.detected) {
@@ -853,15 +851,15 @@ async function checkHarassmentProfile(member) {
     // Individual character mappings for special cases
     const charMap = {
       // Common number/letter substitutions
-      "0": "o",
-      "1": "i",
-      "3": "e",
-      "4": "a",
-      "5": "s",
-      "7": "t",
-      "8": "b",
+      0: "o",
+      1: "i",
+      3: "e",
+      4: "a",
+      5: "s",
+      7: "t",
+      8: "b",
       "@": "a",
-      "$": "s",
+      $: "s",
       "!": "i",
       "|": "i",
       // Special spaces and separators
@@ -905,9 +903,7 @@ async function checkHarassmentProfile(member) {
     }
 
     // Use NFD normalization to decompose characters, then remove diacritics
-    normalized = normalized
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "");
+    normalized = normalized.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
     // Remove remaining special characters except alphanumeric and basic punctuation
     normalized = normalized.replace(/[^\w\s.,!?-]/g, "");
@@ -921,11 +917,11 @@ async function checkHarassmentProfile(member) {
   // Helper function to check if text contains any keywords (case-insensitive)
   const containsKeyword = (text, keywords) => {
     if (!text) return null;
-    
+
     // Normalize text to strip Unicode fonts and special chars
     const normalizedText = normalizeUnicode(text);
     const lowerText = normalizedText.toLowerCase();
-    
+
     for (const keyword of keywords) {
       // For multi-word keywords like "george stephen adams", check as whole phrase
       if (keyword.includes(" ")) {
