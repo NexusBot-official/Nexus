@@ -57,3 +57,5 @@ purge/
 # Legacy bot for security comparison
 legacy-bot/
 EXPERIMENT_COMPARISON.md
+
+message-archive/
