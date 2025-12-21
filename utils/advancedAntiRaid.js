@@ -904,7 +904,7 @@ class AdvancedAntiRaid {
         if (action === "ban") {
           await member.ban({
             reason: `Anti-raid protection (Threat: ${threatScore}%)`,
-            deleteMessageDays: 1,
+            deleteMessageSeconds: 86400, // 1 day
           });
           logger.info(
             `[Anti-Raid] Banned ${member.user.tag} (${member.id}) from ${guild.name}`

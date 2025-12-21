@@ -228,7 +228,7 @@ module.exports = {
                 await member
                   .ban({
                     reason: "Word filter violation",
-                    deleteMessageDays: 1,
+                    deleteMessageSeconds: 86400, // 1 day
                   })
                   .catch(() => {});
                 break;

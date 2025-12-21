@@ -191,7 +191,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"serverId\": \"{{server_id}}\",\n  \"userId\": \"{{user_id}}\",\n  \"reason\": \"Spam\",\n  \"deleteMessageDays\": 7\n}"
+              "raw": "{\n  \"serverId\": \"{{server_id}}\",\n  \"userId\": \"{{user_id}}\",\n  \"reason\": \"Spam\",\n  \"deleteMessageSeconds\": 604800\n}"
             },
             "url": {
               "raw": "{{base_url}}/api/v1/moderation/ban",

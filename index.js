@@ -484,7 +484,7 @@ client.checkAntiRaid = async (guild, member) => {
         if (config.action === "ban") {
           await susMember.ban({
             reason: "Anti-raid protection",
-            deleteMessageDays: 1,
+            deleteMessageSeconds: 86400, // 1 day
           });
         } else if (config.action === "kick") {
           await susMember.kick("Anti-raid protection");
@@ -550,7 +550,7 @@ client.checkAntiNuke = async (guild, user, action) => {
       const member = await guild.members.fetch(user.id);
       await member.ban({
         reason: "Anti-nuke protection - suspicious activity detected",
-        deleteMessageDays: 7,
+        deleteMessageSeconds: 604800, // 7 days
       });
 
       // Restore what was deleted if possible

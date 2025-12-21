@@ -148,7 +148,7 @@ class MemberScreening {
         case "ban":
           await member.ban({
             reason: `Member Screening: ${screenResult.reason} (Risk: ${screenResult.riskScore}%)`,
-            deleteMessageDays: 1,
+            deleteMessageSeconds: 86400, // 1 day
           });
           logger.info(
             `[MemberScreening] Banned ${member.user.tag} in ${guild.name}: ${screenResult.reason}`

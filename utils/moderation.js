@@ -6,7 +6,7 @@ class Moderation {
   static async ban(guild, user, moderator, reason, deleteDays = 0) {
     try {
       const member = await guild.members.fetch(user.id);
-      await member.ban({ reason, deleteMessageDays: deleteDays });
+      await member.ban({ reason, deleteMessageSeconds: deleteDays * 86400 });
 
       await db.addModLog(guild.id, user.id, moderator.id, "ban", reason);
 

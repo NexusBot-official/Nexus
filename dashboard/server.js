@@ -7613,7 +7613,7 @@ class DashboardServer {
       this.apiAuth.bind(this),
       async (req, res) => {
         try {
-          const { serverId, userId, reason, deleteMessageDays } = req.body;
+          const { serverId, userId, reason, deleteMessageSeconds } = req.body;
           const guild = this.client.guilds.cache.get(serverId);
           const ip = this.getRealIP(req);
           const apiKey = req.apiKey;
@@ -7639,13 +7639,13 @@ class DashboardServer {
 
           await guild.members.ban(userId, {
             reason: reason || "API ban",
-            deleteMessageSeconds: (deleteMessageDays || 0) * 24 * 60 * 60,
+            deleteMessageSeconds: deleteMessageSeconds || 0,
           });
 
           // Log successful moderation action
           logger.warn(
             "API Moderation",
-            `🔨 BAN via API | User: ${apiKey.discord_user_id} (${apiKey.discord_username}) | Target: ${userId} | Server: ${guild.name} (${serverId}) | IP: ${ip} | API Key: ${apiKey.api_key.substring(0, 10)}... | Reason: ${reason || "API ban"} | Delete Days: ${deleteMessageDays || 0}`
+            `🔨 BAN via API | User: ${apiKey.discord_user_id} (${apiKey.discord_username}) | Target: ${userId} | Server: ${guild.name} (${serverId}) | IP: ${ip} | API Key: ${apiKey.api_key.substring(0, 10)}... | Reason: ${reason || "API ban"} | Delete Seconds: ${deleteMessageSeconds || 0}`
           );
 
           res.json({ success: true, message: "User banned" });

@@ -184,7 +184,7 @@ class AutoMod {
           );
           await banMember.ban({
             reason: "Auto-moderation: Rule violation",
-            deleteMessageDays: 1,
+            deleteMessageSeconds: 86400, // 1 day
           });
           return true;
         default:

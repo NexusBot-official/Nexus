@@ -88,7 +88,7 @@ class MultiServerManagement {
 
         await guild.members.ban(userId, {
           reason: `Network ban: ${reason} (Banned by ${bannedBy} in ${originGuildId})`,
-          deleteMessageDays: 1,
+          deleteMessageSeconds: 86400, // 1 day
         });
 
         // Log sync

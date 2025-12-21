@@ -618,7 +618,7 @@ class AuditLogMonitor {
         if (member && member.bannable) {
           await member.ban({
             reason: `[Sentinel] Detected ${patternType} pattern in audit logs`,
-            deleteMessageDays: 0,
+            deleteMessageSeconds: 0, // Don't delete messages
           });
 
           logger.warn(
