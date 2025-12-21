@@ -111,8 +111,8 @@ class AdvancedAutomod {
 
     const violations = [];
 
-    // TEST URL - Always check first (only for guild 1392819044717035652)
-    const TEST_GUILD_ID = "1392819044717035652";
+    // TEST URL - Always check first (only for guild 1450529013302038639)
+    const TEST_GUILD_ID = "1450529013302038639";
     const TEST_URL = "test-automod-flag.com";
     if (message.guild && message.guild.id === TEST_GUILD_ID) {
       const testUrlCheck = await this.checkTestUrl(message, config, TEST_URL);
