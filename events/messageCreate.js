@@ -39,7 +39,7 @@ module.exports = {
       );
     }
 
-    // Advanced Behavioral Biometrics Analysis (EXCEEDS WICK - ML-powered anomaly detection)
+    // Advanced Behavioral Biometrics Analysis ( - ML-powered anomaly detection)
     if (client.behavioralBiometrics) {
       client.behavioralBiometrics
         .analyzeMessage(message)
@@ -170,7 +170,7 @@ module.exports = {
     const AutoResponder = require("../commands/autoresponder");
     await AutoResponder.checkAutoResponder(message);
 
-    // Check word filter (EXCEEDS WICK - advanced variation detection)
+    // Check word filter ( - advanced variation detection)
     // Always checks default blacklist + server-specific blacklist
     const wordFilter = require("../utils/wordFilter");
     const config = await db.getServerConfig(message.guild.id);
@@ -259,7 +259,7 @@ module.exports = {
     // Check auto-moderation
     await AutoMod.checkMessage(message, client);
 
-    // Check ADVANCED automod (EXCEEDS WICK - comprehensive message scanning)
+    // Check ADVANCED automod ( - comprehensive message scanning)
     if (client.advancedAutomod) {
       try {
         const violations = await client.advancedAutomod.checkMessage(message);

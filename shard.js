@@ -519,7 +519,7 @@ manager
   })
   .catch(console.error);
 
-// Graceful shutdown with parallel shard termination (EXCEEDS WICK - faster shutdown)
+// Graceful shutdown with parallel shard termination ( - faster shutdown)
 async function gracefulShutdown(signal) {
   console.log(`Received ${signal}, shutting down shards gracefully...`);
 

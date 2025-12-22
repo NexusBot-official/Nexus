@@ -1,7 +1,7 @@
 /**
  * Server Templates - One-click configuration presets
  * Different server types get optimized configs
- * EXCEEDS WICK - They don't have preset configs
+ *  - They don't have preset configs
  */
 
 const TEMPLATES = {

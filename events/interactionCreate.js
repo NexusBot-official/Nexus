@@ -53,7 +53,7 @@ module.exports = {
       }
 
       try {
-        // Track performance and log in parallel (EXCEEDS WICK - faster response)
+        // Track performance and log in parallel ( - faster response)
         const startTime = Date.now();
 
         // Log command usage in parallel (non-blocking)

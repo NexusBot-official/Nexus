@@ -1,5 +1,5 @@
 // Real-Time Audit Log Monitoring System
-// EXCEEDS WICK - Continuous monitoring of audit logs for suspicious patterns
+//  - Continuous monitoring of audit logs for suspicious patterns
 const db = require("./database");
 const logger = require("./logger");
 

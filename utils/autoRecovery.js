@@ -81,7 +81,7 @@ class AutoRecovery {
           hoist: role.hoist,
         }));
 
-      // Capture webhooks (EXCEEDS WICK - they don't restore webhooks)
+      // Capture webhooks ( - they don't restore webhooks)
       try {
         const webhooksCollection = await guild
           .fetchWebhooks()
@@ -104,7 +104,7 @@ class AutoRecovery {
         snapshotData.webhooks = [];
       }
 
-      // Capture emojis (EXCEEDS WICK - they don't restore emojis)
+      // Capture emojis ( - they don't restore emojis)
       try {
         const emojis = await guild.emojis
           .fetch()
@@ -123,7 +123,7 @@ class AutoRecovery {
         snapshotData.emojis = [];
       }
 
-      // Capture stickers (EXCEEDS WICK - they don't restore stickers)
+      // Capture stickers ( - they don't restore stickers)
       try {
         const stickers = await guild.stickers
           .fetch()
@@ -145,7 +145,7 @@ class AutoRecovery {
         snapshotData.stickers = [];
       }
 
-      // Capture server settings (EXCEEDS WICK - they don't restore server settings)
+      // Capture server settings ( - they don't restore server settings)
       snapshotData.serverSettings = {
         name: guild.name,
         description: guild.description,
@@ -186,7 +186,7 @@ class AutoRecovery {
   }
 
   /**
-   * Enhanced recovery with granular restoration options (EXCEEDS WICK - faster and more flexible)
+   * Enhanced recovery with granular restoration options ( - faster and more flexible)
    * @param {Guild} guild - The guild to recover
    * @param {number|object} snapshotIdOrData - Snapshot ID or snapshot data
    * @param {object} options - Recovery options
@@ -267,7 +267,7 @@ class AutoRecovery {
       });
     };
 
-    // Recover channels FIRST (before roles) - ENHANCED PARALLEL PROCESSING (EXCEEDS WICK - faster recovery)
+    // Recover channels FIRST (before roles) - ENHANCED PARALLEL PROCESSING ( - faster recovery)
     if (
       types.includes("channels") &&
       snapshotData.channels &&
@@ -285,7 +285,7 @@ class AutoRecovery {
         (guild.memberCount > 5000 ? 15 : guild.memberCount > 1000 ? 12 : 10);
 
       // Process channels in parallel batches (optimized for speed)
-      // EXCEEDS WICK - Adaptive batch sizing based on server size
+      //  - Adaptive batch sizing based on server size
       const channelBatches = [];
       for (let i = 0; i < sortedChannels.length; i += batchSize) {
         channelBatches.push(sortedChannels.slice(i, i + batchSize));
@@ -418,7 +418,7 @@ class AutoRecovery {
       // Stage 1 complete (no console logging)
     }
 
-    // Recover roles - ENHANCED PARALLEL PROCESSING (EXCEEDS WICK - faster recovery)
+    // Recover roles - ENHANCED PARALLEL PROCESSING ( - faster recovery)
     if (
       types.includes("roles") &&
       snapshotData.roles &&
@@ -440,7 +440,7 @@ class AutoRecovery {
         (guild.memberCount > 5000 ? 8 : guild.memberCount > 1000 ? 6 : 5);
 
       // Process roles in parallel batches (optimized for speed)
-      // EXCEEDS WICK - Adaptive batch sizing and priority-based recovery
+      //  - Adaptive batch sizing and priority-based recovery
       const roleBatches = [];
       for (let i = 0; i < sortedRoles.length; i += roleBatchSize) {
         roleBatches.push(sortedRoles.slice(i, i + roleBatchSize));
@@ -557,7 +557,7 @@ class AutoRecovery {
       logger.warn(`[AutoRecovery] No roles in snapshot data`);
     }
 
-    // Recover webhooks (EXCEEDS WICK - they don't restore webhooks)
+    // Recover webhooks ( - they don't restore webhooks)
     if (
       types.includes("webhooks") &&
       snapshotData.webhooks &&
@@ -644,7 +644,7 @@ class AutoRecovery {
       // Stage 3 complete (no console logging)
     }
 
-    // Recover emojis (EXCEEDS WICK - they don't restore emojis) - PARALLEL PROCESSING
+    // Recover emojis ( - they don't restore emojis) - PARALLEL PROCESSING
     if (
       types.includes("emojis") &&
       snapshotData.emojis &&
@@ -739,7 +739,7 @@ class AutoRecovery {
       // Stage 4 complete (no console logging)
     }
 
-    // Recover stickers (EXCEEDS WICK - they don't restore stickers) - PARALLEL PROCESSING
+    // Recover stickers ( - they don't restore stickers) - PARALLEL PROCESSING
     if (
       types.includes("stickers") &&
       snapshotData.stickers &&
@@ -838,7 +838,7 @@ class AutoRecovery {
       // Stage 5 complete (no console logging)
     }
 
-    // Recover server settings (EXCEEDS WICK - they don't restore server settings)
+    // Recover server settings ( - they don't restore server settings)
     if (types.includes("server_settings") && snapshotData.serverSettings) {
       const stageStart = Date.now();
       logger.info(
@@ -1057,7 +1057,7 @@ class AutoRecovery {
   }
 
   /**
-   * Selective recovery - restore only specific types (EXCEEDS WICK - granular control)
+   * Selective recovery - restore only specific types ( - granular control)
    * @param {Guild} guild - The guild to recover
    * @param {number} snapshotId - Snapshot ID
    * @param {string[]} types - Types to restore
@@ -1068,7 +1068,7 @@ class AutoRecovery {
   }
 
   /**
-   * Priority-based recovery - restore critical items first (EXCEEDS WICK - faster critical recovery)
+   * Priority-based recovery - restore critical items first ( - faster critical recovery)
    * @param {Guild} guild - The guild to recover
    * @param {number} snapshotId - Snapshot ID
    * @returns {Promise<object>} Recovery result
@@ -1078,7 +1078,7 @@ class AutoRecovery {
   }
 
   /**
-   * Incremental recovery - restore in stages with progress tracking (EXCEEDS WICK - better for large servers)
+   * Incremental recovery - restore in stages with progress tracking ( - better for large servers)
    * @param {Guild} guild - The guild to recover
    * @param {number} snapshotId - Snapshot ID
    * @returns {Promise<object>} Recovery result

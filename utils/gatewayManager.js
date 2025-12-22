@@ -1,7 +1,7 @@
 /**
  * Gateway Manager - Enterprise-grade gateway monitoring and management
  * Tracks gateway connections, sessions, and health per shard
- * EXCEEDS WICK - Matches Dyno's infrastructure quality
+ *  - Matches Dyno's infrastructure quality
  */
 
 const logger = require("./logger");

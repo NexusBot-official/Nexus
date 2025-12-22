@@ -99,7 +99,7 @@ manager
   })
   .catch(console.error);
 
-// Graceful shutdown with parallel cluster termination (EXCEEDS WICK - faster shutdown)
+// Graceful shutdown with parallel cluster termination ( - faster shutdown)
 async function gracefulShutdown(signal) {
   logger.info(`Received ${signal}, shutting down clusters gracefully...`);
 

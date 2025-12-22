@@ -47,7 +47,7 @@ module.exports = {
       JoinGate.checkMember(member, member.guild).catch(() => ({
         filtered: false,
       })),
-      // Member Screening (EXCEEDS WICK - proactive security)
+      // Member Screening ( - proactive security)
       client.memberScreening
         ? client.memberScreening
             .screenMember(member, member.guild)

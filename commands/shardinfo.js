@@ -80,7 +80,7 @@ module.exports = {
       }
     }
 
-    // Add gateway stats if available (EXCEEDS WICK - Enterprise monitoring)
+    // Add gateway stats if available ( - Enterprise monitoring)
     if (gatewayStats && gatewayStats.global) {
       const g = gatewayStats.global;
       embed.addFields({

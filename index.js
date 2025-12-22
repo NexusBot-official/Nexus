@@ -55,11 +55,11 @@ client.cooldowns = new Collection();
 // Cache for channel pins (for pin/unpin detection)
 client.channelPins = new Map();
 
-// Initialize cache system (EXCEEDS WICK - better caching)
+// Initialize cache system ( - better caching)
 const cache = require("./utils/cache");
 client.cache = cache;
 
-// Initialize infrastructure systems (EXCEEDS WICK - enterprise-grade)
+// Initialize infrastructure systems ( - enterprise-grade)
 const automaticBackup = require("./utils/automaticBackup");
 const metricsCollector = require("./utils/metricsCollector");
 const advancedRateLimiter = require("./utils/advancedRateLimiter");
@@ -137,7 +137,7 @@ client.setupWizard = new SetupWizard(client);
 const CommandAnalytics = require("./utils/commandAnalytics");
 client.commandAnalytics = new CommandAnalytics(client);
 
-// Gateway Manager (EXCEEDS WICK - Enterprise-grade gateway monitoring)
+// Gateway Manager ( - Enterprise-grade gateway monitoring)
 const GatewayManager = require("./utils/gatewayManager");
 client.gatewayManager = new GatewayManager(client);
 
@@ -155,12 +155,12 @@ client.errorBoundary = new ErrorBoundary(client);
 const IntegrationSystem = require("./utils/integrations");
 client.integrations = new IntegrationSystem(client);
 
-// Real-Time Audit Log Monitor (EXCEEDS WICK - continuous audit log analysis)
+// Real-Time Audit Log Monitor ( - continuous audit log analysis)
 // Event-Based Action Tracker (replaces audit log monitor - no rate limits!)
 const EventActionTracker = require("./utils/eventActionTracker");
 client.eventActionTracker = new EventActionTracker(client);
 
-// Zero-Day Attack Detection (EXCEEDS WICK - detects unknown attack patterns)
+// Zero-Day Attack Detection ( - detects unknown attack patterns)
 const ZeroDayDetection = require("./utils/zeroDayDetection");
 client.zeroDayDetection = new ZeroDayDetection(client);
 
@@ -180,63 +180,63 @@ client.once("clientReady", () => {
   }, 5000); // Wait 5 seconds after ready
 });
 
-// Snapshot Scheduler (EXCEEDS WICK - automatic point-in-time snapshots)
+// Snapshot Scheduler ( - automatic point-in-time snapshots)
 const SnapshotScheduler = require("./utils/snapshotScheduler");
 client.snapshotScheduler = new SnapshotScheduler(client);
 
-// Vote Rewards System (EXCEEDS WICK - automatic vote detection & rewards)
+// Vote Rewards System ( - automatic vote detection & rewards)
 const VoteRewards = require("./utils/voteRewards");
 client.voteRewards = new VoteRewards(client);
 
-// Real-Time Threat Network (EXCEEDS WICK - cross-server WebSocket threat collaboration)
+// Real-Time Threat Network ( - cross-server WebSocket threat collaboration)
 const ThreatNetwork = require("./utils/threatNetwork");
 client.threatNetwork = new ThreatNetwork(client);
 
-// Blockchain Threat Intelligence (EXCEEDS WICK - decentralized trust system)
+// Blockchain Threat Intelligence ( - decentralized trust system)
 const BlockchainThreatIntel = require("./utils/blockchainThreatIntel");
 client.blockchainThreatIntel = new BlockchainThreatIntel(client);
 
-// Behavioral Biometrics (EXCEEDS WICK - advanced user behavior analysis)
+// Behavioral Biometrics ( - advanced user behavior analysis)
 const BehavioralBiometrics = require("./utils/behavioralBiometrics");
 client.behavioralBiometrics = new BehavioralBiometrics(client);
 
-// Predictive Auto-Scaling (EXCEEDS WICK - ML-based growth prediction)
+// Predictive Auto-Scaling ( - ML-based growth prediction)
 const PredictiveAutoScaling = require("./utils/predictiveAutoScaling");
 client.predictiveAutoScaling = new PredictiveAutoScaling(client);
 
-// Dashboard Server (EXCEEDS WICK - free dashboard vs Wick's paid)
+// Dashboard Server ( - free dashboard vs Wick's paid)
 const DashboardServer = require("./dashboard/server");
 client.dashboardServer = new DashboardServer(client);
 
-// Advanced Automod System (EXCEEDS WICK - comprehensive message scanning)
+// Advanced Automod System ( - comprehensive message scanning)
 const AdvancedAutomod = require("./utils/advancedAutomod");
 client.advancedAutomod = new AdvancedAutomod(client);
 
-// Member Screening System (EXCEEDS WICK - proactive security)
+// Member Screening System ( - proactive security)
 const MemberScreening = require("./utils/memberScreening");
 client.memberScreening = new MemberScreening(client);
 
-// Scheduled Actions System (EXCEEDS WICK - automation)
+// Scheduled Actions System ( - automation)
 const ScheduledActions = require("./utils/scheduledActions");
 client.scheduledActions = new ScheduledActions(client);
 
-// Voice Monitoring System (EXCEEDS WICK - voice channel protection)
+// Voice Monitoring System ( - voice channel protection)
 const VoiceMonitoring = require("./utils/voiceMonitoring");
 client.voiceMonitoring = new VoiceMonitoring(client);
 
-// XP & Leveling System (EXCEEDS WICK - gamification & engagement)
+// XP & Leveling System ( - gamification & engagement)
 const XPSystem = require("./utils/xpSystem");
 client.xpSystem = new XPSystem(client);
 
-// Webhook Events System (EXCEEDS WICK - real-time integrations)
+// Webhook Events System ( - real-time integrations)
 const WebhookEvents = require("./utils/webhookEvents");
 client.webhookEvents = new WebhookEvents(client);
 
-// Multi-Server Management (EXCEEDS WICK - cross-server coordination)
+// Multi-Server Management ( - cross-server coordination)
 const MultiServerManagement = require("./utils/multiServer");
 client.multiServer = new MultiServerManagement(client);
 
-// Advanced AI & Intelligence Systems (EXCEEDS WICK - next-gen features)
+// Advanced AI & Intelligence Systems ( - next-gen features)
 const AdvancedMetrics = require("./utils/advancedMetrics");
 client.advancedMetrics = new AdvancedMetrics(client);
 
@@ -251,7 +251,7 @@ client.threatCorrelation = new ThreatCorrelationEngine(client);
 
 // Message archive system removed
 
-// Optimized cleanup - run all cleanups in parallel (EXCEEDS WICK - better performance)
+// Optimized cleanup - run all cleanups in parallel ( - better performance)
 setInterval(
   async () => {
     const cleanupTasks = [];

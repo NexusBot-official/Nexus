@@ -1626,7 +1626,7 @@ class DashboardServer {
       }
     );
 
-    // Get real-time alerts (EXCEEDS WICK - live security feed)
+    // Get real-time alerts ( - live security feed)
     this.app.get("/api/alerts", this.checkAuth, async (req, res) => {
       try {
         const limit = parseInt(req.query.limit) || 50;
@@ -4037,7 +4037,7 @@ class DashboardServer {
       }
     });
 
-    // Get gateway stats (EXCEEDS WICK - Enterprise gateway monitoring)
+    // Get gateway stats ( - Enterprise gateway monitoring)
     this.app.get("/api/gateway", async (req, res) => {
       try {
         if (!this.client.gatewayManager) {
@@ -4298,7 +4298,7 @@ class DashboardServer {
           version: require("../package.json").version,
           ping: this.client.ws.ping,
           shardCount: this.client.shard ? this.client.shard.count : 1,
-          // Security stats (EXCEEDS WICK - they don't show these)
+          // Security stats ( - they don't show these)
           raidsBlocked: raidsBlocked,
           nukesBlocked: nukesBlocked,
           threatsDetected: threatsDetected,

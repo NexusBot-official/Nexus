@@ -173,7 +173,7 @@ class AdvancedAntiRaid {
       return false;
     },
 
-    // Algorithm 5: Temporal Pattern Analysis (EXCEEDS WICK - time-based attack detection)
+    // Algorithm 5: Temporal Pattern Analysis ( - time-based attack detection)
     temporalPattern: (joins) => {
       if (joins.length < 5) {
         return false;
@@ -218,7 +218,7 @@ class AdvancedAntiRaid {
       return false;
     },
 
-    // Algorithm 6: Graph-Based Network Analysis (EXCEEDS WICK - detect attack networks)
+    // Algorithm 6: Graph-Based Network Analysis ( - detect attack networks)
     graphBased: (joins) => {
       if (joins.length < 7) {
         return false;

@@ -1,7 +1,7 @@
 /**
  * Automatic Backup System
  * Handles scheduled backups with retention policies
- * EXCEEDS WICK - Automated, multi-tier backup strategy
+ *  - Automated, multi-tier backup strategy
  */
 
 const cron = require("node-cron");

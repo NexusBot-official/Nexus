@@ -38,7 +38,7 @@ class Database {
         } else {
           logger.success("Database", "Connected");
 
-          // Optimize database performance (EXCEEDS WICK - better performance)
+          // Optimize database performance ( - better performance)
           this.db.serialize(() => {
             // Enable WAL mode for better concurrency
             this.db.run("PRAGMA journal_mode = WAL;", (err) => {
@@ -406,7 +406,7 @@ class Database {
     this.db.run(`CREATE INDEX IF NOT EXISTS idx_automod_timestamp 
                  ON automod_violations(timestamp)`);
 
-    // Member Screening System (EXCEEDS WICK - proactive security)
+    // Member Screening System ( - proactive security)
     this.db.run(`
             CREATE TABLE IF NOT EXISTS member_screening_config (
                 guild_id TEXT PRIMARY KEY,
@@ -503,7 +503,7 @@ class Database {
 
     // Webhook Events System - REMOVED (duplicate tables, new schema defined below in Integration Ecosystem section)
 
-    // Multi-Server Networks (EXCEEDS WICK - cross-server management)
+    // Multi-Server Networks ( - cross-server management)
     this.db.run(`
             CREATE TABLE IF NOT EXISTS server_networks (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -740,7 +740,7 @@ class Database {
             )
         `);
 
-    // Advanced Metrics Tables (EXCEEDS WICK - deep analytics)
+    // Advanced Metrics Tables ( - deep analytics)
     this.db.run(`
             CREATE TABLE IF NOT EXISTS command_metrics (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -790,7 +790,7 @@ class Database {
             )
         `);
 
-    // ML Models (EXCEEDS WICK - self-learning automod)
+    // ML Models ( - self-learning automod)
     this.db.run(`
             CREATE TABLE IF NOT EXISTS ml_models (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -803,7 +803,7 @@ class Database {
             )
         `);
 
-    // Retention Predictions (EXCEEDS WICK - predictive churn analysis)
+    // Retention Predictions ( - predictive churn analysis)
     this.db.run(`
             CREATE TABLE IF NOT EXISTS retention_predictions (
                 guild_id TEXT NOT NULL,
@@ -816,7 +816,7 @@ class Database {
             )
         `);
 
-    // Threat Correlation (EXCEEDS WICK - cross-server threat intelligence)
+    // Threat Correlation ( - cross-server threat intelligence)
     this.db.run(`
             CREATE TABLE IF NOT EXISTS threat_reports (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -951,7 +951,7 @@ class Database {
     this.db.run(`CREATE INDEX IF NOT EXISTS idx_server_joins_joined_at
                  ON server_joins(joined_at)`);
 
-    // Anti-nuke whitelist (EXCEEDS WICK - prevents false positives)
+    // Anti-nuke whitelist ( - prevents false positives)
     this.db.run(`
             CREATE TABLE IF NOT EXISTS anti_nuke_whitelist (
                 guild_id TEXT,
@@ -1135,7 +1135,7 @@ class Database {
             )
         `);
 
-    // Threat patterns (EXCEEDS WICK - cross-server pattern detection)
+    // Threat patterns ( - cross-server pattern detection)
     this.db.run(`
             CREATE TABLE IF NOT EXISTS threat_patterns (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -1841,7 +1841,7 @@ class Database {
       }
     );
 
-    // Additional performance indexes (EXCEEDS WICK - comprehensive indexing)
+    // Additional performance indexes ( - comprehensive indexing)
     this.db.run(
       `CREATE INDEX IF NOT EXISTS idx_recovery_snapshots_guild_created ON recovery_snapshots(guild_id, created_at DESC)`,
       (err) => {
@@ -1886,7 +1886,7 @@ class Database {
       }
     );
 
-    // Additional performance indexes (EXCEEDS WICK - comprehensive indexing)
+    // Additional performance indexes ( - comprehensive indexing)
     this.db.run(
       `CREATE INDEX IF NOT EXISTS idx_recovery_snapshots_guild_created ON recovery_snapshots(guild_id, created_at DESC)`,
       (err) => {
@@ -4624,7 +4624,7 @@ class Database {
     });
   }
 
-  // Whitelist functions (EXCEEDS WICK - prevents false positives)
+  // Whitelist functions ( - prevents false positives)
   async getWhitelistedUsers(guildId) {
     return new Promise((resolve, reject) => {
       this.db.all(

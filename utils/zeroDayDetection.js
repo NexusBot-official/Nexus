@@ -1,5 +1,5 @@
 // Zero-Day Attack Detection System
-// EXCEEDS WICK - Detects unknown attack patterns before they become widespread
+//  - Detects unknown attack patterns before they become widespread
 const db = require("./database");
 const logger = require("./logger");
 

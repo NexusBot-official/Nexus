@@ -3,7 +3,7 @@ const logger = require("./logger");
 
 /**
  * Auto-Moderation ML Training Utility
- * EXCEEDS WICK - Self-learning system that improves over time
+ *  - Self-learning system that improves over time
  * Learns from moderator actions to improve auto-moderation accuracy
  */
 class AutomodMLTrainer {

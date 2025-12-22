@@ -1,7 +1,7 @@
 /**
  * Advanced Rate Limiter
  * Redis-backed distributed rate limiting
- * EXCEEDS WICK - Multi-layer, adaptive rate limiting
+ *  - Multi-layer, adaptive rate limiting
  */
 
 const logger = require("./logger");

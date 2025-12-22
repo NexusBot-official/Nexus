@@ -1,7 +1,7 @@
 /**
  * Prometheus Metrics Collector
  * Collects and exposes metrics for monitoring
- * EXCEEDS WICK - Enterprise-grade observability
+ *  - Enterprise-grade observability
  */
 
 const logger = require("./logger");

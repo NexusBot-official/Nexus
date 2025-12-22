@@ -1,7 +1,7 @@
 /**
  * Health Check System
  * For UptimeRobot and monitoring services
- * EXCEEDS WICK - Comprehensive health monitoring
+ *  - Comprehensive health monitoring
  */
 
 const logger = require("./logger");

@@ -89,7 +89,7 @@ class AdvancedAntiNuke {
     };
   }
 
-  // Check if user is whitelisted (EXCEEDS WICK - prevents false positives)
+  // Check if user is whitelisted ( - prevents false positives)
   async isWhitelisted(guildId, userId) {
     if (!this.whitelistCache.has(guildId)) {
       // Load whitelist from database
@@ -102,7 +102,7 @@ class AdvancedAntiNuke {
     return this.whitelistCache.get(guildId)?.has(userId) || false;
   }
 
-  // Predictive threat detection (EXCEEDS WICK - detects threats before they happen)
+  // Predictive threat detection ( - detects threats before they happen)
   async detectPredictiveThreat(guild, userId, actionType) {
     const guildId = guild.id;
     const key = `${guildId}-${userId}`;
@@ -157,7 +157,7 @@ class AdvancedAntiNuke {
     return threatData.confidence >= 80;
   }
 
-  // Permission change rate limiting (EXCEEDS WICK - prevents permission testing)
+  // Permission change rate limiting ( - prevents permission testing)
   async trackPermissionChange(guild, userId, changeType, targetId, targetType) {
     const key = `${userId}-${guild.id}`;
     const now = Date.now();
@@ -430,7 +430,7 @@ class AdvancedAntiNuke {
     );
     // Predictive threat detection runs silently unless action is taken
 
-    // Use adaptive thresholds (EXCEEDS WICK - intelligent adaptation)
+    // Use adaptive thresholds ( - intelligent adaptation)
     const thresholds = await this.getAdaptiveThresholds(guild);
 
     const key = `${guild.id}-${userId}`;
@@ -1017,7 +1017,7 @@ class AdvancedAntiNuke {
           }
         }
 
-        // Reduced wait time (EXCEEDS WICK - faster response)
+        // Reduced wait time ( - faster response)
         await new Promise((resolve) => setTimeout(resolve, 500));
 
         // After removing admin, refresh member and try to ban again
@@ -1087,7 +1087,7 @@ class AdvancedAntiNuke {
           // Removed roles individually (no console logging)
         }
 
-        // Reduced wait time (EXCEEDS WICK - faster response)
+        // Reduced wait time ( - faster response)
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
         // Refresh member to get updated permissions
@@ -1313,13 +1313,13 @@ class AdvancedAntiNuke {
         }
       }
 
-      // Log threat and alert admins in parallel (EXCEEDS WICK - faster response)
+      // Log threat and alert admins in parallel ( - faster response)
       await Promise.all([
         this.logThreat(guild, userId, threatType, counts, removed),
         this.alertAdmins(guild, userId, threatType, counts),
       ]);
 
-      // Reduced wait time - only wait if we need to (EXCEEDS WICK - faster recovery)
+      // Reduced wait time - only wait if we need to ( - faster recovery)
       if (removed) {
         // Only wait 1 second instead of 3 (optimized for speed)
         await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -2332,7 +2332,7 @@ class AdvancedAntiNuke {
       }
     }
 
-    // Clean old predictive threat patterns (EXCEEDS WICK - memory optimization)
+    // Clean old predictive threat patterns ( - memory optimization)
     for (const [guildId, userThreats] of this.predictiveThreats.entries()) {
       for (const [userId, threatData] of userThreats.entries()) {
         // Remove if inactive for 5 minutes
@@ -2350,7 +2350,7 @@ class AdvancedAntiNuke {
       }
     }
 
-    // Clean empty rate limit queues (EXCEEDS WICK - memory optimization)
+    // Clean empty rate limit queues ( - memory optimization)
     for (const [guildId, queue] of this.rateLimitQueue.entries()) {
       if (queue.length === 0 && !queue.processing) {
         this.rateLimitQueue.delete(guildId);

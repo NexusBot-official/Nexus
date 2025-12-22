@@ -738,7 +738,7 @@ function loadPage(page) {
   }
 }
 
-// Template Library (EXCEEDS WICK!)
+// Template Library (!)
 async function loadTemplates() {
   const contentArea = document.getElementById("contentArea");
 
@@ -1161,7 +1161,7 @@ async function saveTemplate() {
   }
 }
 
-// Bulk Operations Page (EXCEEDS WICK!)
+// Bulk Operations Page (!)
 async function loadBulkOperations() {
   const contentArea = document.getElementById("contentArea");
 

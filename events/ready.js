@@ -181,7 +181,7 @@ module.exports = {
       logger.info("Ready", "⚙️ Workflows loaded");
     }
 
-    // Start automatic snapshot scheduler (EXCEEDS WICK - point-in-time recovery)
+    // Start automatic snapshot scheduler ( - point-in-time recovery)
     if (
       client.snapshotScheduler &&
       (!shardInfo.isSharded || shardInfo.shardId === 0)
@@ -202,7 +202,7 @@ module.exports = {
       );
     }
 
-    // Start automatic vote checking for all guilds (EXCEEDS WICK - auto vote rewards)
+    // Start automatic vote checking for all guilds ( - auto vote rewards)
     if (client.voteRewards) {
       for (const guild of client.guilds.cache.values()) {
         client.voteRewards.startAutoChecking(guild);
@@ -213,7 +213,7 @@ module.exports = {
       );
     }
 
-    // Start Dashboard Server (EXCEEDS WICK - free dashboard vs Wick's premium)
+    // Start Dashboard Server ( - free dashboard vs Wick's premium)
     if (
       client.dashboardServer &&
       (!shardInfo.isSharded || shardInfo.shardId === 0)
@@ -227,7 +227,7 @@ module.exports = {
       );
     }
 
-    // Start Scheduled Actions System (EXCEEDS WICK - automation)
+    // Start Scheduled Actions System ( - automation)
     if (
       client.scheduledActions &&
       (!shardInfo.isSharded || shardInfo.shardId === 0)
@@ -236,7 +236,7 @@ module.exports = {
       logger.info("Ready", "⏰ Scheduled Actions system started");
     }
 
-    // Start Advanced AI & Intelligence Systems (EXCEEDS WICK - next-gen)
+    // Start Advanced AI & Intelligence Systems ( - next-gen)
     if (!shardInfo.isSharded || shardInfo.shardId === 0) {
       if (client.advancedMetrics) {
         client.advancedMetrics.start();
