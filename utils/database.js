@@ -2689,15 +2689,7 @@ class Database {
       )
     `);
 
-    // Threat Reports
-    this.db.run(`
-      CREATE TABLE IF NOT EXISTS threat_reports (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        guild_id TEXT NOT NULL,
-        report_data TEXT NOT NULL,
-        created_at INTEGER NOT NULL
-      )
-    `);
+    // Threat Reports (removed duplicate - using the one from line 821 with proper schema)
 
     // Command Analytics
     this.db.run(`
