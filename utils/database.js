@@ -729,6 +729,17 @@ class Database {
             )
         `);
 
+    // Admin 2FA secrets
+    this.db.run(`
+            CREATE TABLE IF NOT EXISTS admin_2fa (
+                user_id TEXT PRIMARY KEY,
+                secret TEXT NOT NULL,
+                enabled INTEGER DEFAULT 1,
+                created_at INTEGER NOT NULL,
+                last_used INTEGER
+            )
+        `);
+
     // Enhanced logging
     this.db.run(`
             CREATE TABLE IF NOT EXISTS enhanced_logs (
@@ -6762,6 +6773,82 @@ class Database {
             reject(err);
           } else {
             resolve(rows || []);
+          }
+        }
+      );
+    });
+  }
+
+  /**
+   * Save admin 2FA secret
+   */
+  async save2FASecret(userId, secret) {
+    return new Promise((resolve, reject) => {
+      this.db.run(
+        "INSERT OR REPLACE INTO admin_2fa (user_id, secret, enabled, created_at) VALUES (?, ?, 1, ?)",
+        [userId, secret, Date.now()],
+        (err) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve();
+          }
+        }
+      );
+    });
+  }
+
+  /**
+   * Get admin 2FA secret
+   */
+  async get2FASecret(userId) {
+    return new Promise((resolve, reject) => {
+      this.db.get(
+        "SELECT secret, enabled FROM admin_2fa WHERE user_id = ?",
+        [userId],
+        (err, row) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(row);
+          }
+        }
+      );
+    });
+  }
+
+  /**
+   * Update 2FA last used timestamp
+   */
+  async update2FALastUsed(userId) {
+    return new Promise((resolve, reject) => {
+      this.db.run(
+        "UPDATE admin_2fa SET last_used = ? WHERE user_id = ?",
+        [Date.now(), userId],
+        (err) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve();
+          }
+        }
+      );
+    });
+  }
+
+  /**
+   * Disable 2FA for a user
+   */
+  async disable2FA(userId) {
+    return new Promise((resolve, reject) => {
+      this.db.run(
+        "UPDATE admin_2fa SET enabled = 0 WHERE user_id = ?",
+        [userId],
+        (err) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve();
           }
         }
       );

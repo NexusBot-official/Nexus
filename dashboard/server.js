@@ -11053,11 +11053,19 @@ class DashboardServer {
     // Generate 2FA secret
     this.app.post("/api/admin/2fa/setup", async (req, res) => {
       try {
-        const { adminPassword } = req.body;
+        const { adminPassword, userId } = req.body;
 
         // Verify admin password
         if (adminPassword !== process.env.ADMIN_PASSWORD) {
           return res.status(401).json({ error: "Invalid admin password" });
+        }
+
+        // Check if user already has 2FA enabled
+        const existing = await db.get2FASecret(userId || "admin");
+        if (existing && existing.enabled) {
+          return res.status(400).json({
+            error: "2FA already enabled. Disable it first to re-setup.",
+          });
         }
 
         const secret = speakeasy.generateSecret({
@@ -11071,6 +11079,7 @@ class DashboardServer {
         res.json({
           secret: secret.base32,
           qrCode: qrCodeUrl,
+          userId: userId || "admin",
         });
       } catch (error) {
         logger.error("2FA", "Setup error:", error);
@@ -11078,10 +11087,10 @@ class DashboardServer {
       }
     });
 
-    // Verify 2FA token
+    // Verify 2FA token and save to database
     this.app.post("/api/admin/2fa/verify", async (req, res) => {
       try {
-        const { secret, token } = req.body;
+        const { secret, token, userId } = req.body;
 
         const verified = speakeasy.totp.verify({
           secret: secret,
@@ -11092,13 +11101,88 @@ class DashboardServer {
 
         if (verified) {
           // Store secret in database for this admin
-          // TODO: Implement database storage
+          await db.save2FASecret(userId || "admin", secret);
+          logger.info("2FA", `2FA enabled for user: ${userId || "admin"}`);
           res.json({ success: true });
         } else {
           res.status(401).json({ error: "Invalid token" });
         }
       } catch (error) {
         logger.error("2FA", "Verification error:", error);
+        res.status(500).json({ error: error.message });
+      }
+    });
+
+    // Login with 2FA
+    this.app.post("/api/admin/2fa/login", async (req, res) => {
+      try {
+        const { adminPassword, token, userId } = req.body;
+
+        // Verify admin password
+        if (adminPassword !== process.env.ADMIN_PASSWORD) {
+          return res.status(401).json({ error: "Invalid admin password" });
+        }
+
+        // Get 2FA secret from database
+        const twoFAData = await db.get2FASecret(userId || "admin");
+        if (!twoFAData || !twoFAData.enabled) {
+          return res
+            .status(400)
+            .json({ error: "2FA not enabled for this user" });
+        }
+
+        // Verify token
+        const verified = speakeasy.totp.verify({
+          secret: twoFAData.secret,
+          encoding: "base32",
+          token: token,
+          window: 2,
+        });
+
+        if (verified) {
+          // Update last used timestamp
+          await db.update2FALastUsed(userId || "admin");
+          res.json({ success: true, authenticated: true });
+        } else {
+          res.status(401).json({ error: "Invalid 2FA token" });
+        }
+      } catch (error) {
+        logger.error("2FA", "Login error:", error);
+        res.status(500).json({ error: error.message });
+      }
+    });
+
+    // Disable 2FA
+    this.app.post("/api/admin/2fa/disable", async (req, res) => {
+      try {
+        const { adminPassword, userId } = req.body;
+
+        // Verify admin password
+        if (adminPassword !== process.env.ADMIN_PASSWORD) {
+          return res.status(401).json({ error: "Invalid admin password" });
+        }
+
+        await db.disable2FA(userId || "admin");
+        logger.info("2FA", `2FA disabled for user: ${userId || "admin"}`);
+        res.json({ success: true });
+      } catch (error) {
+        logger.error("2FA", "Disable error:", error);
+        res.status(500).json({ error: error.message });
+      }
+    });
+
+    // Check 2FA status
+    this.app.get("/api/admin/2fa/status", async (req, res) => {
+      try {
+        const { userId } = req.query;
+
+        const twoFAData = await db.get2FASecret(userId || "admin");
+        res.json({
+          enabled: twoFAData ? twoFAData.enabled === 1 : false,
+          lastUsed: twoFAData ? twoFAData.last_used : null,
+        });
+      } catch (error) {
+        logger.error("2FA", "Status check error:", error);
         res.status(500).json({ error: error.message });
       }
     });
