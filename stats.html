@@ -1296,7 +1296,7 @@
           type: "line",
           data: {
             labels: historical.map((d) =>
-              new Date(d.timestamp).toLocaleTimeString()
+              new Date(d.timestamp).toLocaleTimeString("en-US", { hour12: true })
             ),
             datasets: [
               {
@@ -1606,7 +1606,7 @@
           }
 
           document.getElementById("last-updated").textContent =
-            `Last updated: ${new Date().toLocaleTimeString()}`;
+            `Last updated: ${new Date().toLocaleTimeString("en-US", { hour12: true })}`;
         } catch (error) {
           container.innerHTML = `
             <div class="error">
