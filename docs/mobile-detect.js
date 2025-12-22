@@ -8,9 +8,10 @@
 
   const MobileDetect = {
     // Device detection
-    isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-      navigator.userAgent
-    ),
+    isMobile:
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent
+      ),
     isTablet: /iPad|Android(?!.*Mobile)/i.test(navigator.userAgent),
     isIOS: /iPhone|iPad|iPod/i.test(navigator.userAgent),
     isAndroid: /Android/i.test(navigator.userAgent),
@@ -21,8 +22,7 @@
 
     // Screen size detection
     isSmallScreen: () => window.innerWidth < 768,
-    isMediumScreen: () =>
-      window.innerWidth >= 768 && window.innerWidth < 1024,
+    isMediumScreen: () => window.innerWidth >= 768 && window.innerWidth < 1024,
     isLargeScreen: () => window.innerWidth >= 1024,
 
     // Get device type
@@ -114,10 +114,7 @@
           'input[type="text"], input[type="email"], input[type="search"], textarea'
         );
         inputs.forEach((input) => {
-          if (
-            !input.style.fontSize ||
-            parseInt(input.style.fontSize) < 16
-          ) {
+          if (!input.style.fontSize || parseInt(input.style.fontSize) < 16) {
             input.style.fontSize = "16px";
           }
         });
@@ -221,9 +218,7 @@
 
   // Initialize on DOM ready
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", () =>
-      MobileDetect.init()
-    );
+    document.addEventListener("DOMContentLoaded", () => MobileDetect.init());
   } else {
     MobileDetect.init();
   }
@@ -231,4 +226,3 @@
   // Expose to window for external use
   window.MobileDetect = MobileDetect;
 })();
-
