@@ -10664,6 +10664,74 @@ class DashboardServer {
     });
   }
 
+  setupRealtimeEvents() {
+    this.io.on("connection", (socket) => {
+      logger.info("Dashboard", `WebSocket client connected: ${socket.id}`);
+
+      // Join server-specific room
+      socket.on("join-server", (guildId) => {
+        socket.join(`server-${guildId}`);
+        logger.debug(`Socket ${socket.id} joined server-${guildId}`);
+      });
+
+      // Leave server room
+      socket.on("leave-server", (guildId) => {
+        socket.leave(`server-${guildId}`);
+      });
+
+      socket.on("disconnect", () => {
+        logger.debug(`WebSocket client disconnected: ${socket.id}`);
+      });
+    });
+
+    // Emit stats every 5 seconds
+    setInterval(() => {
+      if (this.client && this.client.guilds) {
+        const stats = {
+          serverCount: this.client.guilds.cache.size,
+          userCount: this.client.guilds.cache.reduce(
+            (acc, guild) => acc + guild.memberCount,
+            0
+          ),
+          uptime: process.uptime(),
+          ping: this.client.ws.ping,
+          memory: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
+        };
+        this.io.emit("stats-update", stats);
+      }
+    }, 5000);
+  }
+
+  // Emit real-time events (called from bot events)
+  emitRaidAlert(guildId, data) {
+    if (this.io) {
+      this.io.to(`server-${guildId}`).emit("raid-alert", data);
+    }
+  }
+
+  emitNukeAlert(guildId, data) {
+    if (this.io) {
+      this.io.to(`server-${guildId}`).emit("nuke-alert", data);
+    }
+  }
+
+  emitMemberJoin(guildId, member) {
+    if (this.io) {
+      this.io.to(`server-${guildId}`).emit("member-join", {
+        id: member.id,
+        username: member.user.username,
+        avatar: member.user.displayAvatarURL(),
+        joinedAt: member.joinedAt,
+      });
+    }
+  }
+
+  emitModAction(guildId, action) {
+    if (this.io) {
+      this.io.to(`server-${guildId}`).emit("mod-action", action);
+    }
+  }
+
   start(port = 3000) {
     // Setup public API
     this.setupPublicAPI();
@@ -10700,6 +10768,9 @@ class DashboardServer {
       },
       transports: ["websocket", "polling"],
     });
+
+    // Setup real-time dashboard events
+    this.setupRealtimeEvents();
 
     // Connect Socket.IO to Threat Network
     if (this.client.threatNetwork) {

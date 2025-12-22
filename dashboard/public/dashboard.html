@@ -165,6 +165,13 @@
         <header class="top-bar">
           <h1 id="currentPage">Overview</h1>
           <div class="user-info">
+            <button
+              id="theme-toggle"
+              class="theme-toggle"
+              title="Toggle Dark/Light Mode"
+            >
+              <span class="theme-icon">🌙</span>
+            </button>
             <img id="userAvatar" src="" alt="User" class="user-avatar" />
             <span id="userName">Loading...</span>
           </div>
@@ -243,5 +250,131 @@
         }
       });
     </script>
+
+    <!-- Socket.IO for Real-Time Updates -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      // Initialize WebSocket connection
+      const socket = io();
+
+      // Join current server room
+      if (currentServerId) {
+        socket.emit("join-server", currentServerId);
+      }
+
+      // Listen for real-time stats updates
+      socket.on("stats-update", (stats) => {
+        // Update stats in UI if on overview page
+        if (document.getElementById("stat-servers")) {
+          document.getElementById("stat-servers").textContent =
+            stats.serverCount;
+          document.getElementById("stat-users").textContent =
+            stats.userCount.toLocaleString();
+          document.getElementById("stat-uptime").textContent = formatUptime(
+            stats.uptime
+          );
+          document.getElementById("stat-ping").textContent = stats.ping + "ms";
+        }
+      });
+
+      // Listen for raid alerts
+      socket.on("raid-alert", (data) => {
+        showNotification(
+          "🚨 Raid Detected!",
+          `${data.userCount} suspicious joins detected`,
+          "error"
+        );
+      });
+
+      // Listen for nuke alerts
+      socket.on("nuke-alert", (data) => {
+        showNotification(
+          "⚠️ Nuke Attempt!",
+          `${data.action} detected by ${data.user}`,
+          "error"
+        );
+      });
+
+      // Listen for member joins
+      socket.on("member-join", (member) => {
+        showNotification(
+          "👋 New Member",
+          `${member.username} joined the server`,
+          "info"
+        );
+      });
+
+      // Listen for mod actions
+      socket.on("mod-action", (action) => {
+        showNotification(
+          "⚖️ Moderation",
+          `${action.type}: ${action.target}`,
+          "info"
+        );
+      });
+
+      // Show notification function
+      function showNotification(title, message, type = "info") {
+        // Create notification element
+        const notification = document.createElement("div");
+        notification.style.cssText = `
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          background: ${type === "error" ? "#ff4444" : type === "success" ? "#00d1b2" : "#3273dc"};
+          color: white;
+          padding: 20px;
+          border-radius: 10px;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+          z-index: 10000;
+          min-width: 300px;
+          animation: slideIn 0.3s ease;
+        `;
+        notification.innerHTML = `
+          <div style="font-weight: bold; margin-bottom: 5px;">${title}</div>
+          <div style="font-size: 0.9em;">${message}</div>
+        `;
+        document.body.appendChild(notification);
+
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+          notification.style.animation = "slideOut 0.3s ease";
+          setTimeout(() => notification.remove(), 300);
+        }, 5000);
+      }
+
+      // Format uptime helper
+      function formatUptime(seconds) {
+        const days = Math.floor(seconds / 86400);
+        const hours = Math.floor((seconds % 86400) / 3600);
+        const mins = Math.floor((seconds % 3600) / 60);
+        if (days > 0) return `${days}d ${hours}h`;
+        if (hours > 0) return `${hours}h ${mins}m`;
+        return `${mins}m`;
+      }
+    </script>
+
+    <style>
+      @keyframes slideIn {
+        from {
+          transform: translateX(400px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+      @keyframes slideOut {
+        from {
+          transform: translateX(0);
+          opacity: 1;
+        }
+        to {
+          transform: translateX(400px);
+          opacity: 0;
+        }
+      }
+    </style>
   </body>
 </html>
