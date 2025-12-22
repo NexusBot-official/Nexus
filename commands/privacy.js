@@ -42,7 +42,8 @@ module.exports = {
             .setRequired(true)
             .addChoices(
               { name: "Server Data (Owner Only)", value: "server" },
-              { name: "Your User Data", value: "user" }
+              { name: "Your User Data (This Server)", value: "user" },
+              { name: "Your User Data (ALL Servers)", value: "global" }
             )
         )
         .addBooleanOption((option) =>
@@ -365,6 +366,53 @@ module.exports = {
           await interaction.editReply({ embeds: [embed] });
         } catch (error) {
           logger.error("Error deleting user data:", error);
+          await interaction.editReply(ErrorMessages.genericError());
+        }
+      } else if (type === "global") {
+        // Global user data deletion across ALL servers
+        await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+
+        try {
+          const summary = await DataPrivacy.deleteUserDataGlobal(
+            interaction.user.id
+          );
+
+          const embed = new EmbedBuilder()
+            .setTitle("✅ Your Global Data Deleted")
+            .setDescription(
+              "Your personal data across **ALL servers** has been permanently deleted from our database. This action cannot be undone."
+            )
+            .addFields(
+              {
+                name: "🗑️ Deletion Summary",
+                value: `**User:** ${interaction.user.tag}\n**Deleted At:** ${summary.deletedAt}\n**Tables Processed:** ${summary.tablesDeleted.length}\n**Servers Affected:** ${summary.serversAffected || "All"}`,
+              },
+              {
+                name: "📊 Data Removed",
+                value:
+                  "• All moderation history\n• All warnings and cases\n• All heat scores\n• All user stats and levels\n• All notes\n• All behavioral data\n• All XP and achievements\n• All cross-server data",
+              },
+              {
+                name: "⚠️ Important",
+                value:
+                  "Your data has been removed from **all servers** using this bot. This will not affect the bot's ability to protect servers, but you will start fresh if you interact with the bot again.",
+              }
+            )
+            .setColor(0xff0000)
+            .setTimestamp();
+
+          if (summary.errors.length > 0) {
+            embed.addFields({
+              name: "⚠️ Errors",
+              value: `Some errors occurred during deletion:\n${summary.errors
+                .map((e) => `• ${e.table}: ${e.error}`)
+                .join("\n")}`,
+            });
+          }
+
+          await interaction.editReply({ embeds: [embed] });
+        } catch (error) {
+          logger.error("Error deleting global user data:", error);
           await interaction.editReply(ErrorMessages.genericError());
         }
       }

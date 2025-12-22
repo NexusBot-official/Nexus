@@ -6,6 +6,7 @@ const {
 } = require("discord.js");
 const db = require("../utils/database");
 const ErrorMessages = require("../utils/errorMessages");
+const { encryptText, decryptText } = require("../utils/encryption");
 
 function sanitizeInput(input, maxLength = 2000) {
   if (!input || typeof input !== "string") {
@@ -106,7 +107,7 @@ module.exports = {
           [
             interaction.guild.id,
             trigger,
-            response,
+            encryptText(response), // Encrypt response
             caseSensitive ? 1 : 0,
             interaction.user.id,
             Date.now(),
@@ -189,15 +190,17 @@ module.exports = {
         .setTitle("🤖 Auto-Responders")
         .setDescription(
           responders
-            .map(
-              (r) =>
+            .map((r) => {
+              const decryptedResponse = decryptText(r.response); // Decrypt for display
+              return (
                 `**ID:** ${r.id} ${r.enabled ? "✅" : "❌"}\n` +
                 `**Trigger:** \`${r.trigger}\`\n` +
-                `**Response:** ${r.response.slice(0, 100)}${
-                  r.response.length > 100 ? "..." : ""
+                `**Response:** ${decryptedResponse.slice(0, 100)}${
+                  decryptedResponse.length > 100 ? "..." : ""
                 }\n` +
                 `**Case Sensitive:** ${r.case_sensitive ? "Yes" : "No"}`
-            )
+              );
+            })
             .join("\n\n")
         )
         .setColor(0x5865f2)
@@ -366,7 +369,8 @@ module.exports.checkAutoResponder = async (message) => {
       : trigger.toLowerCase();
 
     if (messageContent.includes(triggerLower)) {
-      const sanitized = sanitizeResponse(responder.response, message);
+      const decryptedResponse = decryptText(responder.response); // Decrypt response
+      const sanitized = sanitizeResponse(decryptedResponse, message);
       await message.reply(sanitized);
       return true;
     }

@@ -501,6 +501,123 @@ class DataPrivacy {
   }
 
   /**
+   * Delete ALL user data across ALL servers (GDPR Right to be Forgotten)
+   * @param {string} userId - User ID
+   * @returns {Promise<Object>} Deletion summary
+   */
+  static async deleteUserDataGlobal(userId) {
+    try {
+      const summary = {
+        userId: userId,
+        scope: "global",
+        deletedAt: new Date().toISOString(),
+        tablesDeleted: [],
+        errors: [],
+        serversAffected: "All",
+      };
+
+      // All tables that contain user data
+      const userTables = [
+        { table: "moderation_logs", where: "user_id = ?" },
+        { table: "warnings", where: "user_id = ?" },
+        { table: "heat_scores", where: "user_id = ?" },
+        { table: "user_stats", where: "user_id = ?" },
+        { table: "levels", where: "user_id = ?" },
+        { table: "tickets", where: "user_id = ?" },
+        { table: "notes", where: "user_id = ?" },
+        { table: "quarantine", where: "user_id = ?" },
+        { table: "enhanced_logs", where: "user_id = ?" },
+        { table: "ai_learning", where: "user_id = ?" },
+        { table: "behavioral_data", where: "user_id = ?" },
+        { table: "user_achievements", where: "user_id = ?" },
+        { table: "user_profiles", where: "user_id = ?" },
+        { table: "xp_data", where: "user_id = ?" },
+        { table: "vote_history", where: "user_id = ?" },
+        { table: "referrals", where: "user_id = ? OR referred_by = ?" },
+        { table: "scheduled_messages", where: "created_by = ?" },
+        { table: "threat_intelligence", where: "user_id = ?" },
+      ];
+
+      for (const { table, where } of userTables) {
+        try {
+          // Handle tables with multiple user_id columns (like referrals)
+          const params = table === "referrals" ? [userId, userId] : [userId];
+
+          await new Promise((resolve, reject) => {
+            db.db.run(
+              `DELETE FROM ${table} WHERE ${where}`,
+              params,
+              function (err) {
+                if (err) {
+                  // Ignore errors for tables that don't exist
+                  if (!err.message.includes("no such table")) {
+                    reject(err);
+                  } else {
+                    resolve();
+                  }
+                } else {
+                  if (this.changes > 0) {
+                    summary.tablesDeleted.push({
+                      table,
+                      rowsDeleted: this.changes,
+                    });
+                  }
+                  resolve();
+                }
+              }
+            );
+          });
+        } catch (error) {
+          logger.error(`Error deleting from ${table}:`, error);
+          summary.errors.push({ table, error: error.message });
+        }
+      }
+
+      // Delete scheduled actions (uses created_by)
+      try {
+        await new Promise((resolve, reject) => {
+          db.db.run(
+            "DELETE FROM scheduled_actions WHERE created_by = ?",
+            [userId],
+            function (err) {
+              if (err) {
+                if (!err.message.includes("no such table")) {
+                  reject(err);
+                } else {
+                  resolve();
+                }
+              } else {
+                if (this.changes > 0) {
+                  summary.tablesDeleted.push({
+                    table: "scheduled_actions",
+                    rowsDeleted: this.changes,
+                  });
+                }
+                resolve();
+              }
+            }
+          );
+        });
+      } catch (error) {
+        logger.error("Error deleting scheduled actions:", error);
+        summary.errors.push({
+          table: "scheduled_actions",
+          error: error.message,
+        });
+      }
+
+      logger.info(
+        `Global user data deletion completed for user ${userId}. Deleted from ${summary.tablesDeleted.length} tables.`
+      );
+
+      return summary;
+    } catch (error) {
+      logger.error("Error deleting global user data:", error);
+      throw error;
+    }
+  }
+
+  /**
    * Create a JSON file from exported data
    * @param {Object} data - Exported data
    * @param {string} filename - Output filename

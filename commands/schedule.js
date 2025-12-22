@@ -7,6 +7,7 @@ const {
 const db = require("../utils/database");
 const logger = require("../utils/logger");
 const ErrorMessages = require("../utils/errorMessages");
+const { encryptText, decryptText } = require("../utils/encryption");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -78,7 +79,7 @@ module.exports = {
           [
             interaction.guild.id,
             channel.id,
-            content,
+            encryptText(content), // Encrypt message content
             scheduledTime,
             interaction.user.id,
             Date.now(),
@@ -114,7 +115,7 @@ module.exports = {
           interaction.client,
           interaction.guild.id,
           channel.id,
-          content
+          encryptText(content) // Pass encrypted content
         );
       }, delay);
     } else if (subcommand === "list") {
@@ -143,15 +144,17 @@ module.exports = {
         .setTitle("📅 Scheduled Messages")
         .setDescription(
           messages
-            .map(
-              (m) =>
+            .map((m) => {
+              const decryptedContent = decryptText(m.message_content); // Decrypt for display
+              return (
                 `**ID:** ${m.id}\n` +
                 `**Channel:** <#${m.channel_id}>\n` +
-                `**Content:** ${m.message_content.slice(0, 100)}${
-                  m.message_content.length > 100 ? "..." : ""
+                `**Content:** ${decryptedContent.slice(0, 100)}${
+                  decryptedContent.length > 100 ? "..." : ""
                 }\n` +
                 `**Scheduled:** <t:${Math.floor(m.scheduled_for / 1000)}:F>`
-            )
+              );
+            })
             .join("\n\n")
         )
         .setColor(0x5865f2)
@@ -249,15 +252,21 @@ function parseTime(timeStr) {
   return null;
 }
 
-async function sendScheduledMessage(client, guildId, channelId, content) {
+async function sendScheduledMessage(
+  client,
+  guildId,
+  channelId,
+  encryptedContent
+) {
   try {
+    const content = decryptText(encryptedContent); // Decrypt message content
     const channel = await client.channels.fetch(channelId);
     await channel.send(content);
 
     await new Promise((resolve, reject) => {
       db.db.run(
         "UPDATE scheduled_messages SET sent = 1 WHERE guild_id = ? AND channel_id = ? AND message_content = ? AND sent = 0",
-        [guildId, channelId, content],
+        [guildId, channelId, encryptedContent],
         (err) => {
           if (err) {
             reject(err);
