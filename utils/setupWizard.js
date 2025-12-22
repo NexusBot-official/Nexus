@@ -198,7 +198,7 @@ class SetupWizard {
 
     try {
       // Update database with configuration
-      await db.updateServerConfig(guildId, config.settings);
+      await db.setServerConfig(guildId, config.settings);
 
       // Show completion message
       await this.showCompletion(interaction, config);

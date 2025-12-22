@@ -142,7 +142,7 @@ class WickMigration {
         analysis.detectedSettings.logChannels.length > 0
       ) {
         const logChannel = analysis.detectedSettings.logChannels[0];
-        await db.updateServerConfig(guild.id, {
+        await db.setServerConfig(guild.id, {
           mod_log_channel: logChannel.id,
           alert_channel: logChannel.id,
         });
@@ -152,7 +152,7 @@ class WickMigration {
       }
 
       // 2. Enable all nexus security features (better than Wick)
-      await db.updateServerConfig(guild.id, {
+      await db.setServerConfig(guild.id, {
         anti_raid_enabled: 1,
         anti_nuke_enabled: 1,
         auto_mod_enabled: 1,

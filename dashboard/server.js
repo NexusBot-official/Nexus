@@ -7493,9 +7493,7 @@ class DashboardServer {
           const serverId = req.params.id;
 
           // Update server config
-          for (const [key, value] of Object.entries(settings)) {
-            await db.updateServerConfig(serverId, key, value);
-          }
+          await db.setServerConfig(serverId, settings);
 
           res.json({ success: true, message: "Configuration updated" });
         } catch (error) {
