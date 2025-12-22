@@ -166,6 +166,9 @@ module.exports = {
   async execute(interaction) {
     const subcommand = interaction.options.getSubcommand();
 
+    // Defer reply immediately to prevent timeout
+    await interaction.deferReply();
+
     if (subcommand === "enable") {
       await db.updateAutomodConfig(interaction.guild.id, {
         enabled: 1,
@@ -176,7 +179,7 @@ module.exports = {
         mention_spam_enabled: 1,
       });
 
-      return interaction.reply({
+      return interaction.editReply({
         embeds: [
           {
             title: "✅ Automod Enabled",
@@ -201,7 +204,7 @@ module.exports = {
         mention_spam_enabled: 0,
       });
 
-      return interaction.reply({
+      return interaction.editReply({
         embeds: [
           {
             title: "❌ Automod Disabled",
@@ -232,7 +235,7 @@ module.exports = {
 
       const config = await db.getAutomodConfig(interaction.guild.id);
 
-      return interaction.reply({
+      return interaction.editReply({
         embeds: [
           {
             title: "⚙️ Spam Detection Configured",
@@ -299,7 +302,7 @@ module.exports = {
 
       await db.updateAutomodConfig(interaction.guild.id, updates);
 
-      return interaction.reply({
+      return interaction.editReply({
         embeds: [
           {
             title: "🔗 Link Scanning Configured",
@@ -335,7 +338,7 @@ module.exports = {
 
       const config = await db.getAutomodConfig(interaction.guild.id);
 
-      return interaction.reply({
+      return interaction.editReply({
         embeds: [
           {
             title: "🔤 Caps Detection Configured",
@@ -360,7 +363,7 @@ module.exports = {
         emoji_max_count: maxCount,
       });
 
-      return interaction.reply({
+      return interaction.editReply({
         embeds: [
           {
             title: "😀 Emoji Spam Detection Configured",
@@ -378,7 +381,7 @@ module.exports = {
         mention_max_count: maxCount,
       });
 
-      return interaction.reply({
+      return interaction.editReply({
         embeds: [
           {
             title: "📢 Mention Spam Detection Configured",
@@ -394,7 +397,7 @@ module.exports = {
       const role = interaction.options.getRole("role");
 
       if (!channel && !role) {
-        return interaction.reply({
+        return interaction.editReply({
           content: "❌ Provide at least a channel or role to ignore",
           flags: MessageFlags.Ephemeral,
         });
@@ -420,7 +423,7 @@ module.exports = {
         ignored_roles: JSON.stringify(ignoredRoles),
       });
 
-      return interaction.reply({
+      return interaction.editReply({
         embeds: [
           {
             title: "✅ Automod Ignore List Updated",
@@ -445,7 +448,7 @@ module.exports = {
         automod_log_channel: channel.id,
       });
 
-      return interaction.reply({
+      return interaction.editReply({
         embeds: [
           {
             title: "📋 Automod Log Channel Set",
@@ -460,7 +463,7 @@ module.exports = {
       const config = await db.getAutomodConfig(interaction.guild.id);
 
       if (!config) {
-        return interaction.reply({
+        return interaction.editReply({
           content:
             "❌ Automod not configured. Use `/automod enable` to get started",
           flags: MessageFlags.Ephemeral,
@@ -529,7 +532,7 @@ module.exports = {
         });
       }
 
-      return interaction.reply({ embeds: [embed] });
+      return interaction.editReply({ embeds: [embed] });
     }
 
     if (subcommand === "violations") {
