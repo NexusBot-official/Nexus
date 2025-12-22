@@ -350,8 +350,16 @@ class DashboardServer {
       const allowedLocalhostPorts =
         /^http:\/\/localhost:(3000|8080|5173|5174|3001)$/;
 
+      // Allow local network IPs (192.168.x.x, 10.x.x.x, 172.16-31.x.x) on port 8080 for stats page
+      const isLocalNetwork =
+        origin &&
+        /^http:\/\/(192\.168\.\d{1,3}\.\d{1,3}|10\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.(1[6-9]|2[0-9]|3[0-1])\.\d{1,3}\.\d{1,3}):8080$/.test(
+          origin
+        );
+
       if (
         allowedOrigins.includes(origin) ||
+        isLocalNetwork ||
         (isLocalhost &&
           (process.env.NODE_ENV === "development"
             ? allowedLocalhostPorts.test(origin)
