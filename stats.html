@@ -1102,7 +1102,7 @@
           day: "numeric",
           hour: "2-digit",
           minute: "2-digit",
-          hour12: true,
+          hour12: false,
         };
         const formattedDate = projectedDate.toLocaleString(
           "en-US",
@@ -1296,7 +1296,7 @@
           type: "line",
           data: {
             labels: historical.map((d) =>
-              new Date(d.timestamp).toLocaleTimeString("en-US", { hour12: true })
+              new Date(d.timestamp).toLocaleTimeString("en-US", { hour12: false })
             ),
             datasets: [
               {
@@ -1606,7 +1606,7 @@
           }
 
           document.getElementById("last-updated").textContent =
-            `Last updated: ${new Date().toLocaleTimeString("en-US", { hour12: true })}`;
+            `Last updated: ${new Date().toLocaleTimeString("en-US", { hour12: false })}`;
         } catch (error) {
           container.innerHTML = `
             <div class="error">
