@@ -1102,13 +1102,24 @@
           day: "numeric",
           hour: "2-digit",
           minute: "2-digit",
+          hour12: true,
         };
-        const formattedDate = projectedDate.toLocaleDateString(
+        const formattedDate = projectedDate.toLocaleString(
           "en-US",
           dateOptions
         );
 
         const daysAway = Math.ceil(hoursNeeded / 24);
+        
+        // Debug info
+        console.log("Projection Debug:", {
+          currentTime: new Date().toLocaleString(),
+          serversNeeded,
+          growthRate: growthRate.toFixed(4),
+          hoursNeeded: hoursNeeded.toFixed(2),
+          daysAway,
+          projectedDate: projectedDate.toLocaleString()
+        });
 
         section.innerHTML = `
           <div class="projection-section">
