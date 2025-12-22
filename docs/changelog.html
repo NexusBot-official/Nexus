@@ -84,8 +84,95 @@
 
       <div class="content-section">
         <div class="changelog-entry">
-          <h2>Version 2.0.2 - December 21, 2025</h2>
+          <h2>Version 2.0.3 - December 22, 2025</h2>
           <span class="version-badge">Latest</span>
+          <h3>🔧 Bug Fixes & Configuration Improvements</h3>
+          <p>
+            Fixed critical configuration issues and improved stats page
+            functionality.
+          </p>
+
+          <h4>🔧 Bug Fixes</h4>
+          <ul>
+            <li>
+              <strong>Anti-Nuke Configuration:</strong> Fixed antinuke threshold
+              settings not saving properly
+            </li>
+            <li>
+              <strong>Database Method:</strong> Replaced all deprecated
+              updateServerConfig calls with setServerConfig
+            </li>
+            <li>
+              <strong>Config Whitelist:</strong> Added missing config keys to
+              whitelist (antinuke thresholds, notification settings, lock
+              settings)
+            </li>
+            <li>
+              <strong>Interaction Errors:</strong> Added error handling for
+              expired Discord interactions in quicksetup and achievements
+              commands
+            </li>
+          </ul>
+
+          <h4>📊 Stats Page Improvements</h4>
+          <ul>
+            <li>
+              <strong>Infinite Milestones:</strong> Stats page now tracks
+              unlimited milestones (75→82→100→150→200→500→1K→2K→5K→10K+)
+            </li>
+            <li>
+              <strong>Better Time Display:</strong> Shows hours/minutes for
+              projections under 24 hours instead of rounding to days
+            </li>
+            <li>
+              <strong>24-Hour Format:</strong> All times now display in 24-hour
+              format
+            </li>
+            <li>
+              <strong>Ordinal Dates:</strong> Dates now show with proper
+              suffixes (1st, 2nd, 3rd, 4th)
+            </li>
+            <li>
+              <strong>Refresh Rate:</strong> Changed auto-refresh from 5 seconds
+              to 1 minute to reduce API load
+            </li>
+            <li>
+              <strong>Growth Velocity:</strong> Added visual indicator showing
+              if growth is accelerating, steady, or decelerating
+            </li>
+            <li>
+              <strong>Records Tracking:</strong> Added section tracking best
+              hour, best day, and longest growth streak
+            </li>
+            <li>
+              <strong>Peak Hours Analysis:</strong> Shows which hours have the
+              best and worst growth
+            </li>
+            <li>
+              <strong>Retention Rate:</strong> Displays server retention
+              percentage with gains/losses breakdown
+            </li>
+          </ul>
+
+          <h4>🎯 Goal System Updates</h4>
+          <ul>
+            <li>
+              <strong>Dual Goals:</strong> Properly tracks verification at 75
+              servers and overall goal at 82
+            </li>
+            <li>
+              <strong>Dynamic Milestones:</strong> Automatically sets next
+              milestone after each achievement
+            </li>
+            <li>
+              <strong>Progress Tracking:</strong> Progress bar now shows
+              progress between milestones instead of just to final goal
+            </li>
+          </ul>
+        </div>
+
+        <div class="changelog-entry">
+          <h2>Version 2.0.2 - December 21, 2025</h2>
           <h3>🔒 Security & Performance Improvements</h3>
           <p>
             Critical security fixes, performance optimizations, and codebase
