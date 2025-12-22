@@ -350,8 +350,16 @@ class DashboardServer {
       const allowedLocalhostPorts =
         /^http:\/\/localhost:(3000|8080|5173|5174|3001)$/;
 
+      // Allow local network IPs (192.168.x.x, 10.x.x.x, 172.16-31.x.x) on port 8080 for stats page
+      const isLocalNetwork =
+        origin &&
+        /^http:\/\/(192\.168\.\d{1,3}\.\d{1,3}|10\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.(1[6-9]|2[0-9]|3[0-1])\.\d{1,3}\.\d{1,3}):8080$/.test(
+          origin
+        );
+
       if (
         allowedOrigins.includes(origin) ||
+        isLocalNetwork ||
         (isLocalhost &&
           (process.env.NODE_ENV === "development"
             ? allowedLocalhostPorts.test(origin)
@@ -3796,6 +3804,15 @@ class DashboardServer {
           ping: this.client.ws.ping,
           memory: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
         };
+
+        // Get historical growth data (last 7 days)
+        try {
+          const growthHistory = await db.getBotGrowthHistory(168); // 7 days
+          stats.growthHistory = growthHistory;
+        } catch (growthError) {
+          logger.error("API", "Growth history error", growthError);
+          stats.growthHistory = [];
+        }
 
         // Get vote statistics from database
         try {
@@ -11192,6 +11209,45 @@ class DashboardServer {
         }
       }
     }, 300000);
+
+    // Log bot growth every hour for historical tracking
+    this.growthLogInterval = setInterval(
+      async () => {
+        try {
+          const serverCount = this.client.guilds.cache.size;
+          const userCount = this.client.guilds.cache.reduce(
+            (acc, g) => acc + g.memberCount,
+            0
+          );
+          await db.logBotGrowth(serverCount, userCount);
+          logger.debug(
+            "Dashboard",
+            `📊 Logged bot growth: ${serverCount} servers, ${userCount} users`
+          );
+        } catch (error) {
+          logger.error("Dashboard", "Failed to log bot growth", error);
+        }
+      },
+      60 * 60 * 1000
+    ); // Every hour
+
+    // Log initial growth data immediately
+    (async () => {
+      try {
+        const serverCount = this.client.guilds.cache.size;
+        const userCount = this.client.guilds.cache.reduce(
+          (acc, g) => acc + g.memberCount,
+          0
+        );
+        await db.logBotGrowth(serverCount, userCount);
+        logger.info(
+          "Dashboard",
+          `📊 Initial growth logged: ${serverCount} servers, ${userCount} users`
+        );
+      } catch (error) {
+        logger.error("Dashboard", "Failed to log initial growth", error);
+      }
+    })();
 
     // Create HTTP server instance
     const http = require("http");

@@ -2449,6 +2449,19 @@ class Database {
     this.db.run(`CREATE INDEX IF NOT EXISTS idx_member_growth_guild 
                  ON member_growth(guild_id, timestamp)`);
 
+    // Bot-wide server count history for growth tracking
+    this.db.run(`
+      CREATE TABLE IF NOT EXISTS bot_growth_history (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        server_count INTEGER NOT NULL,
+        user_count INTEGER NOT NULL,
+        timestamp INTEGER NOT NULL
+      )
+    `);
+
+    this.db.run(`CREATE INDEX IF NOT EXISTS idx_bot_growth_timestamp 
+                 ON bot_growth_history(timestamp)`);
+
     // User Referrals
     this.db.run(`
       CREATE TABLE IF NOT EXISTS user_referrals (
@@ -6709,6 +6722,46 @@ class Database {
             reject(err);
           } else {
             resolve();
+          }
+        }
+      );
+    });
+  }
+
+  /**
+   * Log bot growth (server count, user count) for historical tracking
+   */
+  async logBotGrowth(serverCount, userCount) {
+    return new Promise((resolve, reject) => {
+      this.db.run(
+        "INSERT INTO bot_growth_history (server_count, user_count, timestamp) VALUES (?, ?, ?)",
+        [serverCount, userCount, Date.now()],
+        (err) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve();
+          }
+        }
+      );
+    });
+  }
+
+  /**
+   * Get bot growth history for the last N hours
+   */
+  async getBotGrowthHistory(hours = 168) {
+    // Default 168 hours = 7 days
+    const since = Date.now() - hours * 60 * 60 * 1000;
+    return new Promise((resolve, reject) => {
+      this.db.all(
+        "SELECT server_count, user_count, timestamp FROM bot_growth_history WHERE timestamp > ? ORDER BY timestamp ASC",
+        [since],
+        (err, rows) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(rows || []);
           }
         }
       );
