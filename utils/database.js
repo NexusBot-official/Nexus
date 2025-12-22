@@ -2798,6 +2798,70 @@ class Database {
         sent_at INTEGER NOT NULL
       )
     `);
+
+    // Migration: Fix threat_reports table schema (v4.0.3)
+    // Check if the table has the correct columns
+    this.db.all(`PRAGMA table_info(threat_reports)`, [], (err, columns) => {
+      if (err) {
+        return;
+      }
+
+      const hasUserId =
+        columns && columns.some((col) => col.name === "user_id");
+      const hasType = columns && columns.some((col) => col.name === "type");
+      const hasSeverity =
+        columns && columns.some((col) => col.name === "severity");
+      const hasMetadata =
+        columns && columns.some((col) => col.name === "metadata");
+      const hasTimestamp =
+        columns && columns.some((col) => col.name === "timestamp");
+
+      // If table exists but doesn't have the correct schema, drop and recreate
+      if (
+        columns &&
+        columns.length > 0 &&
+        (!hasUserId ||
+          !hasType ||
+          !hasSeverity ||
+          !hasMetadata ||
+          !hasTimestamp)
+      ) {
+        logger.info("[Migration] Fixing threat_reports table schema...");
+
+        this.db.run(`DROP TABLE IF EXISTS threat_reports`, (err) => {
+          if (err) {
+            logger.error("Migration error (drop threat_reports):", err);
+          } else {
+            // Recreate with correct schema
+            this.db.run(
+              `
+              CREATE TABLE threat_reports (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                guild_id TEXT NOT NULL,
+                user_id TEXT NOT NULL,
+                type TEXT NOT NULL,
+                severity INTEGER NOT NULL,
+                metadata TEXT,
+                timestamp INTEGER NOT NULL
+              )
+            `,
+              (err) => {
+                if (err) {
+                  logger.error(
+                    "Migration error (recreate threat_reports):",
+                    err
+                  );
+                } else {
+                  logger.success(
+                    "[Migration] Threat reports table updated successfully"
+                  );
+                }
+              }
+            );
+          }
+        });
+      }
+    });
   }
 
   // Server config methods
