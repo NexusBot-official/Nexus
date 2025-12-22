@@ -18,6 +18,10 @@ class DashboardServer {
   constructor(client) {
     this.client = client;
     this.app = express();
+
+    // Trust proxy for ngrok/reverse proxy support
+    this.app.set("trust proxy", 1);
+
     this.rateLimitStore = new Map(); // IP -> { count, resetTime }
     this.endpointRateLimitStore = new Map(); // path -> IP -> { count, resetTime }
     this.adminTokens = new Map(); // token -> { created, expires }
