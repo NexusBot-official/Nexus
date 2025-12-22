@@ -2634,6 +2634,9 @@ class Database {
     const ALLOWED_CONFIG_KEYS = [
       "anti_raid_enabled",
       "anti_nuke_enabled",
+      "antinuke_channels_threshold",
+      "antinuke_roles_threshold",
+      "antinuke_bans_threshold",
       "heat_system_enabled",
       "auto_mod_enabled",
       "join_gate_enabled",

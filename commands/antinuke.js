@@ -264,7 +264,7 @@ module.exports = {
     if (rolesDeleted) updates.antinuke_roles_threshold = rolesDeleted;
     if (bans) updates.antinuke_bans_threshold = bans;
 
-    await db.updateServerConfig(interaction.guild.id, updates);
+    await db.setServerConfig(interaction.guild.id, updates);
 
     const embed = new EmbedBuilder()
       .setTitle("✅ Anti-Nuke Thresholds Updated")
