@@ -1449,6 +1449,71 @@ class Database {
       }
     );
 
+    // Add missing notification and security config columns
+    this.db.run(
+      `ALTER TABLE server_config ADD COLUMN security_alerts_enabled INTEGER DEFAULT 1`,
+      (err) => {
+        if (err && !err.message.includes("duplicate column")) {
+          logger.debug(
+            "Database",
+            `security_alerts_enabled column: ${err.message}`
+          );
+        }
+      }
+    );
+    this.db.run(
+      `ALTER TABLE server_config ADD COLUMN notification_digest_mode TEXT DEFAULT 'realtime'`,
+      (err) => {
+        if (err && !err.message.includes("duplicate column")) {
+          logger.debug(
+            "Database",
+            `notification_digest_mode column: ${err.message}`
+          );
+        }
+      }
+    );
+    this.db.run(
+      `ALTER TABLE server_config ADD COLUMN notification_digest_interval INTEGER DEFAULT 60`,
+      (err) => {
+        if (err && !err.message.includes("duplicate column")) {
+          logger.debug(
+            "Database",
+            `notification_digest_interval column: ${err.message}`
+          );
+        }
+      }
+    );
+    this.db.run(
+      `ALTER TABLE server_config ADD COLUMN notification_quiet_hours_start INTEGER`,
+      (err) => {
+        if (err && !err.message.includes("duplicate column")) {
+          logger.debug(
+            "Database",
+            `notification_quiet_hours_start column: ${err.message}`
+          );
+        }
+      }
+    );
+    this.db.run(
+      `ALTER TABLE server_config ADD COLUMN notification_quiet_hours_end INTEGER`,
+      (err) => {
+        if (err && !err.message.includes("duplicate column")) {
+          logger.debug(
+            "Database",
+            `notification_quiet_hours_end column: ${err.message}`
+          );
+        }
+      }
+    );
+    this.db.run(
+      `ALTER TABLE server_config ADD COLUMN join_lock_enabled INTEGER DEFAULT 0`,
+      (err) => {
+        if (err && !err.message.includes("duplicate column")) {
+          logger.debug("Database", `join_lock_enabled column: ${err.message}`);
+        }
+      }
+    );
+
     // Auto-recovery snapshots
     this.db.run(`
             CREATE TABLE IF NOT EXISTS recovery_snapshots (
