@@ -693,6 +693,16 @@ class Database {
             )
         `);
 
+    // Dashboard layouts
+    this.db.run(`
+            CREATE TABLE IF NOT EXISTS dashboard_layouts (
+                user_id TEXT PRIMARY KEY,
+                layout TEXT,
+                created_at INTEGER DEFAULT (strftime('%s', 'now')),
+                updated_at INTEGER DEFAULT (strftime('%s', 'now'))
+            )
+        `);
+
     // Enhanced logging
     this.db.run(`
             CREATE TABLE IF NOT EXISTS enhanced_logs (

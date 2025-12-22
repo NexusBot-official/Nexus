@@ -10664,6 +10664,426 @@ class DashboardServer {
     });
   }
 
+  setupAuditLog() {
+    // Middleware to log all admin actions
+    this.auditMiddleware = (req, res, next) => {
+      const originalSend = res.send;
+      res.send = function (data) {
+        // Log successful actions
+        if (res.statusCode >= 200 && res.statusCode < 300) {
+          const auditEntry = {
+            timestamp: Date.now(),
+            ip: req.ip,
+            method: req.method,
+            path: req.path,
+            body: req.body,
+            status: res.statusCode,
+          };
+
+          // Store in database
+          this.db
+            .run(
+              `INSERT INTO audit_logs (timestamp, ip, method, path, body, status) VALUES (?, ?, ?, ?, ?, ?)`,
+              [
+                auditEntry.timestamp,
+                auditEntry.ip,
+                auditEntry.method,
+                auditEntry.path,
+                JSON.stringify(auditEntry.body),
+                auditEntry.status,
+              ]
+            )
+            .catch((err) => {
+              logger.error("Audit", "Failed to log action:", err);
+            });
+        }
+        originalSend.call(this, data);
+      }.bind(this);
+      next();
+    };
+
+    // Get audit logs
+    this.app.get("/api/admin/audit-logs", async (req, res) => {
+      try {
+        const { limit = 100, offset = 0 } = req.query;
+
+        const logs = await this.db.all(
+          `SELECT * FROM audit_logs ORDER BY timestamp DESC LIMIT ? OFFSET ?`,
+          [parseInt(limit), parseInt(offset)]
+        );
+
+        const total = await this.db.get(
+          `SELECT COUNT(*) as count FROM audit_logs`
+        );
+
+        res.json({
+          logs,
+          total: total.count,
+        });
+      } catch (error) {
+        logger.error("Audit", "Failed to fetch logs:", error);
+        res.status(500).json({ error: error.message });
+      }
+    });
+  }
+
+  setupComparisonCharts() {
+    // Get comparison data for multiple servers
+    this.app.post("/api/dashboard/comparison", async (req, res) => {
+      try {
+        const { guildIds, metrics, timeRange } = req.body;
+
+        if (!guildIds || !Array.isArray(guildIds) || guildIds.length === 0) {
+          return res.status(400).json({ error: "Guild IDs array is required" });
+        }
+
+        const now = Date.now();
+        const timeRanges = {
+          "24h": 24 * 60 * 60 * 1000,
+          "7d": 7 * 24 * 60 * 60 * 1000,
+          "30d": 30 * 24 * 60 * 60 * 1000,
+        };
+        const rangeMs = timeRanges[timeRange] || timeRanges["7d"];
+        const startTime = now - rangeMs;
+
+        const comparisonData = {};
+
+        for (const guildId of guildIds) {
+          const guild = this.client.guilds.cache.get(guildId);
+          if (!guild) continue;
+
+          const data = {
+            guildName: guild.name,
+            memberCount: guild.memberCount,
+          };
+
+          // Get moderation logs count
+          if (!metrics || metrics.includes("moderation")) {
+            const modLogs = await this.db.all(
+              `SELECT COUNT(*) as count FROM moderation_logs WHERE guild_id = ? AND timestamp >= ?`,
+              [guildId, startTime]
+            );
+            data.moderationActions = modLogs[0]?.count || 0;
+          }
+
+          // Get automod triggers
+          if (!metrics || metrics.includes("automod")) {
+            const automodLogs = await this.db.all(
+              `SELECT COUNT(*) as count FROM enhanced_logs WHERE guild_id = ? AND log_type = 'automod' AND timestamp >= ?`,
+              [guildId, startTime]
+            );
+            data.automodTriggers = automodLogs[0]?.count || 0;
+          }
+
+          // Get new members
+          if (!metrics || metrics.includes("growth")) {
+            const newMembers = await this.db.all(
+              `SELECT COUNT(*) as count FROM enhanced_logs WHERE guild_id = ? AND action = 'member_join' AND timestamp >= ?`,
+              [guildId, startTime]
+            );
+            data.newMembers = newMembers[0]?.count || 0;
+          }
+
+          comparisonData[guildId] = data;
+        }
+
+        res.json(comparisonData);
+      } catch (error) {
+        logger.error("Dashboard", "Comparison fetch failed:", error);
+        res.status(500).json({ error: error.message });
+      }
+    });
+
+    // Get historical data for time-series comparison
+    this.app.post("/api/dashboard/historical", async (req, res) => {
+      try {
+        const { guildId, metric, timeRange } = req.body;
+
+        if (!guildId || !metric) {
+          return res
+            .status(400)
+            .json({ error: "Guild ID and metric are required" });
+        }
+
+        const now = Date.now();
+        const timeRanges = {
+          "24h": { range: 24 * 60 * 60 * 1000, interval: 60 * 60 * 1000 }, // 1 hour intervals
+          "7d": {
+            range: 7 * 24 * 60 * 60 * 1000,
+            interval: 24 * 60 * 60 * 1000,
+          }, // 1 day intervals
+          "30d": {
+            range: 30 * 24 * 60 * 60 * 1000,
+            interval: 24 * 60 * 60 * 1000,
+          }, // 1 day intervals
+        };
+        const config = timeRanges[timeRange] || timeRanges["7d"];
+        const startTime = now - config.range;
+
+        const dataPoints = [];
+        const numPoints = Math.ceil(config.range / config.interval);
+
+        for (let i = 0; i < numPoints; i++) {
+          const intervalStart = startTime + i * config.interval;
+          const intervalEnd = intervalStart + config.interval;
+
+          let count = 0;
+          if (metric === "moderation") {
+            const result = await this.db.get(
+              `SELECT COUNT(*) as count FROM moderation_logs WHERE guild_id = ? AND timestamp >= ? AND timestamp < ?`,
+              [guildId, intervalStart, intervalEnd]
+            );
+            count = result?.count || 0;
+          } else if (metric === "automod") {
+            const result = await this.db.get(
+              `SELECT COUNT(*) as count FROM enhanced_logs WHERE guild_id = ? AND log_type = 'automod' AND timestamp >= ? AND timestamp < ?`,
+              [guildId, intervalStart, intervalEnd]
+            );
+            count = result?.count || 0;
+          }
+
+          dataPoints.push({
+            timestamp: intervalStart,
+            value: count,
+          });
+        }
+
+        res.json({ dataPoints });
+      } catch (error) {
+        logger.error("Dashboard", "Historical fetch failed:", error);
+        res.status(500).json({ error: error.message });
+      }
+    });
+  }
+
+  setupDashboardLayout() {
+    // Save user's dashboard layout preferences
+    this.app.post("/api/dashboard/layout", async (req, res) => {
+      try {
+        const { userId, layout } = req.body;
+
+        if (!userId || !layout) {
+          return res
+            .status(400)
+            .json({ error: "User ID and layout are required" });
+        }
+
+        await this.db.run(
+          `INSERT INTO dashboard_layouts (user_id, layout) VALUES (?, ?)
+           ON CONFLICT(user_id) DO UPDATE SET layout = ?, updated_at = ?`,
+          [userId, JSON.stringify(layout), JSON.stringify(layout), Date.now()]
+        );
+
+        res.json({ success: true });
+      } catch (error) {
+        logger.error("Dashboard", "Layout save failed:", error);
+        res.status(500).json({ error: error.message });
+      }
+    });
+
+    // Get user's dashboard layout
+    this.app.get("/api/dashboard/layout/:userId", async (req, res) => {
+      try {
+        const { userId } = req.params;
+
+        const result = await this.db.get(
+          `SELECT layout FROM dashboard_layouts WHERE user_id = ?`,
+          [userId]
+        );
+
+        if (result) {
+          res.json({ layout: JSON.parse(result.layout) });
+        } else {
+          // Return default layout
+          res.json({
+            layout: {
+              widgets: [
+                { id: "stats", position: { x: 0, y: 0, w: 12, h: 4 } },
+                { id: "activity", position: { x: 0, y: 4, w: 6, h: 6 } },
+                { id: "alerts", position: { x: 6, y: 4, w: 6, h: 6 } },
+              ],
+            },
+          });
+        }
+      } catch (error) {
+        logger.error("Dashboard", "Layout fetch failed:", error);
+        res.status(500).json({ error: error.message });
+      }
+    });
+
+    // Reset layout to default
+    this.app.delete("/api/dashboard/layout/:userId", async (req, res) => {
+      try {
+        const { userId } = req.params;
+
+        await this.db.run(`DELETE FROM dashboard_layouts WHERE user_id = ?`, [
+          userId,
+        ]);
+
+        res.json({ success: true });
+      } catch (error) {
+        logger.error("Dashboard", "Layout reset failed:", error);
+        res.status(500).json({ error: error.message });
+      }
+    });
+  }
+
+  setupWebhookBuilder() {
+    const axios = require("axios");
+
+    // Test webhook
+    this.app.post("/api/webhooks/test", async (req, res) => {
+      try {
+        const { webhookUrl, content, embeds, username, avatar_url } = req.body;
+
+        if (!webhookUrl) {
+          return res.status(400).json({ error: "Webhook URL is required" });
+        }
+
+        const payload = {
+          content: content || "Test webhook message",
+          username: username || "Nexus Bot",
+          avatar_url:
+            avatar_url ||
+            "https://cdn.discordapp.com/avatars/1234567890/avatar.png",
+        };
+
+        if (embeds && embeds.length > 0) {
+          payload.embeds = embeds;
+        }
+
+        await axios.post(webhookUrl, payload);
+        res.json({ success: true });
+      } catch (error) {
+        logger.error("Webhook", "Test failed:", error);
+        res.status(500).json({ error: error.message });
+      }
+    });
+
+    // Save webhook configuration
+    this.app.post("/api/webhooks/save", async (req, res) => {
+      try {
+        const { guildId, name, url, config } = req.body;
+
+        if (!guildId || !name || !url) {
+          return res
+            .status(400)
+            .json({ error: "Guild ID, name, and URL are required" });
+        }
+
+        await this.db.run(
+          `INSERT INTO webhooks (guild_id, name, url, config) VALUES (?, ?, ?, ?)
+           ON CONFLICT(guild_id, name) DO UPDATE SET url = ?, config = ?`,
+          [
+            guildId,
+            name,
+            url,
+            JSON.stringify(config),
+            url,
+            JSON.stringify(config),
+          ]
+        );
+
+        res.json({ success: true });
+      } catch (error) {
+        logger.error("Webhook", "Save failed:", error);
+        res.status(500).json({ error: error.message });
+      }
+    });
+
+    // Get webhooks for a guild
+    this.app.get("/api/webhooks/:guildId", async (req, res) => {
+      try {
+        const { guildId } = req.params;
+
+        const webhooks = await this.db.all(
+          `SELECT * FROM webhooks WHERE guild_id = ?`,
+          [guildId]
+        );
+
+        res.json(webhooks);
+      } catch (error) {
+        logger.error("Webhook", "Fetch failed:", error);
+        res.status(500).json({ error: error.message });
+      }
+    });
+
+    // Delete webhook
+    this.app.delete("/api/webhooks/:guildId/:name", async (req, res) => {
+      try {
+        const { guildId, name } = req.params;
+
+        await this.db.run(
+          `DELETE FROM webhooks WHERE guild_id = ? AND name = ?`,
+          [guildId, name]
+        );
+
+        res.json({ success: true });
+      } catch (error) {
+        logger.error("Webhook", "Delete failed:", error);
+        res.status(500).json({ error: error.message });
+      }
+    });
+  }
+
+  setup2FA() {
+    const speakeasy = require("speakeasy");
+    const QRCode = require("qrcode");
+
+    // Generate 2FA secret
+    this.app.post("/api/admin/2fa/setup", async (req, res) => {
+      try {
+        const { adminPassword } = req.body;
+
+        // Verify admin password
+        if (adminPassword !== process.env.ADMIN_PASSWORD) {
+          return res.status(401).json({ error: "Invalid admin password" });
+        }
+
+        const secret = speakeasy.generateSecret({
+          name: "Nexus Bot Dashboard",
+          issuer: "Nexus",
+        });
+
+        // Generate QR code
+        const qrCodeUrl = await QRCode.toDataURL(secret.otpauth_url);
+
+        res.json({
+          secret: secret.base32,
+          qrCode: qrCodeUrl,
+        });
+      } catch (error) {
+        logger.error("2FA", "Setup error:", error);
+        res.status(500).json({ error: error.message });
+      }
+    });
+
+    // Verify 2FA token
+    this.app.post("/api/admin/2fa/verify", async (req, res) => {
+      try {
+        const { secret, token } = req.body;
+
+        const verified = speakeasy.totp.verify({
+          secret: secret,
+          encoding: "base32",
+          token: token,
+          window: 2,
+        });
+
+        if (verified) {
+          // Store secret in database for this admin
+          // TODO: Implement database storage
+          res.json({ success: true });
+        } else {
+          res.status(401).json({ error: "Invalid token" });
+        }
+      } catch (error) {
+        logger.error("2FA", "Verification error:", error);
+        res.status(500).json({ error: error.message });
+      }
+    });
+  }
+
   setupRealtimeEvents() {
     this.io.on("connection", (socket) => {
       logger.info("Dashboard", `WebSocket client connected: ${socket.id}`);
@@ -10733,6 +11153,21 @@ class DashboardServer {
   }
 
   start(port = 3000) {
+    // Setup audit logging
+    this.setupAuditLog();
+
+    // Setup 2FA
+    this.setup2FA();
+
+    // Setup webhook builder
+    this.setupWebhookBuilder();
+
+    // Setup dashboard layout
+    this.setupDashboardLayout();
+
+    // Setup comparison charts
+    this.setupComparisonCharts();
+
     // Setup public API
     this.setupPublicAPI();
 
