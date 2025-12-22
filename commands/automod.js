@@ -168,6 +168,7 @@ module.exports = {
 
     if (subcommand === "enable") {
       await db.updateAutomodConfig(interaction.guild.id, {
+        enabled: 1,
         spam_enabled: 1,
         link_scanning_enabled: 1,
         caps_enabled: 1,
