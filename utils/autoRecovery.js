@@ -443,9 +443,6 @@ class AutoRecovery {
                   .fetch(guild.client.user.id)
                   .catch(() => null);
                 if (!botMember || !botMember.permissions.has("ManageRoles")) {
-                  logger.warn(
-                    `[AutoRecovery] Bot lacks ManageRoles permission - skipping role recovery for ${guild.id}`
-                  );
                   return; // Skip this role if bot lacks permission
                 }
 
@@ -455,14 +452,60 @@ class AutoRecovery {
                   ? Math.max(0, botHighestRole.position - 1)
                   : undefined;
 
-                const newRole = await guild.roles.create({
-                  name: roleData.name,
-                  colors: roleData.color ? [roleData.color] : undefined, // Use 'colors' instead of deprecated 'color'
-                  permissions: roleData.permissions,
-                  mentionable: roleData.mentionable,
-                  hoist: roleData.hoist,
-                  position: safePosition, // Set position during creation if possible
-                });
+                // Filter out permissions the bot doesn't have
+                const botPermissions = botMember.permissions;
+                let safePermissions = roleData.permissions;
+
+                // If role has dangerous permissions, check if bot has them
+                if (
+                  roleData.permissions &&
+                  !botPermissions.has("Administrator")
+                ) {
+                  const dangerousPerms = [
+                    "Administrator",
+                    "ManageGuild",
+                    "ManageRoles",
+                    "ManageChannels",
+                    "ManageWebhooks",
+                  ];
+                  const permissionsArray = Array.isArray(roleData.permissions)
+                    ? roleData.permissions
+                    : [roleData.permissions];
+
+                  safePermissions = permissionsArray.filter((perm) => {
+                    return (
+                      !dangerousPerms.some((dp) =>
+                        perm.toString().includes(dp)
+                      ) || botPermissions.has(perm)
+                    );
+                  });
+                }
+
+                let newRole;
+                try {
+                  newRole = await guild.roles.create({
+                    name: roleData.name,
+                    colors: roleData.color ? [roleData.color] : undefined, // Use 'colors' instead of deprecated 'color'
+                    permissions: safePermissions,
+                    mentionable: roleData.mentionable,
+                    hoist: roleData.hoist,
+                    position: safePosition, // Set position during creation if possible
+                  });
+                } catch (createError) {
+                  if (createError.code === 50013) {
+                    // Missing Permissions - skip this role
+                    logger.warn(
+                      `[AutoRecovery] Cannot recover role "${roleData.name}" - Missing Permissions (bot role hierarchy issue)`
+                    );
+                    skipped.push({
+                      type: "role",
+                      name: roleData.name,
+                      reason: "Missing Permissions (hierarchy)",
+                    });
+                    return;
+                  }
+                  throw createError; // Re-throw if it's a different error
+                }
 
                 // Try to set original position if different (may fail due to hierarchy)
                 if (
