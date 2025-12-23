@@ -19,15 +19,15 @@ class ThreatCorrelationEngine {
    * Start correlation engine
    */
   start() {
-    // Run correlation analysis every minute
+    // Run correlation analysis every 5 minutes (reduced from 1 minute to avoid rate limits)
     this.correlationInterval = setInterval(() => {
       this.analyzeCorrelations();
-    }, 60000);
+    }, 300000);
 
-    // Clean old threats every 5 minutes
+    // Clean old threats every 30 minutes
     setInterval(() => {
       this.cleanOldThreats();
-    }, 300000);
+    }, 1800000);
 
     logger.info(
       "ThreatCorrelationEngine",

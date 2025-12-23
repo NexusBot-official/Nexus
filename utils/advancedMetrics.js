@@ -24,15 +24,15 @@ class AdvancedMetrics {
    * Start metrics collection
    */
   start() {
-    // Aggregate metrics every minute
+    // Aggregate metrics every 5 minutes (reduced from 1 minute to avoid rate limits)
     this.aggregationInterval = setInterval(() => {
       this.aggregateMetrics();
-    }, 60000);
+    }, 300000);
 
-    // Reset real-time counters every minute
+    // Reset real-time counters every 5 minutes
     setInterval(() => {
       this.resetRealTimeCounters();
-    }, 60000);
+    }, 300000);
 
     logger.info("AdvancedMetrics", "📊 Advanced metrics collection started");
   }
@@ -260,9 +260,7 @@ class AdvancedMetrics {
       return {
         score: Math.max(0, Math.round(healthScore)),
         memberCount: guild.memberCount,
-        onlineCount: guild.members.cache.filter(
-          (m) => m.presence?.status !== "offline"
-        ).size,
+        onlineCount: 0, // Disabled to prevent rate limit issues
         messageRate: recentMetrics?.message_rate || 0,
         commandRate: recentMetrics?.command_rate || 0,
         violationRate: recentMetrics?.violation_rate || 0,
@@ -353,12 +351,10 @@ class AdvancedMetrics {
         // Get average response time from recent commands
         const avgResponseTime = await this.getAverageResponseTime(guild.id);
 
-        // Track server health
+        // Track server health (removed onlineCount to avoid rate limits)
         await this.trackServerHealth(guild.id, {
           memberCount: guild.memberCount,
-          onlineCount: guild.members.cache.filter(
-            (m) => m.presence?.status !== "offline"
-          ).size,
+          onlineCount: 0, // Disabled to prevent rate limit issues
           messageRate,
           commandRate,
           violationRate,
