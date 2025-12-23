@@ -57,8 +57,30 @@ module.exports = {
 
         // Extract command options for logging
         const commandOptions = {};
+
+        // Handle subcommands
+        const subcommand = interaction.options.getSubcommand(false);
+        const subcommandGroup = interaction.options.getSubcommandGroup(false);
+
+        if (subcommandGroup) {
+          commandOptions.group = subcommandGroup;
+        }
+        if (subcommand) {
+          commandOptions.subcommand = subcommand;
+        }
+
+        // Extract actual option values (not subcommands)
         interaction.options?.data?.forEach((option) => {
-          commandOptions[option.name] = option.value;
+          if (option.type === 1 || option.type === 2) {
+            // Type 1 = SUB_COMMAND, Type 2 = SUB_COMMAND_GROUP
+            // Extract options from within the subcommand
+            option.options?.forEach((subOption) => {
+              commandOptions[subOption.name] = subOption.value;
+            });
+          } else {
+            // Regular option
+            commandOptions[option.name] = option.value;
+          }
         });
 
         // Format options for display
