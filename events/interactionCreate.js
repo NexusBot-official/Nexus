@@ -130,8 +130,8 @@ module.exports = {
           // Record successful execution
           const executionTime = performanceMonitor.end(perfTimer, true);
 
-          // Track command analytics with options
-          if (client.commandAnalytics) {
+          // Track command analytics with options (only for guild commands)
+          if (client.commandAnalytics && interaction.guild) {
             client.commandAnalytics.trackCommand(
               interaction.guild.id,
               interaction.user.id,
@@ -164,11 +164,14 @@ module.exports = {
           throw cmdError; // Re-throw to be caught by outer catch
         }
 
-        await db.updateUserStats(
-          interaction.guild.id,
-          interaction.user.id,
-          "commands_used"
-        );
+        // Update user stats (only for guild commands)
+        if (interaction.guild) {
+          await db.updateUserStats(
+            interaction.guild.id,
+            interaction.user.id,
+            "commands_used"
+          );
+        }
       } catch (error) {
         // Use ErrorHelper for better error messages
         const ErrorHelper = require("../utils/errorHelper");
