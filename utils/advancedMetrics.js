@@ -260,7 +260,9 @@ class AdvancedMetrics {
       return {
         score: Math.max(0, Math.round(healthScore)),
         memberCount: guild.memberCount,
-        onlineCount: 0, // Disabled to prevent rate limit issues
+        onlineCount: guild.members.cache.filter(
+          (m) => m.presence?.status !== "offline"
+        ).size,
         messageRate: recentMetrics?.message_rate || 0,
         commandRate: recentMetrics?.command_rate || 0,
         violationRate: recentMetrics?.violation_rate || 0,
@@ -351,10 +353,12 @@ class AdvancedMetrics {
         // Get average response time from recent commands
         const avgResponseTime = await this.getAverageResponseTime(guild.id);
 
-        // Track server health (removed onlineCount to avoid rate limits)
+        // Track server health (now runs every 5 minutes instead of every minute)
         await this.trackServerHealth(guild.id, {
           memberCount: guild.memberCount,
-          onlineCount: 0, // Disabled to prevent rate limit issues
+          onlineCount: guild.members.cache.filter(
+            (m) => m.presence?.status !== "offline"
+          ).size,
           messageRate,
           commandRate,
           violationRate,
