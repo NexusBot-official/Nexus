@@ -5,7 +5,7 @@ const {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
-} = require("discord.js");
+, MessageFlags} = require("discord.js");
 const WickMigration = require("../utils/wickMigration");
 const logger = require("../utils/logger");
 
@@ -27,7 +27,7 @@ module.exports = {
 
   async execute(interaction) {
     try {
-      await interaction.deferReply({ ephemeral: true });
+      await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
       const fromBot = interaction.options.getString("from") || "wick";
       const migration = new WickMigration(interaction.client);

@@ -3,7 +3,7 @@
  * Consistent, helpful, and user-friendly
  */
 
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, MessageFlags } = require("discord.js");
 
 class ErrorMessages {
   // Permission errors
@@ -20,7 +20,7 @@ class ErrorMessages {
             text: "Ask a server admin for help!",
           }),
       ],
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     };
   }
 
@@ -43,7 +43,7 @@ class ErrorMessages {
             text: "Need help? Run /support",
           }),
       ],
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     };
   }
 
@@ -61,14 +61,14 @@ class ErrorMessages {
           )
           .setColor(0xff4444),
       ],
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     };
   }
 
   static cannotTargetSelf() {
     return {
       content: "❌ You can't use this command on yourself! 😅",
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     };
   }
 
@@ -76,14 +76,14 @@ class ErrorMessages {
     return {
       content:
         "❌ Nice try, but you can't use that on me! 🤖\n\n*I'm protected from shenanigans.*",
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     };
   }
 
   static cannotTargetOwner() {
     return {
       content: "❌ You can't target the server owner! They're untouchable. 👑",
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     };
   }
 
@@ -103,7 +103,7 @@ class ErrorMessages {
               "This prevents abuse. Lower-ranked mods can't moderate higher-ranked ones.",
           }),
       ],
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     };
   }
 
@@ -123,7 +123,7 @@ class ErrorMessages {
               "Drag my role above the target user's highest role in the role list.",
           }),
       ],
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     };
   }
 
@@ -139,14 +139,14 @@ class ErrorMessages {
           )
           .setColor(0xff4444),
       ],
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     };
   }
 
   static missingArgument(argument) {
     return {
       content: `❌ Missing required argument: **${argument}**\n\nCheck the command options and try again!`,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     };
   }
 
@@ -162,7 +162,7 @@ class ErrorMessages {
           )
           .setColor(0xffa500),
       ],
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     };
   }
 
@@ -181,7 +181,7 @@ class ErrorMessages {
             value: "Check `/help` or visit our docs!",
           }),
       ],
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     };
   }
 
@@ -200,7 +200,7 @@ class ErrorMessages {
             text: "If this persists, contact support!",
           }),
       ],
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     };
   }
 
@@ -219,7 +219,7 @@ class ErrorMessages {
             text: "Cooldowns prevent spam and protect the bot!",
           }),
       ],
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     };
   }
 
@@ -239,7 +239,7 @@ class ErrorMessages {
             text: "If this keeps happening, contact support!",
           }),
       ],
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     };
   }
 
@@ -260,7 +260,7 @@ class ErrorMessages {
               "• Try again in a moment",
           }),
       ],
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     };
   }
 
@@ -322,7 +322,7 @@ class ErrorMessages {
     return {
       content:
         "❌ This command only works in DMs!\n\nSend me a DM and try again. 📬",
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     };
   }
 
@@ -331,7 +331,7 @@ class ErrorMessages {
     return {
       content:
         "❌ This command only works in servers!\n\nRun it in a server where I'm present. 🏠",
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     };
   }
 
@@ -350,7 +350,7 @@ class ErrorMessages {
             text: "Looking for admin commands? Try /help admin",
           }),
       ],
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     };
   }
 
@@ -359,7 +359,7 @@ class ErrorMessages {
     const seconds = (timeLeft / 1000).toFixed(1);
     return {
       content: `⏰ **Cooldown Active**\n\n\`/${command}\` is on cooldown. Try again in **${seconds}s**.\n\n*Cooldowns prevent spam and keep the bot responsive for everyone!*`,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     };
   }
 }

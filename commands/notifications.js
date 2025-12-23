@@ -7,7 +7,7 @@ const {
   SlashCommandBuilder,
   EmbedBuilder,
   PermissionFlagsBits,
-} = require("discord.js");
+, MessageFlags} = require("discord.js");
 const db = require("../utils/database");
 const logger = require("../utils/logger");
 
@@ -68,7 +68,7 @@ module.exports = {
   },
 
   async setupWebhook(interaction) {
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     const webhookUrl = interaction.options.getString("webhook_url");
     const events =
@@ -189,7 +189,7 @@ module.exports = {
   },
 
   async listWebhooks(interaction) {
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     const webhooks = await new Promise((resolve, reject) => {
       db.db.all(
@@ -250,7 +250,7 @@ module.exports = {
 
     await interaction.reply({
       content: `✅ Webhook #${id} deleted`,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
   },
 

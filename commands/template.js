@@ -4,7 +4,7 @@ const {
   PermissionFlagsBits,
   ActionRowBuilder,
   StringSelectMenuBuilder,
-} = require("discord.js");
+, MessageFlags} = require("discord.js");
 const { ServerTemplates } = require("../utils/serverTemplates");
 const db = require("../utils/database");
 const logger = require("../utils/logger");
@@ -88,7 +88,7 @@ module.exports = {
       inline: false,
     });
 
-    await interaction.reply({ embeds: [embed], ephemeral: true });
+    await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
   },
 
   async handleApply(interaction) {
@@ -98,11 +98,11 @@ module.exports = {
     if (!template) {
       return interaction.reply({
         content: "❌ Template not found!",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     try {
       // Apply template
@@ -197,7 +197,7 @@ module.exports = {
     if (!template) {
       return interaction.reply({
         content: "❌ Failed to generate recommendation",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 
@@ -220,6 +220,6 @@ module.exports = {
       inline: false,
     });
 
-    await interaction.reply({ embeds: [embed], ephemeral: true });
+    await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
   },
 };

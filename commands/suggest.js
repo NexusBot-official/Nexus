@@ -7,7 +7,7 @@ const {
   ModalBuilder,
   TextInputBuilder,
   TextInputStyle,
-} = require("discord.js");
+, MessageFlags} = require("discord.js");
 const logger = require("../utils/logger");
 const db = require("../utils/database");
 
@@ -148,7 +148,7 @@ module.exports = {
       await modalInteraction.reply({
         embeds: [confirmEmbed],
         components: [voteButtons],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
 
       // Send to admin webhook if configured

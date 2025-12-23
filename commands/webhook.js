@@ -2,7 +2,7 @@ const {
   SlashCommandBuilder,
   EmbedBuilder,
   PermissionFlagsBits,
-} = require("discord.js");
+, MessageFlags} = require("discord.js");
 const webhookHub = require("../utils/webhookHub");
 const ErrorMessages = require("../utils/errorMessages");
 
@@ -57,7 +57,7 @@ module.exports = {
     const subcommand = interaction.options.getSubcommand();
 
     if (subcommand === "add") {
-      await interaction.deferReply({ ephemeral: true });
+      await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
       const url = interaction.options.getString("url");
       const eventsRaw = interaction.options.getString("events");
@@ -122,7 +122,7 @@ module.exports = {
         await interaction.editReply(ErrorMessages.commandFailed(error.message));
       }
     } else if (subcommand === "list") {
-      await interaction.deferReply({ ephemeral: true });
+      await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
       const webhooks = await webhookHub.getWebhooks(interaction.guild.id);
 
@@ -159,7 +159,7 @@ module.exports = {
 
       await interaction.editReply({ embeds: [embed] });
     } else if (subcommand === "delete") {
-      await interaction.deferReply({ ephemeral: true });
+      await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
       const id = interaction.options.getInteger("id");
       const result = await webhookHub.deleteWebhook(id);
@@ -174,7 +174,7 @@ module.exports = {
         });
       }
     } else if (subcommand === "toggle") {
-      await interaction.deferReply({ ephemeral: true });
+      await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
       const id = interaction.options.getInteger("id");
       const result = await webhookHub.toggleWebhook(id);
@@ -218,7 +218,7 @@ module.exports = {
         })
         .setTimestamp();
 
-      await interaction.reply({ embeds: [embed], ephemeral: true });
+      await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
     }
   },
 };

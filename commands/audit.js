@@ -2,7 +2,7 @@ const {
   SlashCommandBuilder,
   PermissionFlagsBits,
   EmbedBuilder,
-} = require("discord.js");
+, MessageFlags} = require("discord.js");
 const db = require("../utils/database");
 const logger = require("../utils/logger");
 
@@ -32,7 +32,7 @@ module.exports = {
 
   async execute(interaction) {
     const subcommand = interaction.options.getSubcommand();
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     try {
       switch (subcommand) {
@@ -49,7 +49,7 @@ module.exports = {
       logger.error("audit", "Audit command error", error);
       return interaction.editReply({
         content: "❌ An error occurred during the audit. Please try again.",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
   },

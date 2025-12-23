@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const { SlashCommandBuilder, EmbedBuilder , MessageFlags} = require("discord.js");
 const serverHealth = require("../utils/serverHealth");
 const ErrorMessages = require("../utils/errorMessages");
 const logger = require("../utils/logger");
@@ -170,7 +170,7 @@ module.exports = {
       await interaction.editReply({
         content:
           "❌ Failed to calculate server health. Please try again later.",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
   },

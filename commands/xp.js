@@ -2,6 +2,7 @@ const {
   SlashCommandBuilder,
   EmbedBuilder,
   PermissionFlagsBits,
+  MessageFlags,
 } = require("discord.js");
 const db = require("../utils/database");
 const XPSystem = require("../utils/xpSystem");
@@ -156,7 +157,7 @@ module.exports = {
     if (!userData) {
       return interaction.reply({
         content: `${user.tag} hasn't earned any XP yet!`,
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 
@@ -217,7 +218,7 @@ module.exports = {
     if (pageUsers.length === 0) {
       return interaction.editReply({
         content: "No users found on this page!",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 
@@ -254,11 +255,11 @@ module.exports = {
     ) {
       return interaction.reply({
         content: "You need Administrator permission to configure XP settings!",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     const config = {};
     const enabled = interaction.options.getBoolean("enabled");
@@ -323,7 +324,7 @@ module.exports = {
     if (!interaction.member.permissions.has(PermissionFlagsBits.ManageRoles)) {
       return interaction.reply({
         content: "You need Manage Roles permission to configure level rewards!",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 
@@ -335,7 +336,7 @@ module.exports = {
       await db.removeLevelReward(interaction.guild.id, level);
       return interaction.reply({
         content: `✅ Removed level reward for level ${level}`,
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 
@@ -343,7 +344,7 @@ module.exports = {
     await db.addLevelReward(interaction.guild.id, level, role.id);
     await interaction.reply({
       content: `✅ Set ${role} as the reward for reaching level ${level}!`,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
   },
 
@@ -353,7 +354,7 @@ module.exports = {
     if (rewards.length === 0) {
       return interaction.reply({
         content: "No level rewards configured yet!",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 
@@ -373,7 +374,7 @@ module.exports = {
     ) {
       return interaction.reply({
         content: "You need Administrator permission to manually add XP!",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 
@@ -403,7 +404,7 @@ module.exports = {
           .setColor(0x00ff00)
           .setThumbnail(user.displayAvatarURL()),
       ],
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
   },
 
@@ -413,7 +414,7 @@ module.exports = {
     ) {
       return interaction.reply({
         content: "You need Administrator permission to manually remove XP!",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 
@@ -443,7 +444,7 @@ module.exports = {
           .setColor(0xff9900)
           .setThumbnail(user.displayAvatarURL()),
       ],
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
   },
 
@@ -453,7 +454,7 @@ module.exports = {
     ) {
       return interaction.reply({
         content: "You need Administrator permission to reset XP!",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 
@@ -481,7 +482,7 @@ module.exports = {
           .setColor(0xff0000)
           .setThumbnail(user.displayAvatarURL()),
       ],
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
   },
 };

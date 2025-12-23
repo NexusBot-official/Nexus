@@ -2,7 +2,7 @@ const {
   SlashCommandBuilder,
   EmbedBuilder,
   PermissionFlagsBits,
-} = require("discord.js");
+, MessageFlags} = require("discord.js");
 const db = require("../utils/database");
 
 module.exports = {
@@ -76,7 +76,7 @@ module.exports = {
 
       const reply = {
         content: `❌ Error: ${error.message}`,
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       };
 
       if (interaction.replied || interaction.deferred) {
@@ -119,7 +119,7 @@ module.exports = {
 
   async handleDisable(interaction) {
     // Defer first to avoid timeout
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     await db.setServerConfig(interaction.guild.id, {
       anti_nuke_enabled: 0,
@@ -255,7 +255,7 @@ module.exports = {
           text: "Use /antinuke config to change these values",
         });
 
-      return interaction.reply({ embeds: [embed], ephemeral: true });
+      return interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
     }
 
     // Update thresholds
@@ -291,7 +291,7 @@ module.exports = {
         text: "Changes take effect immediately",
       });
 
-    await interaction.reply({ embeds: [embed], ephemeral: true });
+    await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
   },
 
   async handleTest(interaction) {
@@ -307,6 +307,6 @@ module.exports = {
       )
       .setColor(0xffa500);
 
-    await interaction.reply({ embeds: [embed], ephemeral: true });
+    await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
   },
 };

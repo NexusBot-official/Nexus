@@ -56,7 +56,7 @@ module.exports = {
       if (!interaction.guild) {
         return interaction.reply({
           content: "❌ This bot can only be used in servers, not in DMs.",
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
       }
 

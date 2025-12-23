@@ -73,13 +73,13 @@ module.exports = {
       if (i.user.id !== interaction.user.id) {
         return i.reply({
           content: "This setup is not for you!",
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
       }
 
       if (i.customId === "setup_security") {
         // Defer reply to prevent timeout
-        await i.deferReply({ ephemeral: true });
+        await i.deferReply({ flags: MessageFlags.Ephemeral });
 
         // Enable security features
         await db.setServerConfig(guild.id, {
@@ -103,7 +103,7 @@ module.exports = {
               )
               .setColor(0x00ff88),
           ],
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
       } else if (i.customId === "setup_logging") {
         // Suggest creating a logs channel
@@ -128,7 +128,7 @@ module.exports = {
                   .setStyle(ButtonStyle.Secondary)
               ),
             ],
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
           });
 
           const logCollector = i.channel.createMessageComponentCollector({
@@ -171,7 +171,7 @@ module.exports = {
                   if (err.code === 10062) {
                     await interaction.followUp({
                       content: `✅ Created ${logChannel} and configured logging!`,
-                      ephemeral: true,
+                      flags: MessageFlags.Ephemeral,
                     });
                   }
                 }
@@ -204,7 +204,7 @@ module.exports = {
                   if (err.code === 10062) {
                     await interaction.followUp({
                       content: errorMsg,
-                      ephemeral: true,
+                      flags: MessageFlags.Ephemeral,
                     });
                   }
                 }
@@ -220,7 +220,7 @@ module.exports = {
                 if (err.code === 10062) {
                   await interaction.followUp({
                     content: "⏭️ Skipped log channel setup.",
-                    ephemeral: true,
+                    flags: MessageFlags.Ephemeral,
                   });
                 }
               }
@@ -233,12 +233,12 @@ module.exports = {
 
           await i.reply({
             content: `✅ Configured logging to ${logChannel}`,
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
           });
         }
       } else if (i.customId === "setup_automod") {
         // Defer reply to prevent timeout
-        await i.deferReply({ ephemeral: true });
+        await i.deferReply({ flags: MessageFlags.Ephemeral });
 
         // Enable automod
         await new Promise((resolve, reject) => {
@@ -267,7 +267,7 @@ module.exports = {
               )
               .setColor(0x00ff88),
           ],
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
       } else if (i.customId === "setup_complete") {
         collector.stop();

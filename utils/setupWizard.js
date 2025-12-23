@@ -3,7 +3,7 @@ const {
   ButtonBuilder,
   ButtonStyle,
   EmbedBuilder,
-} = require("discord.js");
+, MessageFlags} = require("discord.js");
 const db = require("./database");
 const logger = require("./logger");
 
@@ -101,7 +101,7 @@ class SetupWizard {
     await interaction.reply({
       embeds: [embed],
       components: [buttons],
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
   }
 

@@ -6,6 +6,7 @@ const {
   ButtonBuilder,
   ButtonStyle,
   ChannelType,
+  MessageFlags,
 } = require("discord.js");
 const db = require("../utils/database");
 
@@ -117,7 +118,7 @@ module.exports = {
     if (!interaction.member.permissions.has(PermissionFlagsBits.ManageEvents)) {
       return interaction.reply({
         content: "You need Manage Events permission to create events!",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 
@@ -134,7 +135,7 @@ module.exports = {
       return interaction.reply({
         content:
           "❌ Invalid date format! Use format: `YYYY-MM-DD HH:MM` (e.g., `2025-12-25 18:00`)",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 
@@ -142,7 +143,7 @@ module.exports = {
     if (startTime < Date.now()) {
       return interaction.reply({
         content: "❌ Event date must be in the future!",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 
@@ -258,7 +259,7 @@ module.exports = {
     if (!event) {
       return interaction.editReply({
         content: "❌ Event not found!",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 
@@ -338,7 +339,7 @@ module.exports = {
 
       await i.reply({
         content: `✅ Your RSVP has been updated to: **${status.replace("_", " ")}**`,
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
 
       // Refresh RSVP counts
@@ -380,7 +381,7 @@ module.exports = {
     if (!event) {
       return interaction.reply({
         content: "❌ Event not found!",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 
@@ -392,7 +393,7 @@ module.exports = {
       if (going >= event.max_participants) {
         return interaction.reply({
           content: "❌ This event is full!",
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
       }
     }
@@ -407,7 +408,7 @@ module.exports = {
 
     await interaction.reply({
       content: `${statusEmojis[status]} RSVP'd as **${status.replace("_", " ")}** for **${event.event_name}**!`,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
   },
 
@@ -431,7 +432,7 @@ module.exports = {
     if (!event) {
       return interaction.reply({
         content: "❌ Event not found!",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 
@@ -442,7 +443,7 @@ module.exports = {
       return interaction.reply({
         content:
           "❌ Only the event host or someone with Manage Events permission can cancel this event!",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 
@@ -458,7 +459,7 @@ module.exports = {
 
     await interaction.reply({
       content: `✅ Event **${event.event_name}** has been cancelled.`,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
   },
 };

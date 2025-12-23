@@ -2,7 +2,7 @@ const {
   SlashCommandBuilder,
   EmbedBuilder,
   PermissionFlagsBits,
-} = require("discord.js");
+, MessageFlags} = require("discord.js");
 const customCommands = require("../utils/customCommands");
 const ErrorMessages = require("../utils/errorMessages");
 
@@ -91,7 +91,7 @@ module.exports = {
     const subcommand = interaction.options.getSubcommand();
 
     if (subcommand === "create") {
-      await interaction.deferReply({ ephemeral: true });
+      await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
       const name = interaction.options.getString("name").toLowerCase();
       const response = interaction.options.getString("response");
@@ -153,7 +153,7 @@ module.exports = {
         });
       }
     } else if (subcommand === "embed") {
-      await interaction.deferReply({ ephemeral: true });
+      await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
       const name = interaction.options.getString("name").toLowerCase();
       const title = interaction.options.getString("title");
@@ -212,7 +212,7 @@ module.exports = {
         });
       }
     } else if (subcommand === "list") {
-      await interaction.deferReply({ ephemeral: true });
+      await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
       const commands = await customCommands.getCommands(interaction.guild.id);
 
@@ -247,7 +247,7 @@ module.exports = {
 
       await interaction.editReply({ embeds: [embed] });
     } else if (subcommand === "delete") {
-      await interaction.deferReply({ ephemeral: true });
+      await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
       const name = interaction.options.getString("name").toLowerCase().trim();
       const logger = require("../utils/logger");
@@ -345,7 +345,7 @@ module.exports = {
         });
       }
     } else if (subcommand === "info") {
-      await interaction.deferReply({ ephemeral: true });
+      await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
       const name = interaction.options.getString("name").toLowerCase();
       const command = await customCommands.getCommand(

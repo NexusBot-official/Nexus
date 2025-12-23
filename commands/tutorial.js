@@ -4,7 +4,7 @@ const {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
-} = require("discord.js");
+, MessageFlags} = require("discord.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -104,7 +104,7 @@ module.exports = {
         return i.reply({
           content:
             "This tutorial is not for you! Run `/tutorial` to start your own.",
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
       }
 
@@ -417,7 +417,7 @@ module.exports = {
           embeds: [embed],
           components,
           fetchReply: true,
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
 
         const collector = message.createMessageComponentCollector({
@@ -428,7 +428,7 @@ module.exports = {
           if (i.user.id !== interaction.user.id) {
             return i.reply({
               content: "This tutorial is not for you!",
-              ephemeral: true,
+              flags: MessageFlags.Ephemeral,
             });
           }
 

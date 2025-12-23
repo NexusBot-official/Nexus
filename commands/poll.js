@@ -5,6 +5,7 @@ const {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
+  MessageFlags,
 } = require("discord.js");
 const db = require("../utils/database");
 const logger = require("../utils/logger");
@@ -96,14 +97,14 @@ module.exports = {
         return interaction.reply({
           content:
             "❌ You need at least 2 options! Separate them with semicolons (;)",
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
       }
 
       if (options.length > 10) {
         return interaction.reply({
           content: "❌ Maximum 10 options allowed!",
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
       }
 
@@ -179,7 +180,7 @@ module.exports = {
         await interaction
           .reply({
             content: `❌ Failed to create poll: ${error.message}`,
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
           })
           .catch(() => {});
       } else {
@@ -198,7 +199,7 @@ module.exports = {
     ) {
       return interaction.reply({
         content: "❌ You need Manage Messages permission to end polls!",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 
@@ -210,12 +211,12 @@ module.exports = {
 
       await interaction.reply({
         content: "✅ Poll ended!",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     } catch (error) {
       await interaction.reply({
         content: `❌ Error: ${error.message}`,
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
   },
@@ -230,7 +231,7 @@ module.exports = {
       if (!pollData) {
         return interaction.reply({
           content: "❌ Poll data not found!",
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
       }
 
@@ -285,7 +286,7 @@ module.exports = {
     } catch (error) {
       await interaction.reply({
         content: "❌ Could not fetch poll results!",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
   },

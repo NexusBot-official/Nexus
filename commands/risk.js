@@ -2,7 +2,7 @@ const {
   SlashCommandBuilder,
   EmbedBuilder,
   PermissionFlagsBits,
-} = require("discord.js");
+, MessageFlags} = require("discord.js");
 const memberIntelligence = require("../utils/memberIntelligence");
 const ErrorMessages = require("../utils/errorMessages");
 
@@ -39,7 +39,7 @@ module.exports = {
     const subcommand = interaction.options.getSubcommand();
 
     if (subcommand === "check") {
-      await interaction.deferReply({ ephemeral: true });
+      await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
       const user = interaction.options.getUser("user");
       const member = await interaction.guild.members
@@ -107,7 +107,7 @@ module.exports = {
 
       await interaction.editReply({ embeds: [embed] });
     } else if (subcommand === "top") {
-      await interaction.deferReply({ ephemeral: true });
+      await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
       const limit = interaction.options.getInteger("limit") || 10;
 

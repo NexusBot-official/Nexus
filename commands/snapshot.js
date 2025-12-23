@@ -2,7 +2,7 @@ const {
   SlashCommandBuilder,
   EmbedBuilder,
   PermissionFlagsBits,
-} = require("discord.js");
+, MessageFlags} = require("discord.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -47,11 +47,11 @@ module.exports = {
       if (!interaction.client.snapshotScheduler) {
         return interaction.reply({
           content: "❌ Snapshot scheduler not available",
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
       }
 
-      await interaction.deferReply({ ephemeral: true });
+      await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
       const snapshots =
         await interaction.client.snapshotScheduler.getAvailableSnapshots(
@@ -98,7 +98,7 @@ module.exports = {
       const reason =
         interaction.options.getString("reason") || "Manual snapshot";
 
-      await interaction.deferReply({ ephemeral: true });
+      await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
       try {
         const AutoRecovery = require("../utils/autoRecovery");
@@ -137,7 +137,7 @@ module.exports = {
     if (subcommand === "restore") {
       const snapshotId = interaction.options.getInteger("snapshot_id");
 
-      await interaction.deferReply({ ephemeral: true });
+      await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
       if (!interaction.client.snapshotScheduler) {
         return interaction.editReply({
@@ -194,11 +194,11 @@ module.exports = {
       if (!interaction.client.snapshotScheduler) {
         return interaction.reply({
           content: "❌ Snapshot scheduler not available",
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
       }
 
-      await interaction.deferReply({ ephemeral: true });
+      await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
       const stats = await interaction.client.snapshotScheduler.getStats();
       const guildSnapshots =

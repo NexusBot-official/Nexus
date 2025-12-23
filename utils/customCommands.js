@@ -245,7 +245,7 @@ class CustomCommands {
       if (!command) {
         return await interaction.reply({
           content: "❌ Custom command not found.",
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
       }
 
@@ -286,7 +286,7 @@ class CustomCommands {
       });
       await interaction.reply({
         content: "❌ Failed to execute custom command.",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
   }

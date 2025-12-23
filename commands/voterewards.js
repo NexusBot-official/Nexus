@@ -64,13 +64,13 @@ module.exports = {
           if (!webhook.includes("discord.com/api/webhooks/")) {
             return interaction.reply({
               content: "❌ Invalid Discord webhook URL",
-              ephemeral: true,
+              flags: MessageFlags.Ephemeral,
             });
           }
         } catch (error) {
           return interaction.reply({
             content: "❌ Invalid webhook URL format",
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
           });
         }
       }
@@ -121,7 +121,7 @@ module.exports = {
         .setColor(0x00ff00)
         .setTimestamp();
 
-      return interaction.reply({ embeds: [embed], ephemeral: true });
+      return interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
     }
 
     if (subcommand === "toggle") {
@@ -143,7 +143,7 @@ module.exports = {
 
       return interaction.reply({
         content: `✅ Vote rewards ${enabled ? "enabled" : "disabled"}`,
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 
@@ -199,7 +199,7 @@ module.exports = {
         });
       }
 
-      return interaction.reply({ embeds: [embed], ephemeral: true });
+      return interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
     }
   },
 };

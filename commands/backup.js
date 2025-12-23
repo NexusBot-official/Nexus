@@ -2,7 +2,7 @@ const {
   SlashCommandBuilder,
   EmbedBuilder,
   PermissionFlagsBits,
-} = require("discord.js");
+, MessageFlags} = require("discord.js");
 const backupManager = require("../utils/backupManager");
 const ErrorMessages = require("../utils/errorMessages");
 const securityAuditor = require("../utils/securityAuditor");
@@ -79,7 +79,7 @@ module.exports = {
     const subcommand = interaction.options.getSubcommand();
 
     if (subcommand === "create") {
-      await interaction.deferReply({ ephemeral: true });
+      await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
       const result = await backupManager.createBackup(interaction.guild);
 
@@ -124,7 +124,7 @@ module.exports = {
         });
       }
     } else if (subcommand === "list") {
-      await interaction.deferReply({ ephemeral: true });
+      await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
       const backups = await backupManager.listBackups(interaction.guild.id);
 
@@ -167,7 +167,7 @@ module.exports = {
 
       await interaction.editReply({ embeds: [embed] });
     } else if (subcommand === "restore") {
-      await interaction.deferReply({ ephemeral: true });
+      await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
       const backupId = interaction.options.getString("backup-id");
       const restoreConfig = interaction.options.getBoolean("config") ?? true;
@@ -235,7 +235,7 @@ module.exports = {
         });
       }
     } else if (subcommand === "delete") {
-      await interaction.deferReply({ ephemeral: true });
+      await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
       const backupId = interaction.options.getString("backup-id");
       const result = await backupManager.deleteBackup(backupId);
@@ -250,7 +250,7 @@ module.exports = {
         });
       }
     } else if (subcommand === "info") {
-      await interaction.deferReply({ ephemeral: true });
+      await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
       const backupId = interaction.options.getString("backup-id");
       const backup = await backupManager.loadBackup(backupId);

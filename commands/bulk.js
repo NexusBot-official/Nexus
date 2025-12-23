@@ -2,6 +2,7 @@ const {
   SlashCommandBuilder,
   EmbedBuilder,
   PermissionFlagsBits,
+  MessageFlags,
 } = require("discord.js");
 const Moderation = require("../utils/moderation");
 const ErrorMessages = require("../utils/errorMessages");
@@ -159,7 +160,7 @@ module.exports = {
       );
       if (botPermCheck) return interaction.reply(botPermCheck);
 
-      await interaction.deferReply({ ephemeral: true });
+      await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
       const userIdsRaw = interaction.options.getString("user-ids");
       const reason = interaction.options.getString("reason") || "Bulk ban";
@@ -256,7 +257,7 @@ module.exports = {
       );
       if (botPermCheck) return interaction.reply(botPermCheck);
 
-      await interaction.deferReply({ ephemeral: true });
+      await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
       const userIdsRaw = interaction.options.getString("user-ids");
       const reason = interaction.options.getString("reason") || "Bulk kick";
@@ -347,11 +348,11 @@ module.exports = {
         return interaction.reply({
           content:
             "❌ I cannot manage that role! It may be above my role or managed by an integration.",
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
       }
 
-      await interaction.deferReply({ ephemeral: true });
+      await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
       const userIdsRaw = interaction.options.getString("user-ids");
       const action = interaction.options.getString("action");
@@ -443,7 +444,7 @@ module.exports = {
 
       await interaction.editReply({ embeds: [embed] });
     } else if (subcommand === "purge-bots") {
-      await interaction.deferReply({ ephemeral: true });
+      await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
       const confirm = interaction.options.getBoolean("confirm");
       if (!confirm) {
@@ -497,7 +498,7 @@ module.exports = {
 
       await interaction.editReply({ embeds: [embed] });
     } else if (subcommand === "purge-new") {
-      await interaction.deferReply({ ephemeral: true });
+      await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
       const hours = interaction.options.getInteger("hours");
       const confirm = interaction.options.getBoolean("confirm");
@@ -558,7 +559,7 @@ module.exports = {
 
       await interaction.editReply({ embeds: [embed] });
     } else if (subcommand === "timeout") {
-      await interaction.deferReply({ ephemeral: true });
+      await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
       const userIdsRaw = interaction.options.getString("user-ids");
       const duration = interaction.options.getInteger("duration");
@@ -639,7 +640,7 @@ module.exports = {
 
       await interaction.editReply({ embeds: [embed] });
     } else if (subcommand === "nickname") {
-      await interaction.deferReply({ ephemeral: true });
+      await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
       const userIdsRaw = interaction.options.getString("user-ids");
       const nickname = interaction.options.getString("nickname") || null;

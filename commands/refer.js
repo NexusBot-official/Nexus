@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const { SlashCommandBuilder, EmbedBuilder , MessageFlags} = require("discord.js");
 const db = require("../utils/database");
 const logger = require("../utils/logger");
 
@@ -43,13 +43,13 @@ module.exports = {
       if (interaction.deferred || interaction.replied) {
         await interaction.editReply({ embeds: [errorEmbed] });
       } else {
-        await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
+        await interaction.reply({ embeds: [errorEmbed], flags: MessageFlags.Ephemeral });
       }
     }
   },
 
   async handleLink(interaction) {
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     const userId = interaction.user.id;
     const referralCode = this.generateReferralCode(userId);
@@ -78,7 +78,7 @@ module.exports = {
   },
 
   async handleStats(interaction) {
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     const userId = interaction.user.id;
 
