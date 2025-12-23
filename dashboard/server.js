@@ -5034,7 +5034,7 @@ class DashboardServer {
       }
     });
 
-    // GET /api/v2/benchmark - Performance benchmark comparison (Nexus vs Wick)
+    // GET /api/v2/benchmark - Performance benchmark comparison (Nexus vs Competition)
     this.app.get("/api/v2/benchmark", async (req, res) => {
       try {
         addRateLimitHeaders(req, res);
@@ -5093,9 +5093,9 @@ class DashboardServer {
           commandsPerSecond: commandRate || 0,
         };
 
-        // Wick Bot baseline metrics
+        // the leading competitor Bot baseline metrics
         // NOTE: These are industry-standard estimates for similar Discord bots
-        // We don't have access to Wick's actual metrics, so these are based on
+        // We don't have access to the leading competitor's actual metrics, so these are based on
         // typical performance of bots with similar feature sets
         const wickMetrics = {
           responseTime: 80, // Typical WebSocket ping for similar bots
@@ -10206,14 +10206,14 @@ class DashboardServer {
           });
         }
 
-        const WickMigration = require("../utils/wickMigration");
-        const migration = new WickMigration(this.client);
+        const CompetitorMigration = require("../utils/competitorMigration");
+        const migration = new CompetitorMigration(this.client);
 
-        const analysis = await migration.analyzeWickConfig(guildObj);
+        const analysis = await migration.analyzeCompetitorConfig(guildObj);
         const comparisonData = migration.generateComparison();
 
         res.json({
-          hasWick: analysis.hasWick,
+          hasCompetitor: analysis.hasCompetitor,
           detectedSettings: analysis.detectedSettings,
           recommendations: analysis.recommendations,
           comparison: comparisonData.features,
@@ -10251,8 +10251,8 @@ class DashboardServer {
             });
           }
 
-          const WickMigration = require("../utils/wickMigration");
-          const migration = new WickMigration(this.client);
+          const CompetitorMigration = require("../utils/competitorMigration");
+          const migration = new CompetitorMigration(this.client);
 
           const result = await migration.migrate(guild);
 

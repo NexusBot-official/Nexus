@@ -3,7 +3,7 @@
  * Copyright (c) 2025 Nexus Bot. All rights reserved.
  * Licensed under the MIT License.
  *
- * Beyond Wick. Beyond Everything.
+ * Beyond The Competition. Beyond Everything.
  */
 
 const {
@@ -204,7 +204,7 @@ client.behavioralBiometrics = new BehavioralBiometrics(client);
 const PredictiveAutoScaling = require("./utils/predictiveAutoScaling");
 client.predictiveAutoScaling = new PredictiveAutoScaling(client);
 
-// Dashboard Server ( - free dashboard vs Wick's paid)
+// Dashboard Server ( - free dashboard vs Competition's paid)
 const DashboardServer = require("./dashboard/server");
 client.dashboardServer = new DashboardServer(client);
 

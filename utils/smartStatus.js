@@ -40,7 +40,7 @@ class SmartStatus {
       },
       {
         type: "WATCHING",
-        name: `raids and nukes | Beyond Wick`,
+        name: `raids and nukes | Beyond the leading competitor`,
       },
       {
         type: "PLAYING",

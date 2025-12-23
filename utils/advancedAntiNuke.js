@@ -1893,7 +1893,7 @@ class AdvancedAntiNuke {
           `[Anti-Nuke] No recovery snapshots found for ${guild.id} created before the attack - attempting fallback recovery from memory/Discord`
         );
 
-        // Fallback: Try to restore from memory/Discord (like Wick does when imaging is disabled)
+        // Fallback: Try to restore from memory/Discord (like the leading competitor does when imaging is disabled)
         // This is finicky and may not restore everything, but it's better than nothing
         const fallbackResult = await this.attemptFallbackRecovery(
           guild,
@@ -2173,7 +2173,7 @@ class AdvancedAntiNuke {
 
       // Try to restore based on what we know was deleted
       // This is limited because we don't have full snapshot data
-      // This is the "finicky" part Wick mentions - we can't restore everything perfectly
+      // This is the "finicky" part the leading competitor mentions - we can't restore everything perfectly
 
       if (
         threatType === "mass_channel_deletion" ||

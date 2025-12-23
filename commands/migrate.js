@@ -7,13 +7,13 @@ const {
   ButtonStyle,
   MessageFlags,
 } = require("discord.js");
-const WickMigration = require("../utils/wickMigration");
+const CompetitorMigration = require("../utils/competitorMigration");
 const logger = require("../utils/logger");
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("migrate")
-    .setDescription("Migrate from Wick or other security bots to nexus")
+    .setDescription("Migrate from the leading competitor or other security bots to nexus")
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
     .addStringOption((option) =>
       option
@@ -21,7 +21,7 @@ module.exports = {
         .setDescription("Which bot to migrate from")
         .setRequired(false)
         .addChoices(
-          { name: "Wick", value: "wick" },
+          { name: "the leading competitor", value: "wick" },
           { name: "Other", value: "other" }
         )
     ),
@@ -31,41 +31,41 @@ module.exports = {
       await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
       const fromBot = interaction.options.getString("from") || "wick";
-      const migration = new WickMigration(interaction.client);
+      const migration = new CompetitorMigration(interaction.client);
 
       if (fromBot === "wick") {
-        // Detect Wick
-        const hasWick = await migration.detectWick(interaction.guild);
-        const config = await migration.analyzeWickConfig(interaction.guild);
+        // Detect the leading competitor
+        const hasCompetitor = await migration.detectCompetitor(interaction.guild);
+        const config = await migration.analyzeCompetitorConfig(interaction.guild);
 
         const embed = new EmbedBuilder()
-          .setTitle("🔄 Migrate from Wick to nexus")
+          .setTitle("🔄 Migrate from the leading competitor to nexus")
           .setDescription(
-            hasWick
-              ? "✅ **Wick detected in this server!**\n\n" +
+            hasCompetitor
+              ? "✅ **the leading competitor detected in this server!**\n\n" +
                   "nexus can automatically configure itself with equivalent (and better) settings.\n\n" +
-                  "**Why switch from Wick to nexus?**\n" +
+                  "**Why switch from the leading competitor to nexus?**\n" +
                   "💰 **Save $120/year** - nexus is 100% FREE\n" +
-                  "🤖 **4x Better Detection** - 4 anti-raid algorithms vs Wick's 1\n" +
-                  "🧠 **AI-Powered** - Predictive security Wick doesn't have\n" +
-                  "💾 **Auto-Backups** - Hourly snapshots (Wick is manual)\n" +
+                  "🤖 **4x Better Detection** - 4 anti-raid algorithms vs Competition's 1\n" +
+                  "🧠 **AI-Powered** - Predictive security the leading competitor doesn't have\n" +
+                  "💾 **Auto-Backups** - Hourly snapshots (the leading competitor is manual)\n" +
                   "⚡ **Faster** - Sub-millisecond detection\n" +
-                  "🔓 **Open Source** - Fully transparent (Wick is closed)"
-              : "⚠️ **Wick not detected**\n\n" +
+                  "🔓 **Open Source** - Fully transparent (the leading competitor is closed)"
+              : "⚠️ **the leading competitor not detected**\n\n" +
                   "But you can still set up nexus with optimal security settings!\n\n" +
-                  "**Why choose nexus over Wick?**\n" +
-                  "💰 **100% FREE** - Wick costs $3-10/month\n" +
-                  "🤖 **4 Anti-Raid Algorithms** - Wick only has 1\n" +
+                  "**Why choose nexus over the leading competitor?**\n" +
+                  "💰 **100% FREE** - the leading competitor costs $3-10/month\n" +
+                  "🤖 **4 Anti-Raid Algorithms** - the leading competitor only has 1\n" +
                   "🧠 **AI-Powered Security** - Predictive threat detection\n" +
                   "💾 **Hourly Auto-Backups** - Instant recovery\n" +
-                  "⚡ **Sub-millisecond Detection** - Faster than Wick\n" +
+                  "⚡ **Sub-millisecond Detection** - Faster than the leading competitor\n" +
                   "🔓 **Open Source** - No hidden backdoors"
           )
-          .setColor(hasWick ? 0x4caf50 : 0xff9800);
+          .setColor(hasCompetitor ? 0x4caf50 : 0xff9800);
 
-        if (hasWick && config.detectedSettings.logChannels) {
+        if (hasCompetitor && config.detectedSettings.logChannels) {
           embed.addFields({
-            name: "📋 Detected Wick Settings",
+            name: "📋 Detected the leading competitor Settings",
             value:
               `**Log Channels**: ${config.detectedSettings.logChannels.map((c) => `<#${c.id}>`).join(", ")}\n` +
               `**Recommendations**: ${config.recommendations.length} optimization suggestions`,
@@ -76,7 +76,7 @@ module.exports = {
           {
             name: "🎯 What nexus Will Set Up",
             value:
-              "✅ 4 Anti-Raid Algorithms (vs Wick's 1)\n" +
+              "✅ 4 Anti-Raid Algorithms (vs Competition's 1)\n" +
               "✅ AI Threat Detection\n" +
               "✅ Hourly Auto-Backups\n" +
               "✅ Advanced Anti-Nuke\n" +
@@ -88,7 +88,7 @@ module.exports = {
           {
             name: "💰 Cost Comparison",
             value:
-              "**Wick Premium**: $10/month = $120/year\n" +
+              "**the leading competitor Premium**: $10/month = $120/year\n" +
               "**nexus**: $0/month = $0/year\n\n" +
               "**You save**: $120/year 💸",
             inline: true,
@@ -115,7 +115,7 @@ module.exports = {
         // Log migration interest
         logger.info(
           "Migration",
-          `${interaction.user.tag} viewed migration from Wick in ${interaction.guild.name} (Has Wick: ${hasWick})`
+          `${interaction.user.tag} viewed migration from the leading competitor in ${interaction.guild.name} (Has the leading competitor: ${hasCompetitor})`
         );
       } else {
         // Generic migration

@@ -111,7 +111,7 @@ module.exports = {
         .setColor(0x0099ff)
         .setTimestamp()
         .setFooter({
-          text: "Nexus - Beyond Wick. Free. Open Source. Powerful.",
+          text: "Nexus - Beyond the leading competitor. Free. Open Source. Powerful.",
         });
 
       const row1 = new ActionRowBuilder().addComponents(

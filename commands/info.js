@@ -206,7 +206,7 @@ module.exports = {
         .setColor(0x5865f2)
         .setTimestamp()
         .setFooter({
-          text: `Nexus Bot - Exceeding Wick in every way`,
+          text: `Nexus Bot - Exceeding the leading competitor in every way`,
           iconURL: bot.displayAvatarURL({ dynamic: true }),
         });
 

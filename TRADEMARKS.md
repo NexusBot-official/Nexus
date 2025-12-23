@@ -24,7 +24,7 @@ The following are trademarks and service marks of the Nexus Bot project:
 ### Protected Branding
 
 - The nexus logo and visual designs
-- The tagline "Beyond Wick. Free. Open Source. Powerful."
+- The tagline "Beyond the leading competitor. Free. Open Source. Powerful."
 - The official website design and layout
 - Official documentation structure and branding
 

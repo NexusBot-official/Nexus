@@ -147,18 +147,18 @@ module.exports = {
       // Error already logged
     });
 
-    // COMPETITIVE INTELLIGENCE: Detect Wick and log for analytics
+    // COMPETITIVE INTELLIGENCE: Detect the leading competitor and log for analytics
     // NOTE: We do NOT DM users unprompted - that's spam and gets bots kicked
     // Instead, we just log it and show the comparison in-server via /migrate
     try {
-      const WickMigration = require("../utils/wickMigration");
+      const WickMigration = require("../utils/competitorMigration");
       const migration = new WickMigration(client);
       const hasWick = await migration.detectWick(guild);
 
       if (hasWick) {
         logger.info(
           "Competitive",
-          `🎯 Wick detected in ${guild.name} (${guild.id}) - user can run /migrate to see comparison`
+          `🎯 the leading competitor detected in ${guild.name} (${guild.id}) - user can run /migrate to see comparison`
         );
 
         // Store this info for analytics (optional)
@@ -176,7 +176,7 @@ module.exports = {
     } catch (wickError) {
       logger.debug(
         "Competitive",
-        `Wick detection error in ${guild.name}: ${wickError.message}`
+        `the leading competitor detection error in ${guild.name}: ${wickError.message}`
       );
     }
 

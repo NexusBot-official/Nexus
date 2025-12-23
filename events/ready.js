@@ -214,7 +214,7 @@ module.exports = {
       );
     }
 
-    // Start Dashboard Server ( - free dashboard vs Wick's premium)
+    // Start Dashboard Server ( - free dashboard vs Competition's premium)
     if (
       client.dashboardServer &&
       (!shardInfo.isSharded || shardInfo.shardId === 0)

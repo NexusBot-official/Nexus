@@ -45,7 +45,7 @@ module.exports = {
       )
       .setColor(0x0099ff)
       .setFooter({
-        text: "nexus - Beyond Wick. Free. Open Source. Powerful.",
+        text: "nexus - Beyond the leading competitor. Free. Open Source. Powerful.",
       })
       .setTimestamp();
 
