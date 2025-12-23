@@ -34,15 +34,12 @@ class AutoRecovery {
           hoist: role.hoist,
         }));
     } else if (snapshotType === "full") {
-      // Ensure channels are fetched if cache is empty
-      let channels = guild.channels.cache;
+      // Use cached channels (should already be populated from Discord events)
+      const channels = guild.channels.cache;
       if (channels.size === 0) {
         logger.warn(
-          `[AutoRecovery] Channel cache is empty, fetching channels for ${guild.name}`
+          `[AutoRecovery] Channel cache is empty for ${guild.name} - snapshot may be incomplete`
         );
-        channels = await guild.channels
-          .fetch()
-          .catch(() => guild.channels.cache);
       }
 
       snapshotData.channels = Array.from(channels.values()).map((channel) => ({
@@ -1089,19 +1086,6 @@ class AutoRecovery {
 
   static async autoSnapshot(guild, reason) {
     // Automatically create snapshot before potential attack
-    // Ensure channels and roles are fetched before snapshotting
-    try {
-      await guild.channels.fetch();
-      await guild.roles.fetch();
-      logger.info(
-        `[AutoRecovery] Fetched ${guild.channels.cache.size} channels and ${guild.roles.cache.size} roles for snapshot`
-      );
-    } catch (error) {
-      logger.warn(
-        `[AutoRecovery] Failed to fetch channels/roles before snapshot:`,
-        error
-      );
-    }
 
     return await this.createSnapshot(guild, "full", reason);
   }
