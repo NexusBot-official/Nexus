@@ -710,10 +710,6 @@ module.exports = {
       logger.info(
         `📸 Created initial recovery snapshot for ${guild.name} (${guild.id})`
       );
-      logger.info(
-        "Guild Create",
-        `Created initial recovery snapshot for ${guild.name}`
-      );
 
       // Start audit log monitoring for new guild
       if (client.auditLogMonitor) {

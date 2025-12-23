@@ -54,7 +54,6 @@ module.exports = {
 
       try {
         // Track performance and log in parallel ( - faster response)
-        const startTime = Date.now();
 
         // Extract command options for logging
         const commandOptions = {};
