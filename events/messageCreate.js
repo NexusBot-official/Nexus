@@ -18,9 +18,15 @@ module.exports = {
     if (message.system) {
       return;
     } // System messages
+    
+    // Log DM messages
     if (!message.guild) {
+      logger.info(
+        "DM Message",
+        `From: ${message.author.tag} (${message.author.id}) | Content: ${message.content || "[No text content]"} | Attachments: ${message.attachments.size} | Embeds: ${message.embeds.length}`
+      );
       return;
-    } // DM messages
+    }
 
     // Track behavioral patterns (metadata only, no content)
     if (client.behavioralFP) {
