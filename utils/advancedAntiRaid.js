@@ -604,10 +604,6 @@ class AdvancedAntiRaid {
       (totalJoins >= 3 && threatScore >= threatScoreThreshold); // 3+ joins and high threat score
 
     if (isRaid) {
-      logger.warn(
-        `[Anti-Raid] RAID DETECTED in ${guild.name} with ${totalJoins} total joins!`
-      );
-
       // Get ALL joins from the last 5 minutes (not just 2 minutes) to catch the raid
       const fiveMinutesAgo = Date.now() - 300000; // 5 minutes
       const recentJoins = joinData.joins.filter(
@@ -622,10 +618,6 @@ class AdvancedAntiRaid {
           recentJoins.length > 0
             ? recentJoins
             : joinData.joins.slice(-Math.min(totalJoins, 50)); // Use all joins if no recent, up to 50
-
-        logger.warn(
-          `[Anti-Raid] Handling raid: ${joinsToBan.length} members to ban in ${guild.name}`
-        );
 
         // Clear cache and save to DB before handling raid
         await this.saveJoinHistory(guild.id, joinData);
@@ -705,10 +697,6 @@ class AdvancedAntiRaid {
 
     const memberCount = guild.memberCount || 1;
     const serverSizeTier = this.getServerSizeTier(memberCount);
-
-    logger.warn(
-      `Raid detected in ${guild.name} (${guild.id}) [${serverSizeTier}]: Threat score ${threatScore}, ${suspiciousJoins.length} suspicious joins`
-    );
 
     // Broadcast threat to network (if threat network is available)
     if (this.client?.threatNetwork) {
@@ -864,10 +852,6 @@ class AdvancedAntiRaid {
       return;
     }
 
-    logger.info(
-      `[Anti-Raid] Banning ${recentSuspicious.length} members from raid in ${guild.name} (${suspiciousJoins.length} total joins detected)`
-    );
-
     // INSTANT RESPONSE: Ban all raiders in PARALLEL, not one-by-one
     const banPromises = recentSuspicious.map(async (join) => {
       try {
@@ -906,14 +890,8 @@ class AdvancedAntiRaid {
             reason: `Anti-raid protection (Threat: ${threatScore}%)`,
             deleteMessageSeconds: 86400, // 1 day
           });
-          logger.info(
-            `[Anti-Raid] Banned ${member.user.tag} (${member.id}) from ${guild.name}`
-          );
         } else if (action === "kick") {
           await member.kick("Anti-raid protection");
-          logger.info(
-            `[Anti-Raid] Kicked ${member.user.tag} (${member.id}) from ${guild.name}`
-          );
         } else if (action === "quarantine") {
           // Add quarantine role if configured
           const quarantineRole = guild.roles.cache.find((r) =>
@@ -921,9 +899,6 @@ class AdvancedAntiRaid {
           );
           if (quarantineRole) {
             await member.roles.add(quarantineRole);
-            logger.info(
-              `[Anti-Raid] Quarantined ${member.user.tag} (${member.id}) in ${guild.name}`
-            );
           }
         }
 
@@ -965,10 +940,6 @@ class AdvancedAntiRaid {
       (r) => r.status === "fulfilled" && r.value.success
     ).length;
     const failedCount = results.length - successCount;
-
-    logger.info(
-      `[Anti-Raid] Action complete in ${guild.name}: ${successCount} successful, ${failedCount} failed out of ${recentSuspicious.length} attempts`
-    );
 
     // Enable lockdown
     const lockdownMap =
