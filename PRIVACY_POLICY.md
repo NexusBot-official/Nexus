@@ -1,6 +1,6 @@
 # Privacy Policy
 
-**Last Updated: December 21, 2025**
+**Last Updated: December 23, 2025**
 
 ## Introduction
 
@@ -23,6 +23,7 @@ Nexus Bot ("we", "our", "us") is committed to protecting your privacy. This Priv
 - User IDs (Discord snowflakes)
 - Usernames and discriminators
 - Messages (for moderation purposes only)
+- **DM messages sent to the bot** (logged to console only for support purposes - not stored in database)
 - **Message edit and delete events** (logged for moderation and security purposes)
 - Moderation history
 - Behavioral patterns (for threat detection)
@@ -110,6 +111,7 @@ When you log in to the Nexus Bot dashboard, we collect:
 - **Presence data**: Not stored (only processed in real-time for verification/role assignments)
 - **Performance metrics**: 90 days (command times, query performance, memory usage)
 - Message content: Not stored permanently (only processed in real-time for moderation)
+- **DM messages**: Not stored in database (logged to console only for support purposes)
 - **Message edit/delete events**: 90 days (logged for moderation and security purposes, includes message content at time of edit/delete)
 - Behavioral patterns: 90 days (anonymized after 30 days)
 - **Security logs with threat types**: 90 days (includes threat classification and actions taken)
@@ -446,6 +448,7 @@ We may update this Privacy Policy from time to time. We will:
 
 ## Version History
 
+- **December 23, 2025** - Added DM message logging documentation (console only, not stored in database)
 - **December 21, 2025** - Updated contact information (support server invite, GitHub repository URL)
 - **December 5, 2025** - Added XP/leveling system, vote rewards, and achievement tracking documentation
 - **December 5, 2025** - Added OAuth dashboard authentication tracking documentation
