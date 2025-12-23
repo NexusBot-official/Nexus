@@ -5,6 +5,7 @@
  */
 
 const chalk = require("chalk");
+const { DateTime } = require("luxon");
 
 class Logger {
   constructor() {
@@ -24,7 +25,7 @@ class Logger {
    * Format timestamp
    */
   getTimestamp() {
-    return new Date().toISOString().replace("T", " ").slice(0, 19);
+    return DateTime.now().toFormat("yyyy-MM-dd HH:mm:ss");
   }
 
   /**

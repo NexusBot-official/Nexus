@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const logger = require("./logger");
 const cron = require("node-cron");
+const { DateTime } = require("luxon");
 
 class DatabaseBackup {
   constructor() {
@@ -31,8 +32,9 @@ class DatabaseBackup {
       }
 
       // Generate backup filename with timestamp
-      const timestamp = Date.now();
-      const dateStr = new Date(timestamp).toISOString().split("T")[0];
+      const now = DateTime.now();
+      const dateStr = now.toFormat("yyyy-MM-dd");
+      const timestamp = now.toMillis();
       const backupFilename = `database_${dateStr}_${timestamp}.db`;
       const backupPath = path.join(this.backupDir, backupFilename);
 

@@ -2,6 +2,7 @@ const logger = require("./logger");
 const { WebhookClient, EmbedBuilder } = require("discord.js");
 const cron = require("node-cron");
 const ms = require("ms");
+const { DateTime } = require("luxon");
 
 /**
  * Advanced Error Recovery System
@@ -183,7 +184,7 @@ class ErrorRecovery {
             },
             {
               name: "Timestamp",
-              value: new Date().toISOString(),
+              value: DateTime.now().toISO(),
               inline: true,
             }
           )
