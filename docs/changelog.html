@@ -84,8 +84,70 @@
 
       <div class="content-section">
         <div class="changelog-entry">
-          <h2>Version 4.0.3 - December 22, 2025</h2>
+          <h2>Version 4.0.4 - December 23, 2025</h2>
           <span class="version-badge">Latest</span>
+          <h3>⚡ Critical Performance & Rate Limit Fixes</h3>
+          <p>
+            Emergency hotfix addressing Discord API rate limit issues that were
+            causing service degradation. This update optimizes all polling
+            systems and implements smart caching strategies.
+          </p>
+
+          <h4>🔧 Rate Limit Optimizations</h4>
+          <ul>
+            <li>
+              <strong>Advanced Metrics:</strong> Reduced polling from 1 minute
+              to 5 minutes, preventing excessive API calls
+            </li>
+            <li>
+              <strong>Threat Correlation:</strong> Reduced analysis frequency
+              from 1 minute to 5 minutes
+            </li>
+            <li>
+              <strong>AutoRecovery Smart Snapshots:</strong> Implemented
+              intelligent caching - periodic snapshots fetch fresh data, nuke
+              detection uses cache
+            </li>
+            <li>
+              <strong>Removed Redundant Fetches:</strong> Eliminated unnecessary
+              guild.channels.fetch() and guild.roles.fetch() calls during nuke
+              detection
+            </li>
+            <li>
+              <strong>Online Count Optimization:</strong> Maintained full
+              functionality while reducing frequency of member presence checks
+            </li>
+          </ul>
+
+          <h4>🐛 Bug Fixes</h4>
+          <ul>
+            <li>
+              <strong>Automod Timeout:</strong> Fixed "Unknown interaction"
+              errors by deferring replies immediately
+            </li>
+            <li>
+              <strong>Threat Reports Schema:</strong> Added automatic migration
+              to fix duplicate table definitions
+            </li>
+            <li>
+              <strong>Database Migration:</strong> Implemented smart schema
+              detection and automatic table recreation
+            </li>
+          </ul>
+
+          <h4>📊 Impact</h4>
+          <ul>
+            <li>80% reduction in API calls during normal operation</li>
+            <li>Eliminated rate limit warnings during nuke detection</li>
+            <li>
+              All features remain fully functional with optimized intervals
+            </li>
+            <li>Improved bot responsiveness and stability</li>
+          </ul>
+        </div>
+
+        <div class="changelog-entry">
+          <h2>Version 4.0.3 - December 22, 2025</h2>
           <h3>🧠 Advanced AI & Intelligence Features ()</h3>
           <p>
             Massive update introducing cutting-edge AI and machine learning
