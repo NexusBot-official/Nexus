@@ -708,6 +708,7 @@ module.exports = {
       const AutoRecovery = require("../utils/autoRecovery");
       await AutoRecovery.autoSnapshot(guild, "Initial snapshot on bot join");
       logger.info(
+        "Guild Create",
         `📸 Created initial recovery snapshot for ${guild.name} (${guild.id})`
       );
 
