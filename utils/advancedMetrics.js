@@ -1,5 +1,6 @@
 const db = require("./database");
 const logger = require("./logger");
+const ms = require("ms");
 
 /**
  * Advanced Metrics Collector
@@ -27,12 +28,12 @@ class AdvancedMetrics {
     // Aggregate metrics every 5 minutes (reduced from 1 minute to avoid rate limits)
     this.aggregationInterval = setInterval(() => {
       this.aggregateMetrics();
-    }, 300000);
+    }, ms("5m"));
 
     // Reset real-time counters every 5 minutes
     setInterval(() => {
       this.resetRealTimeCounters();
-    }, 300000);
+    }, ms("5m"));
 
     logger.info("AdvancedMetrics", "📊 Advanced metrics collection started");
   }

@@ -4,6 +4,7 @@ const path = require("path");
 const fs = require("fs");
 const logger = require("./logger");
 const cache = require("./cache");
+const ms = require("ms");
 // Lazy load redisCache to avoid initialization order issues
 let redisCache = null;
 const getRedisCache = () => {
@@ -21,7 +22,7 @@ class Database {
     // Prepared statement cache for performance
     this.preparedStatements = new Map();
     this.queryCache = new Map();
-    this.queryCacheTimeout = 30000; // 30 second cache
+    this.queryCacheTimeout = ms("30s"); // 30 second cache
 
     // Start cache cleanup interval to prevent memory leaks
     this.startCacheCleanup();
@@ -6668,24 +6669,21 @@ class Database {
    */
   startCacheCleanup() {
     // Run cleanup every 5 minutes
-    setInterval(
-      () => {
-        const now = Date.now();
-        let cleaned = 0;
+    setInterval(() => {
+      const now = Date.now();
+      let cleaned = 0;
 
-        for (const [key, value] of this.queryCache.entries()) {
-          if (now >= value.expires) {
-            this.queryCache.delete(key);
-            cleaned++;
-          }
+      for (const [key, value] of this.queryCache.entries()) {
+        if (now >= value.expires) {
+          this.queryCache.delete(key);
+          cleaned++;
         }
+      }
 
-        if (cleaned > 0) {
-          logger.debug("Database", `Cleaned ${cleaned} expired cache entries`);
-        }
-      },
-      5 * 60 * 1000
-    ); // 5 minutes
+      if (cleaned > 0) {
+        logger.debug("Database", `Cleaned ${cleaned} expired cache entries`);
+      }
+    }, ms("5m"));
   }
 
   /**

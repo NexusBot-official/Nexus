@@ -1,6 +1,7 @@
 const db = require("./database");
 const logger = require("./logger");
 const ErrorHandler = require("./errorHandler");
+const ms = require("ms");
 
 class AdvancedAntiNuke {
   constructor(client) {
@@ -2150,10 +2151,7 @@ class AdvancedAntiNuke {
           member.id !== channel.guild.ownerId &&
           !member.permissions.has("Administrator")
         ) {
-          await member.timeout(
-            10 * 60 * 1000,
-            "Anti-Nuke: Message spam detected"
-          );
+          await member.timeout(ms("10m"), "Anti-Nuke: Message spam detected");
           // Timed out spammer (no console logging)
         }
       } catch (error) {

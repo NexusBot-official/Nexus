@@ -13,6 +13,7 @@ const logger = require("../utils/logger");
 const db = require("../utils/database");
 const redisCache = require("../utils/redisCache");
 const InputValidator = require("../utils/inputValidator");
+const ms = require("ms");
 
 class DashboardServer {
   constructor(client) {
@@ -31,8 +32,8 @@ class DashboardServer {
     this.adminFailedAttempts = new Map();
     this.adminBruteForceConfig = {
       maxAttempts: 5, // attempts within window to trigger temporary block
-      windowMs: 10 * 60 * 1000, // 10 minutes
-      baseBlockMs: 60 * 60 * 1000, // 1 hour base block
+      windowMs: ms("10m"), // 10 minutes
+      baseBlockMs: ms("1h"), // 1 hour base block
     };
 
     // Permission abuse blacklist (per-IP failed permission attempts)

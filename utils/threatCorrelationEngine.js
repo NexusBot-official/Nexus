@@ -1,5 +1,6 @@
 const db = require("./database");
 const logger = require("./logger");
+const ms = require("ms");
 
 /**
  * Real-Time Threat Correlation Engine
@@ -12,7 +13,7 @@ class ThreatCorrelationEngine {
     this.threatCache = new Map(); // Recent threats for fast correlation
     this.correlationInterval = null;
     this.alertThreshold = 3; // Min servers affected to trigger alert
-    this.timeWindow = 300000; // 5 minutes
+    this.timeWindow = ms("5m"); // 5 minutes
   }
 
   /**
@@ -22,12 +23,12 @@ class ThreatCorrelationEngine {
     // Run correlation analysis every 5 minutes (reduced from 1 minute to avoid rate limits)
     this.correlationInterval = setInterval(() => {
       this.analyzeCorrelations();
-    }, 300000);
+    }, ms("5m"));
 
     // Clean old threats every 30 minutes
     setInterval(() => {
       this.cleanOldThreats();
-    }, 1800000);
+    }, ms("30m"));
 
     logger.info(
       "ThreatCorrelationEngine",

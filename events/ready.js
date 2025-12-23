@@ -7,6 +7,7 @@ const rateLimitHandler = require("../utils/rateLimitHandler");
 const memoryMonitor = require("../utils/memoryMonitor");
 const autoScaling = require("../utils/autoScaling");
 const shardErrorTracker = require("../utils/shardErrorTracker");
+const ms = require("ms");
 
 module.exports = {
   name: "clientReady",
@@ -297,14 +298,11 @@ module.exports = {
       );
 
       // Set up periodic cleanup for action cache (every 10 minutes)
-      setInterval(
-        () => {
-          if (client.eventActionTracker) {
-            client.eventActionTracker.cleanup();
-          }
-        },
-        10 * 60 * 1000
-      );
+      setInterval(() => {
+        if (client.eventActionTracker) {
+          client.eventActionTracker.cleanup();
+        }
+      }, ms("10m"));
     }
 
     // Create recovery snapshots for all servers (if auto-recovery is enabled)
