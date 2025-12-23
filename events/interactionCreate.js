@@ -92,17 +92,20 @@ module.exports = {
             : "";
 
         // Log command usage in parallel (non-blocking)
+        const guildInfo = interaction.guild
+          ? `in ${interaction.guild.name} (${interaction.guild.id})`
+          : "in DMs";
         logger.info(
           "Command",
-          `/${interaction.commandName}${optionsStr} in ${interaction.guild.name} (${interaction.guild.id}) by ${interaction.user.tag}`
+          `/${interaction.commandName}${optionsStr} ${guildInfo} by ${interaction.user.tag}`
         );
 
         // Log to database (non-blocking)
         db.db.run(
           "INSERT INTO command_usage_log (guild_id, guild_name, user_id, user_tag, command_name, timestamp) VALUES (?, ?, ?, ?, ?, ?)",
           [
-            interaction.guild.id,
-            interaction.guild.name,
+            interaction.guild?.id || null,
+            interaction.guild?.name || "DM",
             interaction.user.id,
             interaction.user.tag,
             interaction.commandName,

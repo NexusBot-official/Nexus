@@ -1,6 +1,6 @@
 {
   "name": "nexus-bot",
-  "version": "4.0.4",
+  "version": "4.0.5",
   "description": "Nexus Bot - Advanced Discord Security Bot",
   "main": "index.js",
   "scripts": {
@@ -38,6 +38,7 @@
     "merkletreejs": "^0.3.11",
     "ms": "^2.1.3",
     "node-cron": "^3.0.3",
+    "npm": "^11.7.0",
     "otplib": "^12.0.1",
     "passport": "^0.7.0",
     "passport-discord": "^0.1.4",

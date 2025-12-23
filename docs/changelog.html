@@ -84,8 +84,57 @@
 
       <div class="content-section">
         <div class="changelog-entry">
-          <h2>Version 4.0.4 - December 23, 2025</h2>
+          <h2>Version 4.0.5 - December 23, 2025</h2>
           <span class="version-badge">Latest</span>
+          <h3>🐛 Bug Fixes & Milestone</h3>
+          <p>
+            Minor bug fix release addressing DM command handling and celebrating
+            a major milestone in Nexus Bot's journey.
+          </p>
+
+          <h4>🎉 Major Milestone</h4>
+          <ul>
+            <li>
+              <strong>Discord Verification Application Submitted:</strong>
+              Applied for Discord bot verification at 15:54 PM on December 23,
+              2025. This marks a significant milestone in Nexus Bot's growth and
+              commitment to providing secure, verified services to our
+              communities.
+            </li>
+          </ul>
+
+          <h4>🔧 Bug Fixes</h4>
+          <ul>
+            <li>
+              <strong>DM Command Handling:</strong> Fixed crash when commands
+              are used in direct messages (e.g., /unban in DMs)
+            </li>
+            <li>
+              <strong>Null Safety:</strong> Added proper null checks for
+              interaction.guild to prevent "Cannot read properties of null"
+              errors
+            </li>
+            <li>
+              <strong>Logging Improvements:</strong> Commands used in DMs now
+              properly log as "in DMs" instead of crashing
+            </li>
+          </ul>
+
+          <h4>📊 Technical Details</h4>
+          <ul>
+            <li>
+              Database logging now handles DM commands with null guild_id and
+              "DM" guild_name
+            </li>
+            <li>
+              Improved error handling in interactionCreate event for
+              guild-specific commands
+            </li>
+          </ul>
+        </div>
+
+        <div class="changelog-entry">
+          <h2>Version 4.0.4 - December 23, 2025</h2>
           <h3>⚡ Critical Performance & Rate Limit Fixes</h3>
           <p>
             Emergency hotfix addressing Discord API rate limit issues that were
