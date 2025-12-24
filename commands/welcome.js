@@ -25,7 +25,7 @@ module.exports = {
           option
             .setName("message")
             .setDescription(
-              "Welcome message (use {user}, {server}, {membercount})"
+              "Welcome message (use {user}, {server}, {membercount}, \\n for newlines)"
             )
             .setRequired(false)
         )
@@ -47,9 +47,12 @@ module.exports = {
 
     if (subcommand === "setup") {
       const channel = interaction.options.getChannel("channel");
-      const message =
+      let message =
         interaction.options.getString("message") ||
         "Welcome {user} to {server}! We're glad to have you here! 🎉";
+      
+      // Convert \n to actual newlines
+      message = message.replace(/\\n/g, '\n');
 
       if (!channel.isTextBased()) {
         return interaction.reply({
@@ -82,7 +85,7 @@ module.exports = {
           {
             name: "Variables",
             value:
-              "`{user}` - Mentions the new member\n`{server}` - Server name\n`{membercount}` - Total member count",
+              "`{user}` - Mentions the new member\n`{server}` - Server name\n`{membercount}` - Total member count\n`\\n` - New line",
             inline: false,
           }
         )
@@ -125,6 +128,7 @@ module.exports = {
       }
 
       const message = config.welcome_message
+        .replace(/\\n/g, '\n')
         .replace(/{user}/g, interaction.user.toString())
         .replace(/{server}/g, interaction.guild.name)
         .replace(/{membercount}/g, interaction.guild.memberCount);
@@ -166,6 +170,7 @@ module.exports = {
         config.welcome_channel
       );
       const message = config.welcome_message
+        .replace(/\\n/g, '\n')
         .replace(/{user}/g, interaction.user.toString())
         .replace(/{server}/g, interaction.guild.name)
         .replace(/{membercount}/g, interaction.guild.memberCount);

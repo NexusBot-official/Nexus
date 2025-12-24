@@ -11,7 +11,8 @@
     "format": "prettier --write \"**/*.{js,json,md,html,css}\"",
     "format:check": "prettier --check \"**/*.{js,json,md,html,css}\"",
     "fix-merge": "git checkout --ours . && git add -A && git commit --no-edit",
-    "stats": "node serve-stats.js"
+    "stats": "node serve-stats.js",
+    "mobile": "node serve-mobile-dashboard.js"
   },
   "keywords": [
     "discord",
@@ -28,7 +29,7 @@
     "botlist.me.js": "^1.0.3",
     "compression": "^1.7.4",
     "discord-hybrid-sharding": "^3.0.1",
-    "discord.js": "^14.14.1",
+    "discord.js": "^14.25.1",
     "discordbotlist": "^1.1.1",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",

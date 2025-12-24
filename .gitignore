@@ -46,6 +46,11 @@ maintainers.md
 stats.js
 stats.html
 
+# Mobile dashboard files (dev only)
+mobile-dashboard.html
+mobile-dashboard.js
+serve-mobile-dashboard.js
+
 # Christmas countdown files
 christmas-countdown.js
 christmas-countdown.html
