@@ -1,4 +1,8 @@
-const { SlashCommandBuilder, EmbedBuilder , MessageFlags} = require("discord.js");
+const {
+  SlashCommandBuilder,
+  EmbedBuilder,
+  MessageFlags,
+} = require("discord.js");
 const logger = require("../utils/logger");
 
 module.exports = {
@@ -48,7 +52,10 @@ module.exports = {
             text: `Invite link: /invite | Track stats: /referral stats`,
           });
 
-        await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
+        await interaction.reply({
+          embeds: [embed],
+          flags: MessageFlags.Ephemeral,
+        });
       } else if (subcommand === "stats") {
         const stats = await referralSystem.getUserStats(interaction.user.id);
         const tierData = referralSystem.rewards[stats.current_tier] || {
@@ -77,7 +84,10 @@ module.exports = {
           })
           .setFooter({ text: "Get your code: /referral code" });
 
-        await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
+        await interaction.reply({
+          embeds: [embed],
+          flags: MessageFlags.Ephemeral,
+        });
       } else if (subcommand === "rewards") {
         const embed = new EmbedBuilder()
           .setTitle("🎁 Referral Rewards")

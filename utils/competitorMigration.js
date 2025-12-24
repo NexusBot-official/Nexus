@@ -84,14 +84,16 @@ class CompetitorMigration {
     recommendations.push({
       category: "Security",
       title: "Upgrade to 4 Anti-Raid Algorithms",
-      description: "the leading competitor uses 1 algorithm, nexus uses 4 for better detection",
+      description:
+        "the leading competitor uses 1 algorithm, nexus uses 4 for better detection",
       priority: "high",
     });
 
     recommendations.push({
       category: "Performance",
       title: "Enable AI-Powered Threat Detection",
-      description: "Get predictive security that the leading competitor doesn't offer",
+      description:
+        "Get predictive security that the leading competitor doesn't offer",
       priority: "high",
     });
 

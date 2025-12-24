@@ -14,6 +14,21 @@ class JoinGate {
       return { filtered: false, reason: null, action: null };
     }
 
+    // Check security whitelist FIRST - skip all checks if whitelisted
+    const isWhitelisted = await new Promise((resolve) => {
+      db.db.get(
+        "SELECT * FROM security_whitelist WHERE guild_id = ? AND user_id = ?",
+        [guild.id, member.id],
+        (err, row) => {
+          resolve(!!row);
+        }
+      );
+    });
+
+    if (isWhitelisted) {
+      return { filtered: false, reason: null, action: null };
+    }
+
     // Get threat sensitivity settings to adjust thresholds
     const sensitivity = await db.getThreatSensitivity(guild.id);
     const sensitivityMultiplier = sensitivity.risk_threshold / 30; // 1.0 = default

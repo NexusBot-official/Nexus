@@ -8,6 +8,11 @@ const performanceMonitor = require("../utils/performanceMonitor");
 module.exports = {
   name: "guildMemberAdd",
   async execute(member, client) {
+    // HARDCODED BYPASS: Skip ALL checks for support bot
+    if (member.id === '1453374784263032873') {
+      return;
+    }
+
     // Member join tracking (no console logging to reduce noise)
 
     // Track growth analytics

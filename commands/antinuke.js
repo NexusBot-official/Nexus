@@ -256,7 +256,10 @@ module.exports = {
           text: "Use /antinuke config to change these values",
         });
 
-      return interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
+      return interaction.reply({
+        embeds: [embed],
+        flags: MessageFlags.Ephemeral,
+      });
     }
 
     // Update thresholds

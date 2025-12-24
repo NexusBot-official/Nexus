@@ -18,7 +18,7 @@ module.exports = {
     if (message.system) {
       return;
     } // System messages
-    
+
     // Log DM messages
     if (!message.guild) {
       logger.info(

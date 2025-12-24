@@ -13,7 +13,9 @@ const logger = require("../utils/logger");
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("migrate")
-    .setDescription("Migrate from the leading competitor or other security bots to nexus")
+    .setDescription(
+      "Migrate from the leading competitor or other security bots to nexus"
+    )
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
     .addStringOption((option) =>
       option
@@ -35,8 +37,12 @@ module.exports = {
 
       if (fromBot === "competitor") {
         // Detect the leading competitor
-        const hasCompetitor = await migration.detectCompetitor(interaction.guild);
-        const config = await migration.analyzeCompetitorConfig(interaction.guild);
+        const hasCompetitor = await migration.detectCompetitor(
+          interaction.guild
+        );
+        const config = await migration.analyzeCompetitorConfig(
+          interaction.guild
+        );
 
         const embed = new EmbedBuilder()
           .setTitle("🔄 Migrate from the leading competitor to nexus")
