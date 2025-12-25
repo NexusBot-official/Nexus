@@ -6,7 +6,6 @@ const {
 } = require("discord.js");
 const db = require("../utils/database");
 const ErrorMessages = require("../utils/errorMessages");
-const seasonalSystem = require("../utils/seasonalSystem");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -26,7 +25,7 @@ module.exports = {
           option
             .setName("message")
             .setDescription(
-              "Welcome message (use {user}, {server}, {membercount}, {season}, \\n for newlines)"
+              "Welcome message (use {user}, {server}, {membercount}, \\n for newlines)"
             )
             .setRequired(false)
         )
@@ -86,7 +85,7 @@ module.exports = {
           {
             name: "Variables",
             value:
-              "`{user}` - Mentions the new member\n`{server}` - Server name\n`{membercount}` - Total member count\n`{season}` - Seasonal greeting\n`\\n` - New line",
+              "`{user}` - Mentions the new member\n`{server}` - Server name\n`{membercount}` - Total member count\n`\\n` - New line",
             inline: false,
           }
         )
@@ -128,13 +127,11 @@ module.exports = {
         });
       }
 
-      const seasonalGreeting = seasonalSystem.getRandomGreeting();
       const message = config.welcome_message
         .replace(/\\n/g, "\n")
         .replace(/{user}/g, interaction.user.toString())
         .replace(/{server}/g, interaction.guild.name)
-        .replace(/{membercount}/g, interaction.guild.memberCount)
-        .replace(/{season}/g, seasonalGreeting);
+        .replace(/{membercount}/g, interaction.guild.memberCount);
 
       try {
         await channel.send({
@@ -172,13 +169,11 @@ module.exports = {
       const channel = interaction.guild.channels.cache.get(
         config.welcome_channel
       );
-      const seasonalGreeting = seasonalSystem.getRandomGreeting();
       const message = config.welcome_message
         .replace(/\\n/g, "\n")
         .replace(/{user}/g, interaction.user.toString())
         .replace(/{server}/g, interaction.guild.name)
-        .replace(/{membercount}/g, interaction.guild.memberCount)
-        .replace(/{season}/g, seasonalGreeting);
+        .replace(/{membercount}/g, interaction.guild.memberCount);
 
       const embed = new EmbedBuilder()
         .setTitle("👋 Welcome!")

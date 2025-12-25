@@ -4,7 +4,6 @@ const JoinGate = require("../utils/joinGate");
 const ErrorHandler = require("../utils/errorHandler");
 const logger = require("../utils/logger");
 const performanceMonitor = require("../utils/performanceMonitor");
-const seasonalSystem = require("../utils/seasonalSystem");
 
 module.exports = {
   name: "guildMemberAdd",
@@ -408,24 +407,19 @@ module.exports = {
           ?.has(["ViewChannel", "SendMessages"]);
 
         if (canSend) {
-          const seasonalGreeting = seasonalSystem.getRandomGreeting();
-          const seasonalColor = seasonalSystem.getSeasonalColor();
-          const seasonalEmoji = seasonalSystem.getSeasonalEmoji();
-
           const message = config.welcome_message
             .replace(/\\n/g, "\n")
             .replace(/{user}/g, member.toString())
             .replace(/{server}/g, member.guild.name)
-            .replace(/{membercount}/g, member.guild.memberCount)
-            .replace(/{season}/g, seasonalGreeting);
+            .replace(/{membercount}/g, member.guild.memberCount);
 
           welcomeChannel
             .send({
               embeds: [
                 {
-                  title: `${seasonalEmoji} Welcome!`,
+                  title: "👋 Welcome!",
                   description: message,
-                  color: seasonalColor,
+                  color: 0x00ff00,
                   thumbnail: {
                     url: member.user.displayAvatarURL({ dynamic: true }),
                   },
