@@ -758,7 +758,7 @@ module.exports = {
                 )
                 .setColor(0x0099ff)
                 .setTimestamp()
-                .setFooter({ text: "nexus - Beyond the leading competitor" });
+                .setFooter({ text: "nexus - Beyond Wick" });
 
               const {
                 ActionRowBuilder,

@@ -2,7 +2,7 @@
 
 # 🛡️ Nexus Bot
 
-### The Free Discord Security Bot That Exceeds The Leading Competitor
+### The Free Discord Security Bot That Exceeds Wick
 
 _Formerly known as Nexus Bot_
 
@@ -11,7 +11,7 @@ _Formerly known as Nexus Bot_
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 [![Version](https://img.shields.io/badge/Version-4.3.10-blue?style=for-the-badge)](https://github.com/nexusBot-official/nexus)
 
-**Everything the leading competitor does, nexus does better. 100% FREE.**
+**Everything Wick does, nexus does better. 100% FREE.**
 
 [🚀 Invite to Discord](https://nexusbot-official.github.io/nexus/invite.html?source=github) • [⚔️ Compare vs Competition](https://nexusbot-official.github.io/nexus/comparison.html) • [📚 Documentation](https://nexusbot-official.github.io/nexus/docs.html)
 
@@ -27,7 +27,7 @@ nexus is an **open-source Discord security bot** that matches everything the lea
 
 ## ⚔️ Nexus vs Competition
 
-| Feature                    | Leading Competitor  | Nexus                               |
+| Feature                    | Wick                | Nexus                               |
 | -------------------------- | ------------------- | ----------------------------------- |
 | **💰 Price**               | $3-10/month premium | **100% FREE** ✅                    |
 | **🤖 AI Features**         | ❌ None             | ✅ Predictions, behavioral analysis |
@@ -132,7 +132,7 @@ https://nexusbot-official.github.io/nexus/invite.html?source=githubreadme
 
 ## 🎯 Perfect For
 
-✅ **Servers Switching from the leading competitor** (save money, get more features)  
+✅ **Servers Switching from Wick** (save money, get more features)  
 ✅ **Gaming Communities** (comprehensive protection)  
 ✅ **Large Servers** (1000+ members, scales infinitely)  
 ✅ **Security-Focused Servers** (enterprise-grade protection)  
@@ -155,7 +155,7 @@ Nexus (formerly nexus) is **open source** and **community-driven**.
 
 - 🌐 **Website:** https://nexusbot-official.github.io/nexus/
 - 📚 **Full Documentation:** https://nexusbot-official.github.io/nexus/docs.html
-- ⚔️ **nexus vs the leading competitor Comparison:** https://nexusbot-official.github.io/nexus/comparison.html
+- ⚔️ **nexus vs Wick Comparison:** https://nexusbot-official.github.io/nexus/comparison.html
 - 📊 **API Documentation:** https://nexusbot-official.github.io/nexus/api.html
 - 💬 **Support Server:** https://discord.gg/9vQzqBVMNX
 - 🗳️ **Vote on Top.gg:** https://top.gg/bot/1444739230679957646
@@ -195,7 +195,7 @@ This project is licensed under the **MIT License** with additional branding rest
 
 <div align="center">
 
-## 🚀 Ready to Exceed the leading competitor?
+## 🚀 Ready to Exceed Wick?
 
 ### [**Invite Nexus Free**](https://nexusbot-official.github.io/nexus/invite.html?source=github)
 
@@ -211,6 +211,6 @@ Just better security, free forever.
 
 ---
 
-_Nexus (formerly sentinel) - Beyond the leading competitor. Beyond Everything._ 🛡️
+_Nexus (formerly sentinel) - Beyond Wick. Beyond Everything._ 🛡️
 
 </div>

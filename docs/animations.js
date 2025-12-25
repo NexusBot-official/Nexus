@@ -189,7 +189,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const tagline = document.getElementById("typing-tagline");
   if (tagline) {
     new TypingAnimation("typing-tagline", [
-      "Beyond the leading competitor. Beyond Everything.",
+      "Beyond Wick. Beyond Everything.",
       "Free. Open Source. Powerful.",
       "AI-Powered Discord Protection.",
       "Built for Scale.",

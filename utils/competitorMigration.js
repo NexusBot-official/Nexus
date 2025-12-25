@@ -3,17 +3,17 @@ const db = require("./database");
 const logger = require("./logger");
 
 /**
- * the leading competitor Bot Migration Tool
- * Automatically detect and migrate settings from the leading competitor to nexus
+ * Wick Bot Migration Tool
+ * Automatically detect and migrate settings from Wick to nexus
  */
 class CompetitorMigration {
   constructor(client) {
     this.client = client;
-    this.competitorBotId = "536991182035746816"; // the leading competitor's official bot ID
+    this.competitorBotId = "536991182035746816"; // Wick's official bot ID
   }
 
   /**
-   * Detect if the leading competitor is in the server
+   * Detect if Wick is in the server
    */
   async detectCompetitor(guild) {
     try {
@@ -25,7 +25,7 @@ class CompetitorMigration {
   }
 
   /**
-   * Analyze the leading competitor's configuration by checking permissions and channels
+   * Analyze Wick's configuration by checking permissions and channels
    */
   async analyzeCompetitorConfig(guild) {
     const config = {
@@ -38,7 +38,7 @@ class CompetitorMigration {
       return config;
     }
 
-    // Detect the leading competitor's log channels (usually named competitor-logs or similar)
+    // Detect Wick's log channels (usually named competitor-logs or similar)
     const logChannels = guild.channels.cache.filter(
       (c) =>
         c.name.toLowerCase().includes("competitor") ||
@@ -85,7 +85,7 @@ class CompetitorMigration {
       category: "Security",
       title: "Upgrade to 4 Anti-Raid Algorithms",
       description:
-        "the leading competitor uses 1 algorithm, nexus uses 4 for better detection",
+        "Wick uses 1 algorithm, nexus uses 4 for better detection",
       priority: "high",
     });
 
@@ -93,7 +93,7 @@ class CompetitorMigration {
       category: "Performance",
       title: "Enable AI-Powered Threat Detection",
       description:
-        "Get predictive security that the leading competitor doesn't offer",
+        "Get predictive security that Wick doesn't offer",
       priority: "high",
     });
 
@@ -153,7 +153,7 @@ class CompetitorMigration {
         );
       }
 
-      // 2. Enable all nexus security features (better than the leading competitor)
+      // 2. Enable all nexus security features (better than Wick)
       await db.setServerConfig(guild.id, {
         anti_raid_enabled: 1,
         anti_nuke_enabled: 1,
@@ -161,7 +161,7 @@ class CompetitorMigration {
         heat_system_enabled: 1,
       });
       results.improvements.push(
-        "✅ Enabled 4 anti-raid algorithms (vs the leading competitor's 1)"
+        "✅ Enabled 4 anti-raid algorithms (vs Wick's 1)"
       );
       results.improvements.push("✅ Activated AI-powered threat detection");
       results.improvements.push("✅ Enabled heat scoring system");
@@ -182,12 +182,12 @@ class CompetitorMigration {
         );
       }
 
-      // 4. Set up advanced features the leading competitor doesn't have
+      // 4. Set up advanced features Wick doesn't have
       results.improvements.push(
-        "✅ Enabled workflow automation (the leading competitor doesn't have this)"
+        "✅ Enabled workflow automation (Wick doesn't have this)"
       );
       results.improvements.push(
-        "✅ Configured hourly auto-snapshots (the leading competitor only has manual)"
+        "✅ Configured hourly auto-snapshots (Wick only has manual)"
       );
       results.improvements.push(
         "✅ Activated cross-server threat intelligence"
@@ -198,7 +198,7 @@ class CompetitorMigration {
 
       logger.success(
         "CompetitorMigration",
-        `Successfully migrated ${guild.name} from the leading competitor to nexus`
+        `Successfully migrated ${guild.name} from Wick to nexus`
       );
     } catch (error) {
       results.success = false;
@@ -219,11 +219,11 @@ class CompetitorMigration {
       hadCompetitor: analysis.hasCompetitor,
       migratedAt: Date.now(),
       improvements: [
-        "4 Anti-Raid Algorithms (vs the leading competitor's 1)",
-        "AI-Powered Threat Detection (the leading competitor doesn't have)",
-        "Hourly Auto-Backups (vs the leading competitor's manual only)",
-        "Workflow Automation (the leading competitor doesn't have)",
-        "Open Source & Free (vs the leading competitor's paid features)",
+        "4 Anti-Raid Algorithms (vs Wick's 1)",
+        "AI-Powered Threat Detection (Wick doesn't have)",
+        "Hourly Auto-Backups (vs Wick's manual only)",
+        "Workflow Automation (Wick doesn't have)",
+        "Open Source & Free (vs Wick's paid features)",
         "Cross-Server Threat Intelligence",
       ],
     };

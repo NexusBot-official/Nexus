@@ -746,7 +746,7 @@ async function loadTemplates() {
     <div class="content-header">
       <h1>📋 Configuration Templates</h1>
       <p>One-click server setup with pre-made configs</p>
-      <p style="color: #ffd700; font-size: 0.9rem;">⭐ Feature not available in the leading competitor!</p>
+      <p style="color: #ffd700; font-size: 0.9rem;">⭐ Feature not available in Wick!</p>
     </div>
 
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px; margin-top: 30px;">
@@ -1169,7 +1169,7 @@ async function loadBulkOperations() {
     <div class="content-header">
       <h1>⚡ Bulk Operations</h1>
       <p>Manage settings across multiple servers at once</p>
-      <p style="color: #ffd700; font-size: 0.9rem;">⭐ Feature not available in the leading competitor!</p>
+      <p style="color: #ffd700; font-size: 0.9rem;">⭐ Feature not available in Wick!</p>
     </div>
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 30px;">
@@ -3145,13 +3145,13 @@ async function loadMigrationTool() {
   const contentArea = document.getElementById("contentArea");
 
   contentArea.innerHTML = `
-    <h2>🔄 Migrate from the leading competitor</h2>
-    <p style="opacity: 0.8; margin-bottom: 20px;">Automatically import your the leading competitor settings and upgrade to Nexus</p>
+    <h2>🔄 Migrate from Wick</h2>
+    <p style="opacity: 0.8; margin-bottom: 20px;">Automatically import your Wick settings and upgrade to Nexus</p>
     
     <div id="migrationStatus">
       <div style="text-align: center; padding: 40px;">
         <div class="spinner"></div>
-        <p>Checking for the leading competitor...</p>
+        <p>Checking for Wick...</p>
       </div>
     </div>
   `;
@@ -3165,8 +3165,8 @@ async function loadMigrationTool() {
     if (data.hasCompetitor) {
       document.getElementById("migrationStatus").innerHTML = `
         <div style="padding: 30px; background: var(--bg-card); border-radius: 12px; margin-bottom: 20px;">
-          <h3>✅ the leading competitor Detected!</h3>
-          <p style="margin: 15px 0;">We found the leading competitor in your server. Ready to upgrade?</p>
+          <h3>✅ Wick Detected!</h3>
+          <p style="margin: 15px 0;">We found Wick in your server. Ready to upgrade?</p>
           
           <h4 style="margin-top: 20px;">🔍 What We Found:</h4>
           <ul style="margin: 10px 0 20px 20px;">
@@ -3186,7 +3186,7 @@ async function loadMigrationTool() {
               (item) => `
             <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; padding: 15px; margin-bottom: 10px; background: var(--bg-card); border-radius: 8px;">
               <div><strong>${item.feature}</strong></div>
-              <div style="opacity: 0.7;">the leading competitor: ${item.competitor}</div>
+              <div style="opacity: 0.7;">Wick: ${item.competitor}</div>
               <div style="color: var(--success);">Nexus: ${item.Nexus}</div>
             </div>
           `
@@ -3198,23 +3198,23 @@ async function loadMigrationTool() {
       document.getElementById("migrationStatus").innerHTML = `
         <div style="text-align: center; padding: 60px; background: var(--bg-card); border-radius: 12px;">
           <div style="font-size: 3rem; margin-bottom: 20px;">ℹ️</div>
-          <h3>the leading competitor Not Detected</h3>
+          <h3>Wick Not Detected</h3>
           <p style="opacity: 0.8; margin-top: 10px;">
-            the leading competitor bot is not in this server. You're already using the best protection!
+            Wick bot is not in this server. You're already using the best protection!
           </p>
         </div>
       `;
     }
   } catch (error) {
     document.getElementById("migrationStatus").innerHTML =
-      `<p style="color: var(--danger);">❌ Failed to check for the leading competitor</p>`;
+      `<p style="color: var(--danger);">❌ Failed to check for Wick</p>`;
   }
 }
 
 window.startMigration = async function () {
   if (
     !confirm(
-      "Start migration from the leading competitor to Nexus? This will import settings and enable advanced features."
+      "Start migration from Wick to Nexus? This will import settings and enable advanced features."
     )
   )
     return;

@@ -118,11 +118,11 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setTitle("🛡️ Nexus Bot - Advanced Protection")
       .setDescription(
-        "Everything the leading competitor does, plus AI, plus better UX, plus it's free and open source"
+        "Everything Wick does, plus AI, plus better UX, plus it's free and open source"
       )
       .setColor(0x0099ff)
       .setFooter({
-        text: "Need help? Join discord.gg/9vQzqBVMNX | Nexus - Beyond the leading competitor.",
+        text: "Need help? Join discord.gg/9vQzqBVMNX | Nexus - Beyond Wick.",
       })
       .setTimestamp();
 

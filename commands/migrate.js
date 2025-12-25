@@ -14,7 +14,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("migrate")
     .setDescription(
-      "Migrate from the leading competitor or other security bots to nexus"
+      "Migrate from Wick or other security bots to nexus"
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
     .addStringOption((option) =>
@@ -23,7 +23,7 @@ module.exports = {
         .setDescription("Which bot to migrate from")
         .setRequired(false)
         .addChoices(
-          { name: "the leading competitor", value: "competitor" },
+          { name: "Wick", value: "competitor" },
           { name: "Other", value: "other" }
         )
     ),
@@ -36,7 +36,7 @@ module.exports = {
       const migration = new CompetitorMigration(interaction.client);
 
       if (fromBot === "competitor") {
-        // Detect the leading competitor
+        // Detect Wick
         const hasCompetitor = await migration.detectCompetitor(
           interaction.guild
         );
@@ -45,33 +45,33 @@ module.exports = {
         );
 
         const embed = new EmbedBuilder()
-          .setTitle("🔄 Migrate from the leading competitor to nexus")
+          .setTitle("🔄 Migrate from Wick to nexus")
           .setDescription(
             hasCompetitor
-              ? "✅ **the leading competitor detected in this server!**\n\n" +
+              ? "✅ **Wick detected in this server!**\n\n" +
                   "nexus can automatically configure itself with equivalent (and better) settings.\n\n" +
-                  "**Why switch from the leading competitor to nexus?**\n" +
+                  "**Why switch from Wick to nexus?**\n" +
                   "💰 **Save $120/year** - nexus is 100% FREE\n" +
                   "🤖 **4x Better Detection** - 4 anti-raid algorithms vs Competition's 1\n" +
-                  "🧠 **AI-Powered** - Predictive security the leading competitor doesn't have\n" +
-                  "💾 **Auto-Backups** - Hourly snapshots (the leading competitor is manual)\n" +
+                  "🧠 **AI-Powered** - Predictive security Wick doesn't have\n" +
+                  "💾 **Auto-Backups** - Hourly snapshots (Wick is manual)\n" +
                   "⚡ **Faster** - Sub-millisecond detection\n" +
-                  "🔓 **Open Source** - Fully transparent (the leading competitor is closed)"
-              : "⚠️ **the leading competitor not detected**\n\n" +
+                  "🔓 **Open Source** - Fully transparent (Wick is closed)"
+              : "⚠️ **Wick not detected**\n\n" +
                   "But you can still set up nexus with optimal security settings!\n\n" +
-                  "**Why choose nexus over the leading competitor?**\n" +
-                  "💰 **100% FREE** - the leading competitor costs $3-10/month\n" +
-                  "🤖 **4 Anti-Raid Algorithms** - the leading competitor only has 1\n" +
+                  "**Why choose nexus over Wick?**\n" +
+                  "💰 **100% FREE** - Wick costs $3-10/month\n" +
+                  "🤖 **4 Anti-Raid Algorithms** - Wick only has 1\n" +
                   "🧠 **AI-Powered Security** - Predictive threat detection\n" +
                   "💾 **Hourly Auto-Backups** - Instant recovery\n" +
-                  "⚡ **Sub-millisecond Detection** - Faster than the leading competitor\n" +
+                  "⚡ **Sub-millisecond Detection** - Faster than Wick\n" +
                   "🔓 **Open Source** - No hidden backdoors"
           )
           .setColor(hasCompetitor ? 0x4caf50 : 0xff9800);
 
         if (hasCompetitor && config.detectedSettings.logChannels) {
           embed.addFields({
-            name: "📋 Detected the leading competitor Settings",
+            name: "📋 Detected Wick Settings",
             value:
               `**Log Channels**: ${config.detectedSettings.logChannels.map((c) => `<#${c.id}>`).join(", ")}\n` +
               `**Recommendations**: ${config.recommendations.length} optimization suggestions`,
@@ -94,7 +94,7 @@ module.exports = {
           {
             name: "💰 Cost Comparison",
             value:
-              "**the leading competitor Premium**: $10/month = $120/year\n" +
+              "**Wick Premium**: $10/month = $120/year\n" +
               "**nexus**: $0/month = $0/year\n\n" +
               "**You save**: $120/year 💸",
             inline: true,
@@ -121,7 +121,7 @@ module.exports = {
         // Log migration interest
         logger.info(
           "Migration",
-          `${interaction.user.tag} viewed migration from the leading competitor in ${interaction.guild.name} (Has the leading competitor: ${hasCompetitor})`
+          `${interaction.user.tag} viewed migration from Wick in ${interaction.guild.name} (Has Wick: ${hasCompetitor})`
         );
       } else {
         // Generic migration

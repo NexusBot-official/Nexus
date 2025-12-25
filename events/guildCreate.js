@@ -147,7 +147,7 @@ module.exports = {
       // Error already logged
     });
 
-    // COMPETITIVE INTELLIGENCE: Detect the leading competitor and log for analytics
+    // COMPETITIVE INTELLIGENCE: Detect Wick and log for analytics
     // NOTE: We do NOT DM users unprompted - that's spam and gets bots kicked
     // Instead, we just log it and show the comparison in-server via /migrate
     try {
@@ -158,7 +158,7 @@ module.exports = {
       if (hasCompetitor) {
         logger.info(
           "Competitive",
-          `🎯 the leading competitor detected in ${guild.name} (${guild.id}) - user can run /migrate to see comparison`
+          `🎯 Wick detected in ${guild.name} (${guild.id}) - user can run /migrate to see comparison`
         );
 
         // Store this info for analytics (optional)
@@ -176,7 +176,7 @@ module.exports = {
     } catch (competitorError) {
       logger.debug(
         "Competitive",
-        `the leading competitor detection error in ${guild.name}: ${competitorError.message}`
+        `Wick detection error in ${guild.name}: ${competitorError.message}`
       );
     }
 

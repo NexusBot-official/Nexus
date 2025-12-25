@@ -52,14 +52,14 @@ module.exports = {
           value: [
             "**Q: Is nexus free?**\nA: Yes, 100% free with all features included.",
             "**Q: Is it open source?**\nA: Yes, view our code on GitHub.",
-            "**Q: How is it different from the leading competitor?**\nA: nexus has AI features, better UX, and is open source.",
+            "**Q: How is it different from Wick?**\nA: nexus has AI features, better UX, and is open source.",
           ].join("\n\n"),
           inline: false,
         }
       )
       .setColor(0x0099ff)
       .setFooter({
-        text: "nexus - Beyond the leading competitor. Free. Open Source. Powerful.",
+        text: "nexus - Beyond Wick. Free. Open Source. Powerful.",
       })
       .setTimestamp();
 

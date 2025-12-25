@@ -7,7 +7,7 @@ class AdvancedAntiRaid {
 
   // Multiple detection algorithms working together
   static detectionAlgorithms = {
-    // Algorithm 1: Rate-based detection (the leading competitor's method)
+    // Algorithm 1: Rate-based detection (Wick's method)
     rateBased: (joins, timeWindow, threshold) => {
       const recentJoins = joins.filter(
         (j) => Date.now() - j.timestamp < timeWindow

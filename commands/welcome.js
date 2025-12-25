@@ -50,9 +50,9 @@ module.exports = {
       let message =
         interaction.options.getString("message") ||
         "Welcome {user} to {server}! We're glad to have you here! 🎉";
-      
+
       // Convert \n to actual newlines
-      message = message.replace(/\\n/g, '\n');
+      message = message.replace(/\\n/g, "\n");
 
       if (!channel.isTextBased()) {
         return interaction.reply({
@@ -128,7 +128,7 @@ module.exports = {
       }
 
       const message = config.welcome_message
-        .replace(/\\n/g, '\n')
+        .replace(/\\n/g, "\n")
         .replace(/{user}/g, interaction.user.toString())
         .replace(/{server}/g, interaction.guild.name)
         .replace(/{membercount}/g, interaction.guild.memberCount);
@@ -170,7 +170,7 @@ module.exports = {
         config.welcome_channel
       );
       const message = config.welcome_message
-        .replace(/\\n/g, '\n')
+        .replace(/\\n/g, "\n")
         .replace(/{user}/g, interaction.user.toString())
         .replace(/{server}/g, interaction.guild.name)
         .replace(/{membercount}/g, interaction.guild.memberCount);

@@ -5093,9 +5093,9 @@ class DashboardServer {
           commandsPerSecond: commandRate || 0,
         };
 
-        // the leading competitor Bot baseline metrics
+        // Wick Bot baseline metrics
         // NOTE: These are industry-standard estimates for similar Discord bots
-        // We don't have access to the leading competitor's actual metrics, so these are based on
+        // We don't have access to Wick's actual metrics, so these are based on
         // typical performance of bots with similar feature sets
         const competitorMetrics = {
           responseTime: 80, // Typical WebSocket ping for similar bots

@@ -408,7 +408,7 @@ module.exports = {
 
         if (canSend) {
           const message = config.welcome_message
-            .replace(/\\n/g, '\n')
+            .replace(/\\n/g, "\n")
             .replace(/{user}/g, member.toString())
             .replace(/{server}/g, member.guild.name)
             .replace(/{membercount}/g, member.guild.memberCount);
