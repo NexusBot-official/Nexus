@@ -19,7 +19,6 @@ class SmartStatus {
     );
 
     const season = seasonalSystem.getSeasonalData();
-    const seasonalEmoji = season.emoji;
 
     // Base status messages
     const baseMessages = [
@@ -59,9 +58,9 @@ class SmartStatus {
     ];
 
     // Add seasonal status messages (2-3 per rotation)
-    const seasonalMessages = season.statusMessages.slice(0, 3).map(msg => ({
+    const seasonalMessages = season.statusMessages.slice(0, 3).map((msg) => ({
       type: "PLAYING",
-      name: msg.replace('{servers}', serverCount),
+      name: msg.replace("{servers}", serverCount),
     }));
 
     // Combine base and seasonal messages

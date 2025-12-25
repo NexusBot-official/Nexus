@@ -180,8 +180,10 @@ const smartStatus = new SmartStatus(client);
 client.once("clientReady", () => {
   // Log current season
   const currentSeason = seasonalSystem.getSeasonalData();
-  logger.info(`🎨 Current Season: ${currentSeason.emoji} ${currentSeason.name}`);
-  
+  logger.info(
+    `🎨 Current Season: ${currentSeason.emoji} ${currentSeason.name}`
+  );
+
   // Start smart status after bot is ready
   setTimeout(() => {
     smartStatus.start(2); // Rotate every 2 minutes

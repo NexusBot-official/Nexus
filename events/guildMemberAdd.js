@@ -411,7 +411,7 @@ module.exports = {
           const seasonalGreeting = seasonalSystem.getRandomGreeting();
           const seasonalColor = seasonalSystem.getSeasonalColor();
           const seasonalEmoji = seasonalSystem.getSeasonalEmoji();
-          
+
           const message = config.welcome_message
             .replace(/\\n/g, "\n")
             .replace(/{user}/g, member.toString())

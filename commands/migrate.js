@@ -13,9 +13,7 @@ const logger = require("../utils/logger");
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("migrate")
-    .setDescription(
-      "Migrate from Wick or other security bots to nexus"
-    )
+    .setDescription("Migrate from Wick or other security bots to nexus")
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
     .addStringOption((option) =>
       option
