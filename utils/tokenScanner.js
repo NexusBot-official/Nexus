@@ -78,9 +78,7 @@ class TokenScanner {
       // Scan paste sites
       for (const site of this.pasteSites) {
         try {
-          logger.info(`[TokenScanner] 📡 Scanning ${site.name}...`);
           await this.scanSite(site);
-          logger.info(`[TokenScanner] ✅ ${site.name} - Clean`);
         } catch (error) {
           logger.warn(
             `[TokenScanner] ⚠️ Failed to scan ${site.name}:`,
@@ -92,9 +90,7 @@ class TokenScanner {
       // Scan dox sites (always enabled)
       for (const site of this.doxSites) {
         try {
-          logger.info(`[TokenScanner] 📡 Scanning ${site.name}...`);
           await this.scanSite(site);
-          logger.info(`[TokenScanner] ✅ ${site.name} - Clean`);
         } catch (error) {
           logger.warn(
             `[TokenScanner] ⚠️ Failed to scan ${site.name}:`,
@@ -102,8 +98,6 @@ class TokenScanner {
           );
         }
       }
-
-      logger.info(`[TokenScanner] ✅ Scan cycle completed - All sites clean`);
     } catch (error) {
       logger.error(`[TokenScanner] Scan error:`, error.message);
     } finally {
