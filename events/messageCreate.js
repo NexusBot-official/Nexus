@@ -354,17 +354,6 @@ module.exports = {
             if (member && punishment.action === "timeout") {
               // Check if bot has permission to timeout
               const botMember = message.guild.members.me;
-              const canTimeout =
-                botMember && botMember.permissions.has("ModerateMembers");
-
-              if (!canTimeout) {
-                // Silently skip if bot doesn't have permissions (don't log as error)
-                const logger = require("../utils/logger");
-                logger.debug(
-                  `[messageCreate] Skipping timeout - bot lacks ModerateMembers permission in guild ${message.guild.id}`
-                );
-                return; // Skip timeout if no permission
-              }
 
               // Apply timeout with multiplier
               await ErrorHandler.safeExecute(
@@ -381,11 +370,6 @@ module.exports = {
                   await ErrorHandler.safeExecute(
                     () => message.delete(),
                     `messageCreate [${message.guild.id}]`
-                  );
-                } else {
-                  const logger = require("../utils/logger");
-                  logger.debug(
-                    `[messageCreate] Skipping message delete - bot lacks ManageMessages permission in channel ${message.channel.id}`
                   );
                 }
               }

@@ -443,7 +443,7 @@ class AutoRecovery {
                   .fetch(guild.client.user.id)
                   .catch(() => null);
                 if (!botMember || !botMember.permissions.has("ManageRoles")) {
-                  return; // Skip this role if bot lacks permission
+                  return; // Skip this role if  permission
                 }
 
                 // Try to create role at a safe position (lower than bot's role)
@@ -1018,9 +1018,6 @@ class AutoRecovery {
             }
           }
         } else {
-          logger.warn(
-            `[AutoRecovery] Bot lacks ManageGuild permission - skipping server settings recovery`
-          );
           progress.completed++;
         }
       } catch (error) {

@@ -829,29 +829,6 @@ class AdvancedAntiRaid {
       return;
     }
 
-    const hasBanPerms = botMember.permissions.has("BanMembers");
-    const hasKickPerms = botMember.permissions.has("KickMembers");
-    const hasManageRolesPerms = botMember.permissions.has("ManageRoles");
-
-    if (action === "ban" && !hasBanPerms) {
-      logger.error(
-        `[Anti-Raid] Bot lacks BanMembers permission in ${guild.name} - cannot ban raiders`
-      );
-      return;
-    }
-    if (action === "kick" && !hasKickPerms) {
-      logger.error(
-        `[Anti-Raid] Bot lacks KickMembers permission in ${guild.name} - cannot kick raiders`
-      );
-      return;
-    }
-    if (action === "quarantine" && !hasManageRolesPerms) {
-      logger.error(
-        `[Anti-Raid] Bot lacks ManageRoles permission in ${guild.name} - cannot quarantine raiders`
-      );
-      return;
-    }
-
     // INSTANT RESPONSE: Ban all raiders in PARALLEL, not one-by-one
     const banPromises = recentSuspicious.map(async (join) => {
       try {

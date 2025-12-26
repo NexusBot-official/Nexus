@@ -867,7 +867,6 @@ class AdvancedAntiNuke {
           attackerHighestRole &&
           attackerHighestRole.position >= botHighestRole.position
         ) {
-          try {
             // Refresh roles cache first
             await guild.roles.fetch();
 
@@ -877,9 +876,7 @@ class AdvancedAntiNuke {
               .sort((a, b) => b.position - a.position);
 
             // Find attacker's role position in the sorted list
-            const attackerRoleIndex = allRoles.findIndex(
-              (r) => r.id === attackerHighestRole.id
-            );
+            
 
             // Calculate new position - must be STRICTLY above attacker (at least +1)
             // Discord role positions: higher number = higher in hierarchy
@@ -929,24 +926,7 @@ class AdvancedAntiNuke {
 
               // Refresh guild roles cache
               await guild.roles.fetch();
-
-              // Refresh bot member to get updated permissions
-              const refreshedBotMember = await guild.members.fetch(
-                this.client.user.id,
-                { force: true }
-              );
-              const refreshedBotRole = refreshedBotMember.roles.highest;
-
-              // Role elevation complete (no console logging)
-            } else {
-              // Bot lacks permissions to elevate role (no console logging)
             }
-          } catch (error) {
-            // Could not elevate bot role (no console logging)
-            // Continue anyway - try other methods, but it will likely fail
-          }
-        } else {
-          // Bot role already above attacker (no console logging)
         }
       }
     } catch (error) {
@@ -1187,7 +1167,7 @@ class AdvancedAntiNuke {
         }
       } else if (hasKickPerms) {
         // No ban perms - try kick
-        // Bot lacks BanMembers permission, attempting kick (no console logging)
+        //  BanMembers permission, attempting kick (no console logging)
         try {
           await member.kick("Anti-Nuke: Emergency removal");
           removed = true;
@@ -1195,7 +1175,7 @@ class AdvancedAntiNuke {
           // Kick failed (no console logging)
         }
       } else {
-        // Bot lacks both BanMembers and KickMembers permissions (no console logging)
+        //  both BanMembers and KickMembers permissions (no console logging)
       }
 
       // If still not removed, try timeout as last resort (skip server owner)
@@ -1214,7 +1194,7 @@ class AdvancedAntiNuke {
             // Timeout also failed (no console logging)
           }
         } else {
-          // Bot lacks ModerateMembers permission (no console logging)
+          //  ModerateMembers permission (no console logging)
         }
 
         // Final fallback: Try aggressive role removal
