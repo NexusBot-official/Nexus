@@ -97,39 +97,49 @@ module.exports = {
           SUGGESTION_CHANNEL_ID
         );
 
-        if (suggestionChannel) {
-          const suggestionEmbed = new EmbedBuilder()
-            .setTitle("💡 New Feature Suggestion")
-            .setDescription(`**${title}**\n\n${description}`)
-            .addFields(
-              {
-                name: "Use Case",
-                value: useCase,
-              },
-              {
-                name: "Suggested By",
-                value: `${interaction.user.tag} (${interaction.user.id})`,
-                inline: true,
-              },
-              {
-                name: "Server",
-                value: interaction.guild.name,
-                inline: true,
-              }
-            )
-            .setColor(0x9b59b6) // Purple
-            .setTimestamp()
-            .setFooter({
-              text: `User ID: ${interaction.user.id}`,
-              iconURL: interaction.user.displayAvatarURL(),
-            });
-
-          await suggestionChannel.send({ embeds: [suggestionEmbed] });
+        if (!suggestionChannel) {
+          logger.error(
+            "suggest",
+            `Could not find suggestion channel with ID: ${SUGGESTION_CHANNEL_ID}`
+          );
+          return;
         }
+
+        const suggestionEmbed = new EmbedBuilder()
+          .setTitle("💡 New Feature Suggestion")
+          .setDescription(`**${title}**\n\n${description}`)
+          .addFields(
+            {
+              name: "Use Case",
+              value: useCase,
+            },
+            {
+              name: "Suggested By",
+              value: `${interaction.user.tag} (${interaction.user.id})`,
+              inline: true,
+            },
+            {
+              name: "Server",
+              value: interaction.guild.name,
+              inline: true,
+            }
+          )
+          .setColor(0x9b59b6) // Purple
+          .setTimestamp()
+          .setFooter({
+            text: `User ID: ${interaction.user.id}`,
+            iconURL: interaction.user.displayAvatarURL(),
+          });
+
+        await suggestionChannel.send({ embeds: [suggestionEmbed] });
+        logger.info(
+          "suggest",
+          `Suggestion sent to channel ${SUGGESTION_CHANNEL_ID} by ${interaction.user.tag}`
+        );
       } catch (channelError) {
         logger.error(
           "suggest",
-          "Failed to send suggestion to channel",
+          `Failed to send suggestion to channel ${SUGGESTION_CHANNEL_ID}`,
           channelError
         );
       }
