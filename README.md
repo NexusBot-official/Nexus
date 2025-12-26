@@ -23,7 +23,7 @@ _Formerly known as Nexus Bot_
 
 Tired of paying for premium bots? Want **better security** AND **save money**? nexus is your answer.
 
-nexus is an **open-source Discord security bot** that matches everything the leading competitor offers, adds AI-powered features they don't have, and costs **$0/month**.
+nexus is an **open-source Discord security bot** that matches everything Wick offers, adds AI-powered features they don't have, and costs **$0/month**.
 
 ## ⚔️ Nexus vs Competition
 
@@ -56,7 +56,7 @@ nexus is an **open-source Discord security bot** that matches everything the lea
 
 ### 🛡️ **Advanced Protection**
 
-- **4 Anti-Raid Algorithms** - Catches raids the leading competitor misses
+- **4 Anti-Raid Algorithms** - Catches raids Wick misses
 - **Predictive Anti-Nuke** - Stops attacks before damage occurs
 - **Permission Testing Detection** - Catches "slow nuke" attempts
 - **Auto-Recovery** - Instant restoration from hourly snapshots
