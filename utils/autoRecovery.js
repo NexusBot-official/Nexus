@@ -494,9 +494,7 @@ class AutoRecovery {
                 } catch (createError) {
                   if (createError.code === 50013) {
                     // Missing Permissions - skip this role
-                    logger.warn(
-                      `[AutoRecovery] Cannot recover role "${roleData.name}" - Missing Permissions (bot role hierarchy issue)`
-                    );
+                    
                     skipped.push({
                       type: "role",
                       name: roleData.name,

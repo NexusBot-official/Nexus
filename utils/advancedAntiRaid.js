@@ -894,15 +894,8 @@ class AdvancedAntiRaid {
 
         return { success: true };
       } catch (error) {
-        logger.error(
-          `[Anti-Raid] Failed to ${action} ${join.id} in ${guild.name}: ${error.message}`
-        );
         // Log specific error types
-        if (error.code === 50013) {
-          logger.error(
-            `[Anti-Raid] Missing permissions to ${action} ${join.id}`
-          );
-        } else if (error.code === 50035) {
+        if (error.code === 50035) {
           logger.error(
             `[Anti-Raid] Invalid form body when attempting to ${action} ${join.id}`
           );

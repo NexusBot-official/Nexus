@@ -613,26 +613,17 @@ class AuditLogMonitor {
 
     // High confidence = immediate action
     if (threatScore >= 80) {
-      try {
-        const member = await guild.members.fetch(userId).catch(() => null);
-        if (member && member.bannable) {
-          await member.ban({
-            reason: `[nexus] Detected ${patternType} pattern in audit logs`,
-            deleteMessageSeconds: 0, // Don't delete messages
-          });
-
-          logger.warn(
-            "AuditLogMonitor",
-            `Banned ${userId} in ${guild.name} for ${patternType}`
-          );
-        }
-      } catch (error) {
-        logger.error("AuditLogMonitor", "Failed to ban user", {
-          message: error?.message || String(error),
-          stack: error?.stack,
-          guildId: guild.id,
-          userId,
+      const member = await guild.members.fetch(userId).catch(() => null);
+      if (member && member.bannable) {
+        await member.ban({
+          reason: `[nexus] Detected ${patternType} pattern in audit logs`,
+          deleteMessageSeconds: 0, // Don't delete messages
         });
+
+        logger.warn(
+          "AuditLogMonitor",
+          `Banned ${userId} in ${guild.name} for ${patternType}`
+        );
       }
     } else if (threatScore >= 60) {
       // Medium confidence = alert admins
