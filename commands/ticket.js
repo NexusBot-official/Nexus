@@ -69,12 +69,10 @@ module.exports = {
       );
 
       const ErrorHandler = require("../utils/errorHandler");
-      const ErrorMessages = require("../utils/errorMessages");
       setTimeout(() => {
         ErrorHandler.safeExecute(
-          interaction.channel.delete(),
-          `ticket [${interaction.guild.id}]`,
-          `Delete ticket channel ${interaction.channel.id}`
+          () => interaction.channel.delete(),
+          `ticket [${interaction.guild.id}]`
         );
       }, 5000);
     }
