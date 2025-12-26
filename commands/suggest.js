@@ -1,21 +1,21 @@
 const {
   SlashCommandBuilder,
   EmbedBuilder,
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
   ModalBuilder,
   TextInputBuilder,
   TextInputStyle,
+  ActionRowBuilder,
   MessageFlags,
 } = require("discord.js");
 const logger = require("../utils/logger");
-const db = require("../utils/database");
+
+// Set your suggestion channel ID here
+const SUGGESTION_CHANNEL_ID = "1454233882520977519";
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("suggest")
-    .setDescription("Suggest a new feature or improvement for nexus"),
+    .setDescription("Suggest a new feature or improvement for Nexus"),
 
   async execute(interaction, client) {
     // Create modal for suggestion
@@ -76,132 +76,62 @@ module.exports = {
         modalInteraction.fields.getTextInputValue("suggestion_usecase") ||
         "Not provided";
 
-      // Save suggestion to database
-      await new Promise((resolve, reject) => {
-        db.db.run(
-          `INSERT INTO suggestions (guild_id, user_id, title, description, use_case, status, created_at, votes) VALUES (?, ?, ?, ?, ?, 'pending', ?, 0)`,
-          [
-            interaction.guild.id,
-            interaction.user.id,
-            title,
-            description,
-            useCase,
-            Date.now(),
-          ],
-          (err) => {
-            if (err) {
-              reject(err);
-            } else {
-              resolve();
-            }
-          }
-        );
-      });
-
-      // Get suggestion ID
-      const suggestion = await new Promise((resolve, reject) => {
-        db.db.get(
-          "SELECT * FROM suggestions WHERE user_id = ? ORDER BY created_at DESC LIMIT 1",
-          [interaction.user.id],
-          (err, row) => {
-            if (err) {
-              reject(err);
-            } else {
-              resolve(row);
-            }
-          }
-        );
-      });
-
-      // Send confirmation
+      // Send confirmation to user
       const confirmEmbed = new EmbedBuilder()
         .setTitle("✅ Suggestion Submitted!")
         .setDescription(
-          `Thank you for helping improve nexus! Your suggestion has been recorded.\n\n` +
+          `Thank you for helping improve Nexus! Your suggestion has been sent to the developers.\n\n` +
             `**${title}**\n${description}`
         )
-        .addFields({
-          name: "What Happens Next?",
-          value:
-            "• Developers will review your suggestion\n" +
-            "• Community can vote on it\n" +
-            "• Popular suggestions get prioritized\n" +
-            "• You'll be notified of updates",
-        })
         .setColor(0x00ff88)
-        .setFooter({ text: `Suggestion ID: ${suggestion.id}` })
         .setTimestamp();
-
-      const voteButtons = new ActionRowBuilder().addComponents(
-        new ButtonBuilder()
-          .setCustomId(`vote_${suggestion.id}`)
-          .setLabel("Vote")
-          .setStyle(ButtonStyle.Success)
-          .setEmoji("👍"),
-        new ButtonBuilder()
-          .setLabel("View All Suggestions")
-          .setStyle(ButtonStyle.Link)
-          .setURL(
-            "https://nexusbot-official.github.io/nexus/vote-features.html"
-          )
-      );
 
       await modalInteraction.reply({
         embeds: [confirmEmbed],
-        components: [voteButtons],
         flags: MessageFlags.Ephemeral,
       });
 
-      // Send to admin webhook if configured
-      if (process.env.SUGGESTIONS_WEBHOOK_URL) {
-        const https = require("https");
-        const url = new URL(process.env.SUGGESTIONS_WEBHOOK_URL);
+      // Send to suggestion channel
+      try {
+        const suggestionChannel = await client.channels.fetch(
+          SUGGESTION_CHANNEL_ID
+        );
 
-        const webhook = {
-          embeds: [
-            {
-              title: "💡 New Feature Suggestion",
-              description: `**${title}**\n\n${description}`,
-              fields: [
-                {
-                  name: "Use Case",
-                  value: useCase,
-                },
-                {
-                  name: "Suggested By",
-                  value: `${interaction.user.tag} (${interaction.user.id})`,
-                  inline: true,
-                },
-                {
-                  name: "Server",
-                  value: interaction.guild.name,
-                  inline: true,
-                },
-              ],
-              color: 6737151, // Purple
-              timestamp: new Date().toISOString(),
-              footer: {
-                text: `Suggestion ID: ${suggestion.id}`,
+        if (suggestionChannel) {
+          const suggestionEmbed = new EmbedBuilder()
+            .setTitle("💡 New Feature Suggestion")
+            .setDescription(`**${title}**\n\n${description}`)
+            .addFields(
+              {
+                name: "Use Case",
+                value: useCase,
               },
-            },
-          ],
-        };
+              {
+                name: "Suggested By",
+                value: `${interaction.user.tag} (${interaction.user.id})`,
+                inline: true,
+              },
+              {
+                name: "Server",
+                value: interaction.guild.name,
+                inline: true,
+              }
+            )
+            .setColor(0x9b59b6) // Purple
+            .setTimestamp()
+            .setFooter({
+              text: `User ID: ${interaction.user.id}`,
+              iconURL: interaction.user.displayAvatarURL(),
+            });
 
-        const postData = JSON.stringify(webhook);
-
-        const options = {
-          hostname: url.hostname,
-          path: url.pathname,
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Content-Length": postData.length,
-          },
-        };
-
-        const req = https.request(options);
-        req.write(postData);
-        req.end();
+          await suggestionChannel.send({ embeds: [suggestionEmbed] });
+        }
+      } catch (channelError) {
+        logger.error(
+          "suggest",
+          "Failed to send suggestion to channel",
+          channelError
+        );
       }
     } catch (error) {
       // Don't log timeout errors as they're expected when users don't complete the modal
