@@ -929,26 +929,23 @@
         return { type: "steady", arrow: "→", change: "0" };
       }
 
-      function getRecords() {
-        const historical = getHistoricalData();
-        const records = JSON.parse(
-          localStorage.getItem("growthRecords") || "{}"
-        );
+      function getRecords(growthHistory = []) {
+        if (growthHistory.length < 2) {
+          return { bestHour: 0, bestDay: 0, longestStreak: 0 };
+        }
 
-        if (historical.length < 2) return records;
-
-        let bestHourGrowth = records.bestHour || 0;
-        let bestDayGrowth = records.bestDay || 0;
-        let longestStreak = records.longestStreak || 0;
+        let bestHourGrowth = 0;
+        let bestDayGrowth = 0;
+        let longestStreak = 0;
         let currentStreak = 0;
 
-        // Calculate hourly and daily growth
-        for (let i = 1; i < historical.length; i++) {
+        // Calculate hourly and daily growth from API data
+        for (let i = 1; i < growthHistory.length; i++) {
           const timeDiff =
-            (historical[i].timestamp - historical[i - 1].timestamp) /
+            (growthHistory[i].timestamp - growthHistory[i - 1].timestamp) /
             1000 /
             3600;
-          const serverDiff = historical[i].servers - historical[i - 1].servers;
+          const serverDiff = growthHistory[i].server_count - growthHistory[i - 1].server_count;
 
           // Best hour (if data points are ~1 hour apart)
           if (timeDiff <= 1.5 && serverDiff > bestHourGrowth) {
@@ -966,39 +963,35 @@
           }
         }
 
-        // Best day (last 24 hours)
-        if (historical.length > 0) {
-          const last24h = historical.filter(
-            (d) => d.timestamp > Date.now() - 24 * 60 * 60 * 1000
-          );
-          if (last24h.length >= 2) {
-            const dayGrowth =
-              last24h[last24h.length - 1].servers - last24h[0].servers;
+        // Best day - find max growth in any 24h period
+        for (let i = 0; i < growthHistory.length; i++) {
+          const dayStart = growthHistory[i].timestamp;
+          const dayEnd = dayStart + (24 * 60 * 60 * 1000);
+          
+          const dayData = growthHistory.filter(d => d.timestamp >= dayStart && d.timestamp <= dayEnd);
+          if (dayData.length >= 2) {
+            const dayGrowth = dayData[dayData.length - 1].server_count - dayData[0].server_count;
             if (dayGrowth > bestDayGrowth) {
               bestDayGrowth = dayGrowth;
             }
           }
         }
 
-        const updatedRecords = {
+        return {
           bestHour: bestHourGrowth,
           bestDay: bestDayGrowth,
           longestStreak: longestStreak,
         };
-
-        localStorage.setItem("growthRecords", JSON.stringify(updatedRecords));
-        return updatedRecords;
       }
 
-      function getPeakHours() {
-        const historical = getHistoricalData();
-        if (historical.length < 3) return null;
+      function getPeakHours(growthHistory = []) {
+        if (growthHistory.length < 3) return null;
 
         const hourlyGrowth = {};
 
-        for (let i = 1; i < historical.length; i++) {
-          const hour = new Date(historical[i].timestamp).getHours();
-          const growth = historical[i].servers - historical[i - 1].servers;
+        for (let i = 1; i < growthHistory.length; i++) {
+          const hour = new Date(growthHistory[i].timestamp).getHours();
+          const growth = growthHistory[i].server_count - growthHistory[i - 1].server_count;
 
           if (!hourlyGrowth[hour]) {
             hourlyGrowth[hour] = { total: 0, count: 0 };
@@ -1023,15 +1016,14 @@
         };
       }
 
-      function getRetentionRate() {
-        const historical = getHistoricalData();
-        if (historical.length < 2) return null;
+      function getRetentionRate(growthHistory = []) {
+        if (growthHistory.length < 2) return null;
 
         let totalGains = 0;
         let totalLosses = 0;
 
-        for (let i = 1; i < historical.length; i++) {
-          const change = historical[i].servers - historical[i - 1].servers;
+        for (let i = 1; i < growthHistory.length; i++) {
+          const change = growthHistory[i].server_count - growthHistory[i - 1].server_count;
           if (change > 0) {
             totalGains += change;
           } else if (change < 0) {
@@ -1208,12 +1200,12 @@
         tracker.style.display = "block";
       }
 
-      function updateRecordsSection() {
+      function updateRecordsSection(growthHistory = []) {
         const section = document.getElementById("records-section");
         const grid = document.getElementById("records-grid");
         if (!section || !grid) return;
 
-        const records = getRecords();
+        const records = getRecords(growthHistory);
 
         grid.innerHTML = `
           <div class="record-card">
@@ -1236,13 +1228,13 @@
         section.style.display = "block";
       }
 
-      function updateRetentionSection() {
+      function updateRetentionSection(growthHistory = []) {
         const section = document.getElementById("retention-section");
         const percentage = document.getElementById("retention-percentage");
         const details = document.getElementById("retention-details");
         if (!section || !percentage || !details) return;
 
-        const retention = getRetentionRate();
+        const retention = getRetentionRate(growthHistory);
 
         if (!retention) {
           section.style.display = "none";
@@ -1269,12 +1261,12 @@
         section.style.display = "block";
       }
 
-      function updatePeakHoursSection() {
+      function updatePeakHoursSection(growthHistory = []) {
         const section = document.getElementById("peak-hours-section");
         const content = document.getElementById("peak-hours-content");
         if (!section || !content) return;
 
-        const peakHours = getPeakHours();
+        const peakHours = getPeakHours(growthHistory);
 
         if (!peakHours) {
           section.style.display = "none";
@@ -1419,6 +1411,10 @@
 
           const stats = await response.json();
           const currentServerCount = stats.servers;
+          
+          // Process growth history from API
+          const growthHistory = stats.growthHistory || [];
+          console.log(`Loaded ${growthHistory.length} growth records from API`);
 
           // Save historical data
           saveHistoricalData(currentServerCount);
@@ -1638,9 +1634,9 @@
           updateCountdownBanner(currentServerCount);
           updateProjectedDate(currentServerCount, growthRate);
           updateDailyTracker(currentServerCount, growthRate);
-          updateRecordsSection();
-          updateRetentionSection();
-          updatePeakHoursSection();
+          updateRecordsSection(growthHistory);
+          updateRetentionSection(growthHistory);
+          updatePeakHoursSection(growthHistory);
 
           // Render chart
           const chartContainer = document.getElementById("chart-container");
