@@ -918,9 +918,9 @@ class AdvancedAntiRaid {
 
     // Send detailed alert
     const logChannel = guild.channels.cache.find(
-      (ch) => ch.name.includes("log") || ch.name.includes("mod")
+      (ch) => (ch.name.includes("log") || ch.name.includes("mod")) && ch.isTextBased()
     );
-    if (logChannel) {
+    if (logChannel && logChannel.send) {
       await logChannel.send({
         embeds: [
           {
