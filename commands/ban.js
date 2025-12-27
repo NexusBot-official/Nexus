@@ -64,9 +64,32 @@ module.exports = {
 
     if (subcommand === "add") {
       const user = interaction.options.getUser("user");
-      const reason =
+      let reason =
         interaction.options.getString("reason") || "No reason provided";
       const deleteDays = interaction.options.getInteger("delete_days") || 0;
+
+      // Prevent impersonation in ban reasons
+      const forbiddenPhrases = [
+        "official ban",
+        "discord ban",
+        "discord staff",
+        "discord team",
+        "discord trust",
+        "discord safety",
+        "terms of service",
+        "community guidelines",
+        "nexus staff",
+        "nexus team",
+        "nexus official",
+      ];
+      
+      const lowerReason = reason.toLowerCase();
+      if (forbiddenPhrases.some(phrase => lowerReason.includes(phrase))) {
+        return interaction.reply({
+          content: "❌ Ban reason cannot contain phrases that could impersonate official actions.",
+          flags: MessageFlags.Ephemeral,
+        });
+      }
 
       // Security: Check bot permission
       const botPermCheck = CommandSecurity.checkBotPermission(
