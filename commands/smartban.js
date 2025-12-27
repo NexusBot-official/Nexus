@@ -50,11 +50,12 @@ module.exports = {
       "nexus team",
       "nexus official",
     ];
-    
+
     const lowerReason = reason.toLowerCase();
-    if (forbiddenPhrases.some(phrase => lowerReason.includes(phrase))) {
+    if (forbiddenPhrases.some((phrase) => lowerReason.includes(phrase))) {
       return interaction.reply({
-        content: "❌ Ban reason cannot contain phrases that could impersonate official actions.",
+        content:
+          "❌ Ban reason cannot contain phrases that could impersonate official actions.",
         flags: MessageFlags.Ephemeral,
       });
     }
