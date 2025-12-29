@@ -146,23 +146,7 @@ class SecurityChallenges {
         [guildId, userId, challenge.id, Date.now(), challenge.reward.points]
       );
 
-      // Notify user
-      const user = await this.client.users.fetch(userId);
-      if (user) {
-        await user.send({
-          embeds: [
-            {
-              title: "🎉 Challenge Complete!",
-              description:
-                `Congratulations! You completed: **${challenge.name}**\n\n` +
-                `**Reward:** ${challenge.reward.badge}\n` +
-                `**Points Earned:** ${challenge.reward.points}`,
-              color: 0x4caf50,
-              timestamp: new Date(),
-            },
-          ],
-        });
-      }
+      // Challenge completed (no DM notifications)
 
       logger.success(
         "SecurityChallenges",

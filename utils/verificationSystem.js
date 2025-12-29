@@ -211,24 +211,18 @@ class VerificationSystem {
           .setEmoji("🔐")
       );
 
-      const dmChannel = await member.createDM().catch(() => null);
-      if (dmChannel) {
-        await dmChannel.send({ embeds: [embed], components: [button] });
-        return { sent: true, channel: "dm" };
-      } else {
-        // If DM fails, try to send in verification channel
-        const verificationChannel = config.verification_channel
-          ? member.guild.channels.cache.get(config.verification_channel)
-          : null;
+      // Send in verification channel only (no DMs)
+      const verificationChannel = config.verification_channel
+        ? member.guild.channels.cache.get(config.verification_channel)
+        : null;
 
-        if (verificationChannel) {
-          await verificationChannel.send({
-            content: `${member}, please verify:`,
-            embeds: [embed],
-            components: [button],
-          });
-          return { sent: true, channel: "guild" };
-        }
+      if (verificationChannel) {
+        await verificationChannel.send({
+          content: `${member}, please verify:`,
+          embeds: [embed],
+          components: [button],
+        });
+        return { sent: true, channel: "guild" };
       }
 
       return { sent: false, reason: "Could not send verification message" };
@@ -273,23 +267,18 @@ class VerificationSystem {
           .setEmoji("🌐")
       );
 
-      const dmChannel = await member.createDM().catch(() => null);
-      if (dmChannel) {
-        await dmChannel.send({ embeds: [embed], components: [button] });
-        return { sent: true, channel: "dm", url: verifyUrl };
-      } else {
-        const verificationChannel = config.verification_channel
-          ? member.guild.channels.cache.get(config.verification_channel)
-          : null;
+      // Send in verification channel only (no DMs)
+      const verificationChannel = config.verification_channel
+        ? member.guild.channels.cache.get(config.verification_channel)
+        : null;
 
-        if (verificationChannel) {
-          await verificationChannel.send({
-            content: `${member}, please verify:`,
-            embeds: [embed],
-            components: [button],
-          });
-          return { sent: true, channel: "guild", url: verifyUrl };
-        }
+      if (verificationChannel) {
+        await verificationChannel.send({
+          content: `${member}, please verify:`,
+          embeds: [embed],
+          components: [button],
+        });
+        return { sent: true, channel: "guild", url: verifyUrl };
       }
 
       return { sent: false, reason: "Could not send verification message" };
@@ -326,23 +315,18 @@ class VerificationSystem {
           .setEmoji("✅")
       );
 
-      const dmChannel = await member.createDM().catch(() => null);
-      if (dmChannel) {
-        await dmChannel.send({ embeds: [embed], components: [button] });
-        return { sent: true, channel: "dm" };
-      } else {
-        const verificationChannel = config.verification_channel
-          ? member.guild.channels.cache.get(config.verification_channel)
-          : null;
+      // Send in verification channel only (no DMs)
+      const verificationChannel = config.verification_channel
+        ? member.guild.channels.cache.get(config.verification_channel)
+        : null;
 
-        if (verificationChannel) {
-          await verificationChannel.send({
-            content: `${member}, please verify:`,
-            embeds: [embed],
-            components: [button],
-          });
-          return { sent: true, channel: "guild" };
-        }
+      if (verificationChannel) {
+        await verificationChannel.send({
+          content: `${member}, please verify:`,
+          embeds: [embed],
+          components: [button],
+        });
+        return { sent: true, channel: "guild" };
       }
 
       return { sent: false, reason: "Could not send verification message" };

@@ -135,22 +135,7 @@ class UserProfiles {
         );
       });
 
-      // Notify user
-      try {
-        const user = await this.client.users.fetch(userId);
-        await user.send({
-          embeds: [
-            {
-              title: "🏅 New Badge Earned!",
-              description: `You've earned: **${badgeName}**`,
-              color: 0xffd700,
-              timestamp: new Date(),
-            },
-          ],
-        });
-      } catch (error) {
-        // DMs disabled or other error
-      }
+      // Badge earned (no DM notifications)
 
       logger.success("UserProfiles", `Awarded ${badgeName} to ${userId}`);
     }

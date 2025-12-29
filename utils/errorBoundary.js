@@ -394,25 +394,8 @@ class ErrorBoundary {
    * Notify bot admins of critical issues
    */
   async notifyAdmins(message) {
-    try {
-      const adminIds = process.env.ADMIN_USER_IDS?.split(",") || [];
-
-      for (const adminId of adminIds) {
-        try {
-          const user = await this.client.users.fetch(adminId);
-          await user.send(
-            `🚨 **System Alert**\n${message}\n\nTimestamp: <t:${Math.floor(Date.now() / 1000)}:F>`
-          );
-        } catch (err) {
-          logger.error("[ErrorBoundary] Failed to notify admin", {
-            adminId,
-            error: err.message,
-          });
-        }
-      }
-    } catch (error) {
-      logger.error("[ErrorBoundary] Admin notification failed", error);
-    }
+    // Admin notifications disabled (no DMs)
+    logger.warn("[ErrorBoundary] Admin alert:", message);
   }
 
   /**

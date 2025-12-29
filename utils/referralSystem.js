@@ -269,27 +269,7 @@ class ReferralSystem {
       const tierData = this.rewards[tier];
 
       if (user && tierData) {
-        await user.send({
-          embeds: [
-            {
-              title: `🎉 Congratulations! You unlocked ${tierData.badge}!`,
-              description: `You've referred nexus to enough servers to unlock premium rewards!`,
-              fields: [
-                {
-                  name: "Your Rewards",
-                  value: tierData.rewards.map((r) => `✅ ${r}`).join("\n"),
-                },
-                {
-                  name: "Keep Growing!",
-                  value:
-                    "Invite nexus to more servers to unlock even better rewards!",
-                },
-              ],
-              color: 0x9333ea,
-              timestamp: new Date(),
-            },
-          ],
-        });
+        // Tier unlocked (no DM notifications)
       }
     } catch (error) {
       logger.error("Referral", `Failed to notify ${userId}`, error);

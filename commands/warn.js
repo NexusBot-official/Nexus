@@ -94,20 +94,7 @@ module.exports = {
       embed.setDescription(result.message);
       await interaction.reply({ embeds: [embed] });
 
-      // Try to DM user
-      try {
-        await user.send({
-          embeds: [
-            {
-              title: "⚠️ You received a warning",
-              description: `**Server:** ${interaction.guild.name}\n**Reason:** ${reason}`,
-              color: 0xffff00,
-            },
-          ],
-        });
-      } catch {
-        // Can't DM user, that's okay
-      }
+      // Warning issued (no DM notifications)
 
       const config = await db.getServerConfig(interaction.guild.id);
       if (config && config.mod_log_channel) {
